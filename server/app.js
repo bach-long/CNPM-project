@@ -1,27 +1,28 @@
 const express = require('express');
 const morgan = require('morgan');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const dotenv = require('dotenv');
+
+const authRouter = require('./routes/authRoutes');
+
+// Config
+dotenv.config({ path: './.env' });
 
 const app = express();
 
+// Middlewares
 app.use(morgan('dev'));
+app.use(express.json());
+app.use(cookieParser());
+app.use(cors());
+app.options('*', cors());
 
-app.get('/', (req, res) => {
-    res.status(200).json({
-        message: 'Hello World!',
-        sos: '127.0.0.1:5000/sos',
-    });
-});
-
-app.get('/sos', (req, res) => {
-    const message = 'ét o ét';
-
-    res.status(200).json({
-        abcdefghijklmnopqrstuvwxyz: message,
-    });
-});
+// Routes
+app.use('/api/auth', authRouter);
 
 app.all('*', (req, res) => {
-    res.status(404).send('Không tìm thấy route này!');
+    res.status(404).json({ message: 'Không tìm thấy route này!' });
 });
 
 module.exports = app;
