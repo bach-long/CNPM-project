@@ -1,21 +1,13 @@
 const sequelize = require('./database/database.js');
 const app = require('./app');
 
-// sequelize
-//     .authenticate()
-//     .then(() => {
-//         console.log('Connection has been established successfully.');
-//     })
-//     .catch((error) => {
-//         console.error('Unable to connect to the database:', error);
-//     });
-
 const initDatabase = async () => {
     try {
         await sequelize.authenticate();
         console.log('Connection has been established successfully.');
 
-        await sequelize.sync({ alter: true });
+        // await sequelize.sync({ alter: true }); // alter an break association
+        await sequelize.sync();
         console.log('All models were synchronized successfully.');
     } catch (error) {
         console.error('Error at database init:', error);

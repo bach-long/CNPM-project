@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 
 const authRouter = require('./routes/authRoutes');
+const goodRouter = require('./routes/goodRoutes');
 
 // Config
 dotenv.config({ path: './.env' });
@@ -20,6 +21,7 @@ app.options('*', cors());
 
 // Routes
 app.use('/api/auth', authRouter);
+app.use('/api/goods', goodRouter);
 
 app.all('*', (req, res) => {
     res.status(404).json({ message: 'Không tìm thấy route này!' });

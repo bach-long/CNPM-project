@@ -3,11 +3,17 @@ const bcrypt = require('bcrypt');
 const validator = require('validator');
 
 const sequelize = require('./../database/database');
+const Good = require('./Good');
+const Comment = require('./Comment');
 
 const User = sequelize.define(
     'User',
     {
-        // Model attributes are defined here
+        userId: {
+            type: DataTypes.INTEGER(11).UNSIGNED.ZEROFILL,
+            autoIncrement: true,
+            primaryKey: true,
+        },
         email: {
             type: DataTypes.STRING, // VARCHAR(255)
             allowNull: false,
@@ -23,7 +29,6 @@ const User = sequelize.define(
         username: {
             type: DataTypes.STRING(20), // VARCHAR(20)
             allowNull: false,
-            primaryKey: true,
             validate: {
                 len: {
                     args: [3, 20],
@@ -63,7 +68,6 @@ const User = sequelize.define(
     {
         // Other model options go here
         tableName: 'users',
-        freezeTableName: true,
         timestamps: true, // add createdAt and updatedAt
     }
 );
@@ -79,6 +83,13 @@ User.prototype.instanceLevelMethod = function () {
     return 'bar';
 };
 */
+
+// Associations
+User.hasMany(Good, { as: 'goods', foreignKey: 'userId' });
+Good.belongsTo(User, { as: 'User', foreignKey: 'userId' });
+
+User.hasMany(Comment, { as: 'comments', foreignKey: 'userId' });
+Comment.belongsTo(User, { as: 'User', foreignKey: 'userId' });
 
 // Hooks
 User.beforeCreate(async (user, options) => {
