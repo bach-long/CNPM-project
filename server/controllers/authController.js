@@ -6,17 +6,22 @@ const User = require('../models/User');
 
 exports.register = async (req, res, next) => {
     try {
-        const { email, username, password, passwordConfirm } = req.body;
+        const { email, username, password, passwordConfirm, address, sdt } =
+            req.body;
 
         let errors = {};
         const emailUser = await User.findOne({ where: { email } });
         const usernameUser = await User.findOne({ where: { username } });
+        const sdtUser = await User.findOne({ where: { sdt } });
 
         if (emailUser) errors.email = 'Email đã tồn tại trong hệ thống!';
         if (usernameUser)
             errors.username = 'Username đã tồn tại trong hệ thống!';
+        if (sdtUser) errors.sdt = 'Số điện thoại đã tồn tại trong hệ thống!!';
         if (password.trim() !== passwordConfirm.trim())
             errors.password = 'Password không trùng khớp!';
+        if (!sdt || sdt.trim() === '')
+            errors.sdt = 'Số điện thoại không được bỏ trống!';
 
         if (Object.keys(errors).length > 0) {
             return res.status(400).json({
@@ -25,7 +30,13 @@ exports.register = async (req, res, next) => {
         }
 
         // Create new user
-        const user = await User.create({ email, username, password });
+        const user = await User.create({
+            email,
+            username,
+            password,
+            address,
+            sdt,
+        });
 
         res.status(200).json({
             user,
@@ -85,6 +96,17 @@ exports.login = async (req, res, next) => {
             token,
             user,
         });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            errors: error,
+        });
+    }
+};
+
+exports.me = async (req, res, next) => {
+    try {
+        res.status(200).json(res.locals.user);
     } catch (error) {
         console.log(error);
         res.status(500).json({

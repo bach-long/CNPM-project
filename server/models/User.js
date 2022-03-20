@@ -41,9 +41,28 @@ const User = sequelize.define(
                 },
             },
         },
+        address: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+        },
+        sdt: {
+            type: DataTypes.STRING,
+            unique: true,
+            allowNull: false,
+            validate: {
+                sdtCustomValidator(value) {
+                    if (!validator.isMobilePhone(value, 'vi-VN')) {
+                        throw new Error(
+                            'Không đúng định dạng số điện thoại VN!'
+                        );
+                    }
+                },
+            },
+        },
     },
     {
         // Other model options go here
+        tableName: 'users',
         freezeTableName: true,
         timestamps: true, // add createdAt and updatedAt
     }
@@ -66,7 +85,5 @@ User.beforeCreate(async (user, options) => {
     const hashedPassword = await bcrypt.hash(user.password, 10);
     user.password = hashedPassword;
 });
-
-User.sync();
 
 module.exports = User;
