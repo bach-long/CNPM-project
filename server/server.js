@@ -6,7 +6,7 @@ const initDatabase = async () => {
         await sequelize.authenticate();
         console.log('Connection has been established successfully.');
 
-        // await sequelize.sync({ alter: true }); // alter an break association
+        // await sequelize.sync({ alter: true }); // alter can break association
         await sequelize.sync();
         console.log('All models were synchronized successfully.');
     } catch (error) {
