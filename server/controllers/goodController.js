@@ -1,3 +1,4 @@
+const Comment = require('../models/Comment');
 const Good = require('../models/Good');
 
 exports.createGood = async (req, res, next) => {
@@ -77,6 +78,49 @@ exports.getGood = async (req, res, next) => {
         console.log(error);
         res.status(500).json({
             message: 'Lỗi từ Get Good!',
+            errors: error,
+        });
+    }
+};
+
+exports.commentOnGood = async (req, res, next) => {
+    try {
+        const { goodId } = req.params;
+        const { content } = req.body;
+
+        const good = await Good.findOne({ where: { goodId } });
+
+        const comment = await Comment.create({
+            content,
+            userId: res.locals.user.userId,
+            goodId: good.goodId,
+        });
+
+        res.json(comment);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Lỗi từ Get Good Comments!',
+            errors: error,
+        });
+    }
+};
+
+exports.getGoodComments = async (req, res, next) => {
+    try {
+        const { goodId } = req.params;
+        const good = await Good.findOne({ where: { goodId } });
+
+        let comments = await good.getComments();
+        comments = comments.reverse(); // createdAt DESC
+
+        // TODO: Set user specific things like liked comment using res.locals.user
+
+        res.json(comments);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Lỗi từ Get Good Comments!',
             errors: error,
         });
     }
