@@ -4,8 +4,9 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 
-const authRouter = require('./routes/authRoutes');
-const goodRouter = require('./routes/goodRoutes');
+const authRouter = require('./routes/auth');
+const goodRouter = require('./routes/good');
+const userRouter = require('./routes/user');
 
 // Config
 dotenv.config({ path: './.env' });
@@ -22,9 +23,16 @@ app.options('*', cors());
 // Routes
 app.use('/api/auth', authRouter);
 app.use('/api/goods', goodRouter);
+app.use('/api/users', userRouter);
 
 app.all('*', (req, res) => {
     res.status(404).json({ message: 'Không tìm thấy route này!' });
+});
+
+app.use((error, req, res, next) => {
+    res.status(500).json({
+        errors: 'Lỗi chưa xác định!!!',
+    });
 });
 
 module.exports = app;

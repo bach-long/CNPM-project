@@ -1,10 +1,14 @@
+const { Router } = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { isEmpty } = require('validator');
 
+const authCheck = require('../middlewares/authCheck.js');
+const userCheck = require('../middlewares/userCheck.js');
+
 const User = require('../models/User');
 
-exports.register = async (req, res, next) => {
+const register = async (req, res, next) => {
     try {
         const { email, username, password, passwordConfirm, address, sdt } =
             req.body;
@@ -47,7 +51,7 @@ exports.register = async (req, res, next) => {
     }
 };
 
-exports.login = async (req, res, next) => {
+const login = async (req, res, next) => {
     try {
         const { username, password } = req.body;
 
@@ -102,7 +106,7 @@ exports.login = async (req, res, next) => {
     }
 };
 
-exports.me = async (req, res, next) => {
+const me = async (req, res, next) => {
     try {
         res.status(200).json(res.locals.user);
     } catch (error) {
@@ -113,7 +117,7 @@ exports.me = async (req, res, next) => {
     }
 };
 
-exports.logout = async (req, res, next) => {
+const logout = async (req, res, next) => {
     try {
         // Reset cookie
         res.cookie('jwt', '', {
@@ -132,3 +136,12 @@ exports.logout = async (req, res, next) => {
         });
     }
 };
+
+const router = Router();
+
+router.post('/register', register);
+router.post('/login', login);
+router.get('/me', userCheck, authCheck, me);
+router.get('/logout', userCheck, authCheck, logout);
+
+module.exports = router;

@@ -84,14 +84,40 @@ User.prototype.instanceLevelMethod = function () {
 };
 */
 
-// Associations
+// Override toJSON, hide password
+User.prototype.toJSON = function () {
+    const values = Object.assign({}, this.get());
+
+    delete values.password;
+    return values;
+};
+
+/**
+ *  Associations
+ */
 User.hasMany(Good, { as: 'goods', foreignKey: 'userId' });
 Good.belongsTo(User, { as: 'User', foreignKey: 'userId' });
 
 User.hasMany(Comment, { as: 'comments', foreignKey: 'userId' });
 Comment.belongsTo(User, { as: 'User', foreignKey: 'userId' });
 
-// Hooks
+// Follow
+User.belongsToMany(User, {
+    through: 'follow',
+    as: 'follower',
+    foreignKey: 'followedId',
+    otherKey: 'followerId',
+});
+User.belongsToMany(User, {
+    through: 'follow',
+    as: 'followed',
+    foreignKey: 'followerId',
+    otherKey: 'followedId',
+});
+
+/**
+ *  Hooks
+ */
 User.beforeCreate(async (user, options) => {
     const hashedPassword = await bcrypt.hash(user.password, 10);
     user.password = hashedPassword;

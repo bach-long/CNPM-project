@@ -1,7 +1,12 @@
+const { Router } = require('express');
+
+const userCheck = require('../middlewares/userCheck');
+const authCheck = require('../middlewares/authCheck');
+
 const Comment = require('../models/Comment');
 const Good = require('../models/Good');
 
-exports.createGood = async (req, res, next) => {
+const createGood = async (req, res, next) => {
     try {
         const { name, description, address, price, state } = req.body;
         const user = res.locals.user;
@@ -31,7 +36,7 @@ exports.createGood = async (req, res, next) => {
     }
 };
 
-exports.getGoods = async (req, res, next) => {
+const getGoods = async (req, res, next) => {
     try {
         const currentPage = req.query.page || 1;
         // TODO: Change this
@@ -55,7 +60,7 @@ exports.getGoods = async (req, res, next) => {
     }
 };
 
-exports.getGood = async (req, res, next) => {
+const getGood = async (req, res, next) => {
     try {
         const { goodId } = req.params;
 
@@ -83,7 +88,7 @@ exports.getGood = async (req, res, next) => {
     }
 };
 
-exports.commentOnGood = async (req, res, next) => {
+const commentOnGood = async (req, res, next) => {
     try {
         const { goodId } = req.params;
         const { content } = req.body;
@@ -106,7 +111,7 @@ exports.commentOnGood = async (req, res, next) => {
     }
 };
 
-exports.getGoodComments = async (req, res, next) => {
+const getGoodComments = async (req, res, next) => {
     try {
         const { goodId } = req.params;
         const good = await Good.findOne({ where: { goodId } });
@@ -125,3 +130,13 @@ exports.getGoodComments = async (req, res, next) => {
         });
     }
 };
+
+const router = new Router();
+
+router.post('/', userCheck, authCheck, createGood);
+router.get('/', userCheck, getGoods);
+router.get('/:goodId', userCheck, getGood);
+router.post('/:goodId/comments', userCheck, authCheck, commentOnGood);
+router.get('/:goodId/comments', userCheck, getGoodComments);
+
+module.exports = router;
