@@ -47,7 +47,17 @@ const Good = sequelize.define(
 );
 
 // Associations
-Good.hasMany(Comment, { as: 'comments', foreignKey: 'goodId' });
-Comment.belongsTo(Good, { as: 'Good', foreignKey: 'goodId' });
+Good.hasMany(Comment, {
+    as: 'comments',
+    foreignKey: 'goodId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+});
+Comment.belongsTo(Good, {
+    as: 'Good',
+    foreignKey: 'goodId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+});
 
 module.exports = Good;

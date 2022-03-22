@@ -95,24 +95,48 @@ User.prototype.toJSON = function () {
 /**
  *  Associations
  */
-User.hasMany(Good, { as: 'goods', foreignKey: 'userId' });
-Good.belongsTo(User, { as: 'User', foreignKey: 'userId' });
+User.hasMany(Good, {
+    as: 'goods',
+    foreignKey: 'userId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+});
+Good.belongsTo(User, {
+    as: 'User',
+    foreignKey: 'userId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+});
 
-User.hasMany(Comment, { as: 'comments', foreignKey: 'userId' });
-Comment.belongsTo(User, { as: 'User', foreignKey: 'userId' });
+User.hasMany(Comment, {
+    as: 'comments',
+    foreignKey: 'userId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+});
+Comment.belongsTo(User, {
+    as: 'User',
+    foreignKey: 'userId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+});
 
 // Follow
 User.belongsToMany(User, {
-    through: 'follow',
-    as: 'follower',
-    foreignKey: 'followedId',
-    otherKey: 'followerId',
-});
-User.belongsToMany(User, {
-    through: 'follow',
-    as: 'followed',
+    through: 'users_followers',
+    as: 'Followed',
     foreignKey: 'followerId',
     otherKey: 'followedId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+});
+User.belongsToMany(User, {
+    through: 'users_followers',
+    as: 'Follower',
+    foreignKey: 'followedId',
+    otherKey: 'followerId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
 });
 
 /**

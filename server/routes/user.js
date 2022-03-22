@@ -3,6 +3,7 @@ const { Router } = require('express');
 const Good = require('../models/Good');
 const User = require('../models/User');
 const userCheck = require('../middlewares/userCheck');
+const authCheck = require('../middlewares/authCheck');
 
 const getUserGoods = async (req, res, next) => {
     try {
@@ -33,7 +34,7 @@ const getUserGoods = async (req, res, next) => {
     }
 };
 
-const getUserFollows = async (req, res, next) => {
+const getUserFollowers = async (req, res, next) => {
     try {
         const { username } = req.params;
 
@@ -46,10 +47,14 @@ const getUserFollows = async (req, res, next) => {
                 },
             });
         }
+
+        const followers = await user.getFollower(); // No 's'
+
+        res.status(200).json(followers);
     } catch (error) {
         console.log(error);
         res.status(500).json({
-            message: 'Lỗi từ Get User Goods!',
+            message: 'Lỗi từ Get User Followers!',
             errors: error,
         });
     }
@@ -68,10 +73,34 @@ const follow = async (req, res, next) => {
                 },
             });
         }
+
+        const me = res.locals.user;
+
+        if (me.username === user.username) {
+            return res.status(400).json({
+                errors: {
+                    username: 'Không được follow chính mình!',
+                },
+            });
+        }
+
+        let message = 'Follow thành công!';
+
+        if (await user.hasFollower(me)) {
+            message = 'Unfollow thành công';
+            await user.removeFollower(me);
+        } else {
+            await user.addFollower(me);
+        }
+
+        res.status(200).json({
+            message,
+            user,
+        });
     } catch (error) {
         console.log(error);
         res.status(500).json({
-            message: 'Lỗi từ Get User Goods!',
+            message: 'Lỗi từ Follow!',
             errors: error,
         });
     }
@@ -80,7 +109,7 @@ const follow = async (req, res, next) => {
 const router = new Router();
 
 router.get('/:username/goods', userCheck, getUserGoods);
-router.get('/:username/follows', getUserFollows);
-router.post('/:username/follow', follow);
+router.post('/:username/follow', userCheck, authCheck, follow);
+router.get('/:username/followers', getUserFollowers);
 
 module.exports = router;
