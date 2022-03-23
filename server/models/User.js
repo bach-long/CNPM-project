@@ -64,6 +64,17 @@ const User = sequelize.define(
                 },
             },
         },
+        followersCount: {
+            // Get this user's followers count using sequelize literal
+            type: DataTypes.VIRTUAL(DataTypes.INTEGER, [
+                [
+                    sequelize.literal(
+                        '(SELECT COUNT(*) FROM users_followers WHERE followedId = userId)'
+                    ),
+                    'followersCount',
+                ],
+            ]),
+        },
     },
     {
         // Other model options go here
@@ -91,6 +102,17 @@ User.prototype.toJSON = function () {
     delete values.password;
     return values;
 };
+
+/**
+ *  Hooks
+ */
+const hashPassword = async (user, options) => {
+    const hashedPassword = await bcrypt.hash(user.password, 10);
+    user.password = hashedPassword;
+};
+
+User.beforeCreate(hashPassword);
+User.beforeUpdate(hashPassword);
 
 /**
  *  Associations
@@ -139,12 +161,8 @@ User.belongsToMany(User, {
     onUpdate: 'CASCADE',
 });
 
-/**
- *  Hooks
- */
-User.beforeCreate(async (user, options) => {
-    const hashedPassword = await bcrypt.hash(user.password, 10);
-    user.password = hashedPassword;
-});
+// User.belongsToMany(Good, {
+//     through: "bookmark"
+// })
 
 module.exports = User;

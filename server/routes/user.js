@@ -50,7 +50,10 @@ const getUserFollowers = async (req, res, next) => {
 
         const followers = await user.getFollower(); // No 's'
 
-        res.status(200).json(followers);
+        res.status(200).json({
+            count: followers.length,
+            followers,
+        });
     } catch (error) {
         console.log(error);
         res.status(500).json({
