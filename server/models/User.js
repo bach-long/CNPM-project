@@ -19,11 +19,14 @@ const User = sequelize.define(
             allowNull: false,
             unique: true,
             validate: {
-                emailCustomValidator(value) {
-                    if (!validator.isEmail(value)) {
-                        throw new Error('Không đúng định dạng email!');
-                    }
+                isEmail: {
+                    msg: 'Không đúng định dạng email!',
                 },
+                // emailCustomValidator(value) {
+                //     if (!validator.isEmail(value)) {
+                //         throw new Error('Không đúng định dạng email!');
+                //     }
+                // },
             },
         },
         username: {
