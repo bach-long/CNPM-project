@@ -1,16 +1,13 @@
 const { DataTypes } = require('sequelize');
-const bcrypt = require('bcrypt');
-const validator = require('validator');
 
 const sequelize = require('./../database/database');
-const User = require('./User');
 const Comment = require('./Comment');
 
 const Good = sequelize.define(
     'Good',
     {
         goodId: {
-            type: DataTypes.INTEGER(11).UNSIGNED.ZEROFILL,
+            type: DataTypes.INTEGER(11),
             autoIncrement: true,
             primaryKey: true,
         },

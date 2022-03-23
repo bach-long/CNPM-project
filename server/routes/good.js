@@ -88,6 +88,44 @@ const getGood = async (req, res, next) => {
     }
 };
 
+const deleteGood = async (req, res, next) => {
+    try {
+        const { goodId } = req.params;
+        const user = res.locals.user;
+
+        const good = await Good.findOne({
+            where: {
+                goodId,
+            },
+        });
+
+        if (!good) {
+            return res.status(404).json({
+                error: 'Không tìm thấy Good',
+            });
+        }
+
+        if (good.userId !== user.userId) {
+            return res.status(403).json({
+                error: 'Bạn không có quyền xóa Good này',
+            });
+        }
+
+        // TODO: Only mark good as deleted but not delete it from database
+        await good.destroy();
+
+        res.status(204).json({
+            message: 'Xóa thành công',
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Lỗi từ Delete Good!',
+            errors: error,
+        });
+    }
+};
+
 const commentOnGood = async (req, res, next) => {
     try {
         const { goodId } = req.params;
@@ -136,6 +174,7 @@ const router = new Router();
 router.post('/', userCheck, authCheck, createGood);
 router.get('/', userCheck, getGoods);
 router.get('/:goodId', userCheck, getGood);
+router.delete('/:goodId', userCheck, authCheck, deleteGood);
 router.post('/:goodId/comments', userCheck, authCheck, commentOnGood);
 router.get('/:goodId/comments', userCheck, getGoodComments);
 

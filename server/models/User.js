@@ -10,7 +10,7 @@ const User = sequelize.define(
     'User',
     {
         userId: {
-            type: DataTypes.INTEGER(11).UNSIGNED.ZEROFILL,
+            type: DataTypes.INTEGER(11),
             autoIncrement: true,
             primaryKey: true,
         },
@@ -161,8 +161,21 @@ User.belongsToMany(User, {
     onUpdate: 'CASCADE',
 });
 
-// User.belongsToMany(Good, {
-//     through: "bookmark"
-// })
+User.belongsToMany(Good, {
+    through: 'users_bookmarks',
+    as: 'BookmarkedGood',
+    foreignKey: 'userId',
+    otherKey: 'goodId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+});
+Good.belongsToMany(User, {
+    through: 'users_bookmarks',
+    as: 'Bookmarker',
+    foreignKey: 'goodId',
+    otherKey: 'userId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+});
 
 module.exports = User;

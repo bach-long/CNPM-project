@@ -7,7 +7,7 @@ const initDatabase = async () => {
         console.log('Connection has been established successfully.');
 
         // await sequelize.sync({ alter: true }); // alter can break association
-        await sequelize.sync();
+        await sequelize.sync(); // force can break association
         console.log('All models were synchronized successfully.');
     } catch (error) {
         console.error('Error at database init:', error);

@@ -1,5 +1,8 @@
 'use strict';
 
+const Good = require('../models/Good');
+const User = require('../models/User');
+
 module.exports = {
     async up(queryInterface, Sequelize) {
         await queryInterface.bulkInsert(
@@ -110,6 +113,13 @@ module.exports = {
                 updatedAt: new Date('2022-03-21T12:57:30.839Z'),
             },
         ]);
+        const user1 = await User.findOne({ where: { userId: 1 } });
+        const user2 = await User.findOne({ where: { userId: 2 } });
+
+        await user2.addFollower(user1);
+
+        const firstGood = await Good.findOne({ where: { goodId: 1 } });
+        await user1.addBookmarkedGood(firstGood);
     },
 
     async down(queryInterface, Sequelize) {
