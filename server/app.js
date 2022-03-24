@@ -32,6 +32,7 @@ app.all('*', (req, res) => {
 app.use((error, req, res, next) => {
     res.status(500).json({
         errors: 'Lỗi chưa xác định!!!',
+        error,
     });
 });
 

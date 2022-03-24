@@ -21,7 +21,7 @@ const getUserGoods = async (req, res, next) => {
 
         const goods = await user.getGoods();
 
-        res.status(200).json({
+        res.status(201).json({
             user,
             goods,
         });

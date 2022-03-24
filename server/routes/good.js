@@ -26,7 +26,7 @@ const createGood = async (req, res, next) => {
         // console.log(await good.getUser()); // works
         // console.log(await user.getGoods()); // works
 
-        res.status(200).json(good);
+        res.status(201).json(good);
     } catch (error) {
         console.log(error);
         res.status(500).json({
