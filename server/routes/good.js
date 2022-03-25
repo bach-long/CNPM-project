@@ -38,9 +38,13 @@ const createGood = async (req, res, next) => {
 
 const getGoods = async (req, res, next) => {
     try {
-        const currentPage = req.query.page || 1;
-        // TODO: Change this
-        const countPerPage = req.query.count || 100;
+        let currentPage = +req.query.page || 1;
+        currentPage = currentPage > 0 ? currentPage : 1;
+        let countPerPage = +req.query.count || 20;
+        countPerPage = countPerPage > 0 ? countPerPage : 20;
+
+        const goodsCount = await Good.count();
+        const totalPageCount = Math.ceil(goodsCount / countPerPage);
 
         const goods = await Good.findAll({
             order: [['createdAt', 'DESC']],
@@ -50,7 +54,12 @@ const getGoods = async (req, res, next) => {
 
         // TODO: Set user specific things like bookmarked using res.locals.user
 
-        res.status(200).json(goods);
+        res.status(200).json({
+            page: currentPage,
+            limit: countPerPage,
+            totalPageCount,
+            goods,
+        });
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -90,7 +99,7 @@ const getGood = async (req, res, next) => {
 
 const deleteGood = async (req, res, next) => {
     try {
-        const { goodId } = req.params;
+        const goodId = +req.params.goodId;
         const user = res.locals.user;
 
         const good = await Good.findOne({
@@ -139,7 +148,7 @@ const commentOnGood = async (req, res, next) => {
             goodId: good.goodId,
         });
 
-        res.json(comment);
+        res.status(201).json(comment);
     } catch (error) {
         console.log(error);
         res.status(500).json({

@@ -20,11 +20,11 @@ const getUserGoods = async (req, res, next) => {
         }
 
         const goods = await user.getGoods();
-
-        res.status(201).json({
-            user,
-            goods,
+        const sortedGoods = goods.sort((a, b) => {
+            return b.createdAt - a.createdAt;
         });
+
+        res.status(200).json(sortedGoods);
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -98,7 +98,6 @@ const follow = async (req, res, next) => {
 
         res.status(200).json({
             message,
-            user,
         });
     } catch (error) {
         console.log(error);
