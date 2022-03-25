@@ -178,4 +178,16 @@ Good.belongsToMany(User, {
     onUpdate: 'CASCADE',
 });
 
+User.hasMany(Image, {
+    as: 'images',
+    foreignKey: 'userImgId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+});
+Image.belongsTo(User, {
+    as: 'user',
+    foreignKey: 'userImgId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+});
 module.exports = User;

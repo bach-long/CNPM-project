@@ -5,6 +5,7 @@ const authCheck = require('../middlewares/authCheck');
 
 const Comment = require('../models/Comment');
 const Good = require('../models/Good');
+const Image = require('../models/Image');
 
 const createGood = async (req, res, next) => {
     try {

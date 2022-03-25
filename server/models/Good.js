@@ -57,4 +57,17 @@ Comment.belongsTo(Good, {
     onUpdate: 'CASCADE',
 });
 
+Good.hasMany(Image, {
+    as: 'images',
+    foreignKey: 'goodImgId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+});
+Image.belongsTo(Good, {
+    as: 'Good',
+    foreignKey: 'goodImgId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+});
+
 module.exports = Good;
