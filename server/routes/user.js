@@ -5,6 +5,34 @@ const User = require('../models/User');
 const userCheck = require('../middlewares/userCheck');
 const authCheck = require('../middlewares/authCheck');
 
+const getUser = async (req, res, next) => {
+    try {
+        const { username } = req.params;
+
+        const user = await User.findOne({ where: { username } });
+
+        if (!user) {
+            return res.status(404).json({
+                errors: {
+                    username: 'Username không tồn tại!',
+                },
+            });
+        }
+
+        if (res.locals.user) {
+            await user.setIsFollowedByCurrentUser(res.locals.user);
+        }
+
+        res.status(200).json(user);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Lỗi từ Get User!',
+            errors: error,
+        });
+    }
+};
+
 const getUserGoods = async (req, res, next) => {
     try {
         const { username } = req.params;
@@ -119,6 +147,7 @@ const follow = async (req, res, next) => {
 
 const router = new Router();
 
+router.get('/:username', userCheck, getUser);
 router.get('/:username/goods', userCheck, getUserGoods);
 router.post('/:username/follow', userCheck, authCheck, follow);
 router.get('/:username/followers', getUserFollowers);

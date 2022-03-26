@@ -78,6 +78,9 @@ const User = sequelize.define(
                 ],
             ]),
         },
+        isFollowedByCurrentUser: {
+            type: DataTypes.VIRTUAL,
+        },
     },
     {
         // Other model options go here
@@ -97,6 +100,13 @@ User.prototype.instanceLevelMethod = function () {
     return 'bar';
 };
 */
+User.prototype.setIsFollowedByCurrentUser = async function (user) {
+    const followingUsers = await this.getFollower();
+    this.isFollowedByCurrentUser =
+        followingUsers.find(
+            (followingUser) => followingUser.userId === user.userId
+        ) !== undefined;
+};
 
 // Override toJSON, hide password
 User.prototype.toJSON = function () {

@@ -30,6 +30,43 @@ describe('Các Route với User', () => {
             userId: user.userId,
         });
     });
+
+    describe('GET /api/users/:username', () => {
+        it('Trả về user đúng với username', async () => {
+            const response = await request(app)
+                .get(`/api/users/user1`)
+                .expect('Content-Type', /json/)
+                .expect(200);
+
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    username: 'user1',
+                })
+            );
+        });
+
+        it('Trả về 404 nếu username không tồn tại', async () => {
+            await request(app)
+                .get(`/api/users/xxxxxthisxuserxdoesxnotxexistxxxxx`)
+                .expect('Content-Type', /json/)
+                .expect(404);
+        });
+
+        it('Trả về user với trường isFollowedByCurrentUser nếu có user đang đăng nhập', async () => {
+            const response = await request(app)
+                .get(`/api/users/user1`)
+                .set('Cookie', `jwt=${token}`)
+                .expect('Content-Type', /json/)
+                .expect(200);
+
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    isFollowedByCurrentUser: expect.any(Boolean),
+                })
+            );
+        });
+    });
+
     describe('GET /api/users/:username/goods', () => {
         let data;
         beforeAll(async () => {
