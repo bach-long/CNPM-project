@@ -2,10 +2,10 @@ const { DataTypes } = require('sequelize');
 const bcrypt = require('bcrypt');
 const validator = require('validator');
 
-const sequelize = require('./../database/database');
+const sequelize = require('../database/database');
 const Good = require('./Good');
 const Comment = require('./Comment');
-
+const Image = require('./Image');
 const User = sequelize.define(
     'User',
     {
@@ -180,13 +180,13 @@ Good.belongsToMany(User, {
 
 User.hasMany(Image, {
     as: 'images',
-    foreignKey: 'userImgId',
+    foreignKey: {name : 'userImgId', defaultValue: null},
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });
 Image.belongsTo(User, {
     as: 'user',
-    foreignKey: 'userImgId',
+    foreignKey: {name : 'userImgId', defaultValue: null},
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });

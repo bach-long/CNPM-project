@@ -1,10 +1,10 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('./../database/database');
+const sequelize = require('../database/database');
 
 const Image = sequelize.define(
     'Image',
     {
-        iamgeId: {
+        imageId: {
             type: DataTypes.INTEGER(11),
             autoIncrement: true,
             primaryKey: true,
@@ -16,7 +16,7 @@ const Image = sequelize.define(
     },
     {
         // Other model options go here
-        tableName: 'imiages',
+        tableName: 'images',
         timestamps: true, // add createdAt and updatedAt
     }
 );

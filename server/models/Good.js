@@ -1,8 +1,9 @@
+const { NULL } = require('node-sass');
 const { DataTypes } = require('sequelize');
 
-const sequelize = require('./../database/database');
+const sequelize = require('../database/database');
 const Comment = require('./Comment');
-
+const Image = require('./Image')
 const Good = sequelize.define(
     'Good',
     {
@@ -59,13 +60,13 @@ Comment.belongsTo(Good, {
 
 Good.hasMany(Image, {
     as: 'images',
-    foreignKey: 'goodImgId',
+    foreignKey: {name : 'goodImgId', defaultValue: null},
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });
 Image.belongsTo(Good, {
     as: 'Good',
-    foreignKey: 'goodImgId',
+    foreignKey: {name : 'goodImgId', defaultValue: null},
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });
