@@ -72,7 +72,7 @@ const User = sequelize.define(
             type: DataTypes.VIRTUAL(DataTypes.INTEGER, [
                 [
                     sequelize.literal(
-                        '(SELECT COUNT(*) FROM users_followers WHERE followedId = userId)'
+                        '(SELECT COUNT(*) FROM users_followers WHERE followedId = User.userId)'
                     ),
                     'followersCount',
                 ],

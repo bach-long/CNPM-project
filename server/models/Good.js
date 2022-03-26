@@ -1,4 +1,5 @@
 const { DataTypes } = require('sequelize');
+const { set } = require('../app');
 
 const sequelize = require('./../database/database');
 const Comment = require('./Comment');
@@ -35,6 +36,20 @@ const Good = sequelize.define(
             type: DataTypes.STRING(50),
             allowNull: false,
         },
+        bookmarkersCount: {
+            // Get this user's followers count using sequelize literal
+            type: DataTypes.VIRTUAL(DataTypes.INTEGER, [
+                [
+                    sequelize.literal(
+                        `(SELECT COUNT(*) FROM users_bookmarks WHERE users_bookmarks.goodId = Good.goodId)`
+                    ),
+                    'bookmarkersCount',
+                ],
+            ]),
+        },
+        isBookmarkedByCurrentUser: {
+            type: DataTypes.VIRTUAL,
+        },
     },
     {
         // Other model options go here
@@ -42,6 +57,13 @@ const Good = sequelize.define(
         timestamps: true, // add createdAt and updatedAt
     }
 );
+
+Good.prototype.setIsBookmarkedByCurrentUser = async function (user) {
+    const bookmarkers = await this.getBookmarker();
+    this.isBookmarkedByCurrentUser =
+        bookmarkers.find((bookmarker) => bookmarker.userId === user.userId) !==
+        undefined;
+};
 
 // Associations
 Good.hasMany(Comment, {

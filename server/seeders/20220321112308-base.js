@@ -120,6 +120,7 @@ module.exports = {
 
         const firstGood = await Good.findOne({ where: { goodId: 1 } });
         await user1.addBookmarkedGood(firstGood);
+        await user2.addBookmarkedGood(firstGood);
     },
 
     async down(queryInterface, Sequelize) {

@@ -53,6 +53,23 @@ describe('Các Route với User', () => {
                 );
             }
         });
+        it('Các good trả về phải có trường isBookmarkedByCurrentUser nếu user đã log in', async () => {
+            const response = await request(app)
+                .get('/api/users/user1/goods')
+                .set('Cookie', [`jwt=${token}`])
+                .expect('Content-Type', /json/)
+                .expect(200);
+
+            const count = response.body.length;
+
+            for (let i = 0; i < count - 1; i++) {
+                expect(response.body[i]).toEqual(
+                    expect.objectContaining({
+                        isBookmarkedByCurrentUser: expect.any(Boolean),
+                    })
+                );
+            }
+        });
     });
 
     describe('POST /api/users/:username/follow', () => {

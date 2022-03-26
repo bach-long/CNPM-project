@@ -20,6 +20,15 @@ const getUserGoods = async (req, res, next) => {
         }
 
         const goods = await user.getGoods();
+
+        if (res.locals.user) {
+            await Promise.all(
+                goods.map(async (good) => {
+                    await good.setIsBookmarkedByCurrentUser(res.locals.user);
+                })
+            );
+        }
+
         const sortedGoods = goods.sort((a, b) => {
             return b.createdAt - a.createdAt;
         });

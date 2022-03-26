@@ -52,7 +52,14 @@ const getGoods = async (req, res, next) => {
             limit: countPerPage,
         });
 
-        // TODO: Set user specific things like bookmarked using res.locals.user
+        // Set user specific things like bookmarked using res.locals.user
+        if (res.locals.user) {
+            await Promise.all(
+                goods.map(async (good) => {
+                    await good.setIsBookmarkedByCurrentUser(res.locals.user);
+                })
+            );
+        }
 
         res.status(200).json({
             page: currentPage,
@@ -85,7 +92,10 @@ const getGood = async (req, res, next) => {
             });
         }
 
-        // TODO: Set user specific things like bookmarked using res.locals.user
+        // Set user specific things like bookmarked using res.locals.user
+        if (res.locals.user) {
+            await good.setIsBookmarkedByCurrentUser(res.locals.user);
+        }
 
         res.status(200).json(good);
     } catch (error) {
@@ -178,6 +188,34 @@ const getGoodComments = async (req, res, next) => {
     }
 };
 
+const bookmarkGood = async (req, res, next) => {
+    try {
+        const { user } = res.locals;
+        const { goodId } = req.params;
+
+        const good = await Good.findOne({ where: { goodId } });
+
+        let message = 'Bookmark thành công!';
+
+        if (await user.hasBookmarkedGood(good)) {
+            message = 'Hủy Bookmark thành công';
+            await user.removeBookmarkedGood(good);
+        } else {
+            await user.addBookmarkedGood(good);
+        }
+
+        res.status(200).json({
+            message,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Lỗi từ Bookmark Good!',
+            errors: error,
+        });
+    }
+};
+
 const router = new Router();
 
 router.post('/', userCheck, authCheck, createGood);
@@ -186,5 +224,6 @@ router.get('/:goodId', userCheck, getGood);
 router.delete('/:goodId', userCheck, authCheck, deleteGood);
 router.post('/:goodId/comments', userCheck, authCheck, commentOnGood);
 router.get('/:goodId/comments', userCheck, getGoodComments);
+router.post('/:goodId/bookmark', userCheck, authCheck, bookmarkGood);
 
 module.exports = router;

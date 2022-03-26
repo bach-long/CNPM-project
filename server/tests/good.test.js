@@ -147,6 +147,37 @@ describe('Các Route với Good', () => {
                 })
             );
         });
+        it('GET /api/goods/:id trả về phải có trường isBookmarkedByCurrentUser nếu user đã log in', async () => {
+            const response = await request(app)
+                .get('/api/goods/2')
+                .set('Cookie', [`jwt=${token}`])
+                .expect('Content-Type', /json/)
+                .expect(200);
+
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    isBookmarkedByCurrentUser: expect.any(Boolean),
+                })
+            );
+        });
+
+        it('Các good trả về phải có trường isBookmarkedByCurrentUser nếu user đã log in', async () => {
+            const response = await request(app)
+                .get('/api/goods')
+                .set('Cookie', [`jwt=${token}`])
+                .expect('Content-Type', /json/)
+                .expect(200);
+
+            const count = response.body.goods.length;
+
+            for (let i = 0; i < count - 1; i++) {
+                expect(response.body.goods[i]).toEqual(
+                    expect.objectContaining({
+                        isBookmarkedByCurrentUser: expect.any(Boolean),
+                    })
+                );
+            }
+        });
     });
 
     describe('DELETE /api/goods/:id/', () => {
@@ -265,6 +296,49 @@ describe('Các Route với Good', () => {
             await Comment.destroy({
                 where: { commentId: response.body.commentId },
             });
+        });
+    });
+
+    describe('POST /api/goods/:goodId/bookmark', () => {
+        it('Trả về Unauthorized (401) nếu token không hợp lệ', async () => {
+            const response = await request(app)
+                .post('/api/goods/1/bookmark')
+                .expect('Content-Type', /json/)
+                .expect(401);
+
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    error: expect.any(String),
+                })
+            );
+        });
+
+        it('bookmarkersCount phải +1 nếu được bookmark bởi 1 user', async () => {
+            let good1 = await Good.findOne({ where: { goodId: 1 } });
+            let oldCount = good1.bookmarkersCount;
+
+            await request(app)
+                .post('/api/goods/1/bookmark')
+                .set('Cookie', [`jwt=${token}`])
+                .expect('Content-Type', /json/)
+                .expect(200);
+
+            good1 = await Good.findOne({ where: { goodId: 1 } });
+            expect(good1.bookmarkersCount).toBe(oldCount + 1);
+        });
+
+        it('bookmarkersCount phải -1 nếu bị unbookmark bởi 1 user', async () => {
+            let good1 = await Good.findOne({ where: { goodId: 1 } });
+            let oldCount = good1.bookmarkersCount;
+
+            await request(app)
+                .post('/api/goods/1/bookmark')
+                .set('Cookie', [`jwt=${token}`])
+                .expect('Content-Type', /json/)
+                .expect(200);
+
+            good1 = await Good.findOne({ where: { goodId: 1 } });
+            expect(good1.bookmarkersCount).toBe(oldCount - 1);
         });
     });
 
