@@ -23,7 +23,7 @@ const Comment = sequelize.define(
 );
 
 Comment.hasMany(Image, {
-    as: 'comments',
+    as: 'images',
     foreignKey: { name: 'cmtImgId', defaultValue: null },
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',

@@ -192,8 +192,8 @@ Good.belongsToMany(User, {
     onUpdate: 'CASCADE',
 });
 
-User.hasMany(Image, {
-    as: 'images',
+User.hasOne(Image, {
+    as: 'avatar',
     foreignKey: { name: 'userImgId', defaultValue: null },
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
