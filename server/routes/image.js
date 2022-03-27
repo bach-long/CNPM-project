@@ -22,16 +22,16 @@ router.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
-router.post('/', upload.single('formFile'),async (req, res, next) => {
+router.post('/', upload.any(),async (req, res, next) => {
     //nhận dữ liệu từ form
-    const file = req.file;
+    const file = req.files[0];
     // Kiểm tra nếu không phải dạng file thì báo lỗi
     if (!file) {
         const error = new Error('Upload file again!');
         error.httpStatusCode = 400;
         return next(error);
     }
-    sharp(req.file.path).resize(262, 317).toFile('./uploads/'+ '262x317-'+req.file.filename, function(err) {
+    sharp(req.files[0].path).resize(262, 317).toFile('./uploads/'+ '262x317-'+req.files[0].filename, function(err) {
         if (err) {
             console.error('sharp>>>', err)
         }
@@ -40,14 +40,15 @@ router.post('/', upload.single('formFile'),async (req, res, next) => {
     // file đã được lưu vào thư mục uploads
     // gọi tên file: req.file.filename và render ra màn hình
     //res.sendFile(__dirname + `/uploads/${req.file.filename}`);
+    console.log(req.body);
     try {
         // TODO: Validate và ném lỗi đọc được
-        link = req.file.path;
-        cmtImgId = req.cmtImgId ? null : req.cmtImgId;
-        goodImgId = req.goodImgId ? null : req.goodImgId;
-        userImgId = req.userImgId ? null : req.userImgId;
+        link = req.files[0].path;
+        cmtImgId = req.body.cmtImgId ? req.body.cmtImgId : null ;
+        goodImgId = req.body.goodImgId ? req.body.goodImgId : null;
+        userImgId = req.body.userImgId ? req.body.userImgId : null;
         // create good
-        const good = await Img.create({
+        const img = await Img.create({
             link,
             cmtImgId,
             goodImgId,
@@ -57,7 +58,7 @@ router.post('/', upload.single('formFile'),async (req, res, next) => {
         // console.log(await good.getUser()); // works
         // console.log(await user.getGoods()); // works
 
-        res.status(200).json(good);
+        res.status(200).json(img);
     } catch (error) {
         console.log(error);
         res.status(500).json({
