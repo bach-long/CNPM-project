@@ -2,6 +2,7 @@ const { Router } = require('express');
 const multer = require('multer');
 const path = require('path');
 const Img = require('../models/Image');
+const sharp = require('sharp');
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, './uploads/')
@@ -30,6 +31,12 @@ router.post('/', upload.single('formFile'),async (req, res, next) => {
         error.httpStatusCode = 400;
         return next(error);
     }
+    sharp(req.file.path).resize(262, 317).toFile('./uploads/'+ '262x317-'+req.file.filename, function(err) {
+        if (err) {
+            console.error('sharp>>>', err)
+        }
+        console.log('ok okoko')
+    })
     // file đã được lưu vào thư mục uploads
     // gọi tên file: req.file.filename và render ra màn hình
     //res.sendFile(__dirname + `/uploads/${req.file.filename}`);
