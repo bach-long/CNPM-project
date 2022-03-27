@@ -94,6 +94,18 @@ describe('Đăng ký, Đăng nhập, Lấy User Info và Đăng xuất', () => {
         });
     });
     describe('GET /api/auth/me', () => {
+        it('Trả về Unauthorized (401) nếu đang không đăng nhập', async () => {
+            const response = await request(app)
+                .get('/api/auth/me')
+                .expect('Content-Type', /json/)
+                .expect(401);
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    error: expect.any(String),
+                })
+            );
+        });
+
         it('Trả về user đã đăng nhập nếu có jwt hợp lệ', async () => {
             const token = jwt.sign(
                 { username: 'testuser' },
@@ -114,9 +126,12 @@ describe('Đăng ký, Đăng nhập, Lấy User Info và Đăng xuất', () => {
                 })
             );
         });
+    });
+
+    describe('PATCH /api/auth/me', () => {
         it('Trả về Unauthorized (401) nếu đang không đăng nhập', async () => {
             const response = await request(app)
-                .get('/api/auth/me')
+                .patch('/api/auth/me')
                 .expect('Content-Type', /json/)
                 .expect(401);
             expect(response.body).toEqual(
@@ -125,7 +140,43 @@ describe('Đăng ký, Đăng nhập, Lấy User Info và Đăng xuất', () => {
                 })
             );
         });
+
+        it('Trả về user đã cập nhật nếu thông tin hợp lệ (sdt hoặc address) và cập nhật db', async () => {
+            const token = jwt.sign(
+                { username: 'testuser' },
+                process.env.JWT_SECRET
+            );
+            const response = await request(app)
+                .patch('/api/auth/me')
+                .send({
+                    sdt: '0987654321',
+                    address: '999 Xuan Thuy, Cau Giay, Hanoi',
+                })
+                .set('Cookie', [`jwt=${token}`])
+                .expect('Content-Type', /json/)
+                .expect(200);
+
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    username: 'testuser',
+                    sdt: '0987654321',
+                    address: '999 Xuan Thuy, Cau Giay, Hanoi',
+                })
+            );
+
+            const dbUser = await User.findOne({
+                where: { username: 'testuser' },
+            });
+            expect(dbUser).toEqual(
+                expect.objectContaining({
+                    username: 'testuser',
+                    sdt: '0987654321',
+                    address: '999 Xuan Thuy, Cau Giay, Hanoi',
+                })
+            );
+        });
     });
+
     describe('GET /api/auth/logout', () => {
         it('Trả về jwt rỗng và exprire lâu nhất 1 giây sau khi đăng xuất', async () => {
             const token = jwt.sign(

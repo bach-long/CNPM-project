@@ -117,6 +117,30 @@ const me = async (req, res, next) => {
     }
 };
 
+const updateMe = async (req, res, next) => {
+    try {
+        const { user } = res.locals;
+
+        const { address, sdt } = req.body;
+
+        await User.update(
+            { address, sdt },
+            { where: { username: user.username } }
+        );
+
+        const updatedUser = await User.findOne({
+            where: { username: user.username },
+        });
+
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            errors: error,
+        });
+    }
+};
+
 const logout = async (req, res, next) => {
     try {
         // Reset cookie
@@ -142,6 +166,7 @@ const router = Router();
 router.post('/register', register);
 router.post('/login', login);
 router.get('/me', userCheck, authCheck, me);
+router.patch('/me', userCheck, authCheck, updateMe);
 router.get('/logout', userCheck, authCheck, logout);
 
 module.exports = router;
