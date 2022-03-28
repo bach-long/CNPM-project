@@ -127,6 +127,7 @@ module.exports = {
         await queryInterface.bulkDelete('users');
         await queryInterface.bulkDelete('goods');
         await queryInterface.bulkDelete('comments');
+        await queryInterface.bulkDelete('images');
         await queryInterface.bulkDelete('sqlite_sequence'); // auto increment table
     },
 };
