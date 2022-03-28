@@ -33,5 +33,7 @@ jobs:
           cache-dependency-path: "./server/package-lock.json"
       - name: Cài đặt dependencies
         run: npm ci
+      - name: Đảm bảo seed vẫn chạy được
+        run: npm run seed
       - name: Chạy test Jest
         run: npm test
