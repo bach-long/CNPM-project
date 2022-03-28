@@ -3,7 +3,8 @@ const { DataTypes } = require('sequelize');
 
 const sequelize = require('../database/database');
 const Comment = require('./Comment');
-const Image = require('./Image')
+const Image = require('./Image');
+const Tag = require('./Tag');
 const Good = sequelize.define(
     'Good',
     {
@@ -67,6 +68,18 @@ Good.hasMany(Image, {
 Image.belongsTo(Good, {
     as: 'Good',
     foreignKey: {name : 'goodImgId', defaultValue: null},
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+});
+Good.hasMany(Tag, {
+    as: 'tags',
+    foreignKey: {name : 'goodId', defaultValue: null},
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+});
+Tag.belongsTo(Good, {
+    as: 'Good',
+    foreignKey: {name : 'goodId', defaultValue: null},
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });
