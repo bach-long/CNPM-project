@@ -14,6 +14,7 @@ describe('Xử lý ảnh', () => {
     let token;
     let user;
     let good;
+    let comment;
     beforeAll(async () => {
         user = await User.create({
             email: 'testuser@example.com',
@@ -31,6 +32,12 @@ describe('Xử lý ảnh', () => {
             price: 1500000,
             state: 'old',
             userId: user.userId,
+        });
+
+        comment = await Comment.create({
+            content: 'Comment từ Test User',
+            userId: user.userId,
+            goodId: good.goodId,
         });
     });
 
@@ -130,13 +137,40 @@ describe('Xử lý ảnh', () => {
                 .expect('Content-Type', /json/);
         });
 
-        it('Có thể tải lên nhiều ảnh cho goods, trả về Array các ảnh đã upload', async () => {
+        it('Có thể tải lên nhiều ảnh cho good, trả về Array các ảnh đã upload', async () => {
             const imgPath1 = path.join(__dirname, 'imgs/pikachu.png');
             const imgPath2 = path.join(__dirname, 'imgs/portal.jpg');
 
             const response = await request(app)
                 .post('/api/fileupload/')
                 .field('goodImgId', good.goodId)
+                .attach('formImageFiles', imgPath1)
+                .attach('formImageFiles', imgPath2)
+                .set('Cookie', `jwt=${token}`)
+                .expect(200)
+                .expect('Content-Type', /json/);
+
+            expect(response.body).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        link: expect.stringContaining('pikachu.png'),
+                    }),
+                    expect.objectContaining({
+                        link: expect.stringContaining('portal.jpg'),
+                    }),
+                ])
+            );
+
+            links.push(response.body[0].link, response.body[1].link);
+        });
+
+        it('Có thể tải lên nhiều ảnh cho comment, trả về Array các ảnh đã upload', async () => {
+            const imgPath1 = path.join(__dirname, 'imgs/pikachu.png');
+            const imgPath2 = path.join(__dirname, 'imgs/portal.jpg');
+
+            const response = await request(app)
+                .post('/api/fileupload/')
+                .field('cmtImgId', comment.commentId)
                 .attach('formImageFiles', imgPath1)
                 .attach('formImageFiles', imgPath2)
                 .set('Cookie', `jwt=${token}`)

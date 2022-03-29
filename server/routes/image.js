@@ -6,6 +6,7 @@ const userCheck = require('../middlewares/userCheck');
 const authCheck = require('../middlewares/authCheck');
 const Image = require('../models/Image');
 const Good = require('../models/Good');
+const Comment = require('../models/Comment');
 
 const router = new Router();
 
@@ -169,7 +170,47 @@ const handleCommentImages = async (req, res, next) => {
         const files = req.files;
         const user = res.locals.user;
 
-        res.status(200).json();
+        const comment = await Comment.findOne({
+            where: {
+                commentId: +req.body.cmtImgId,
+            },
+        });
+
+        if (!comment) {
+            deleteFiles(files);
+            return res.status(404).json({
+                message: 'Không tìm thấy comment',
+            });
+        }
+
+        if (comment.userId !== user.userId) {
+            deleteFiles(files);
+            return res.status(400).json({
+                message: 'Không được tải lên ảnh comment của user khác',
+            });
+        }
+
+        // Xóa các ảnh cũ (có thể thay đổi)
+        const oldImages = await comment.getImages();
+        oldImages.forEach((image) => {
+            if (fs.existsSync('uploads/' + image.link)) {
+                fs.unlinkSync('uploads/' + image.link);
+            }
+        });
+        await comment.removeImages();
+
+        // forEach không thích làm việc với async
+        await Promise.all(
+            files.map(async (file) => {
+                await comment.addImage(
+                    await Image.create({
+                        link: file.filename,
+                    })
+                );
+            })
+        );
+
+        res.status(200).json(await comment.getImages());
     } catch (error) {
         console.log(error);
         res.status(500).json({
