@@ -5,7 +5,6 @@ const authCheck = require('../middlewares/authCheck');
 
 const Comment = require('../models/Comment');
 const Good = require('../models/Good');
-const Image = require('../models/Image');
 
 const createGood = async (req, res, next) => {
     try {
@@ -27,7 +26,7 @@ const createGood = async (req, res, next) => {
         // console.log(await good.getUser()); // works
         // console.log(await user.getGoods()); // works
 
-        res.status(200).json(good);
+        res.status(201).json(good);
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -39,9 +38,13 @@ const createGood = async (req, res, next) => {
 
 const getGoods = async (req, res, next) => {
     try {
-        const currentPage = req.query.page || 1;
-        // TODO: Change this
-        const countPerPage = req.query.count || 100;
+        let currentPage = +req.query.page || 1;
+        currentPage = currentPage > 0 ? currentPage : 1;
+        let countPerPage = +req.query.count || 20;
+        countPerPage = countPerPage > 0 ? countPerPage : 20;
+
+        const goodsCount = await Good.count();
+        const totalPageCount = Math.ceil(goodsCount / countPerPage);
 
         const goods = await Good.findAll({
             order: [['createdAt', 'DESC']],
@@ -49,9 +52,21 @@ const getGoods = async (req, res, next) => {
             limit: countPerPage,
         });
 
-        // TODO: Set user specific things like bookmarked using res.locals.user
+        // Set user specific things like bookmarked using res.locals.user
+        if (res.locals.user) {
+            await Promise.all(
+                goods.map(async (good) => {
+                    await good.setIsBookmarkedByCurrentUser(res.locals.user);
+                })
+            );
+        }
 
-        res.status(200).json(goods);
+        res.status(200).json({
+            page: currentPage,
+            limit: countPerPage,
+            totalPageCount,
+            goods,
+        });
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -77,7 +92,10 @@ const getGood = async (req, res, next) => {
             });
         }
 
-        // TODO: Set user specific things like bookmarked using res.locals.user
+        // Set user specific things like bookmarked using res.locals.user
+        if (res.locals.user) {
+            await good.setIsBookmarkedByCurrentUser(res.locals.user);
+        }
 
         res.status(200).json(good);
     } catch (error) {
@@ -91,7 +109,7 @@ const getGood = async (req, res, next) => {
 
 const deleteGood = async (req, res, next) => {
     try {
-        const { goodId } = req.params;
+        const goodId = +req.params.goodId;
         const user = res.locals.user;
 
         const good = await Good.findOne({
@@ -140,7 +158,7 @@ const commentOnGood = async (req, res, next) => {
             goodId: good.goodId,
         });
 
-        res.json(comment);
+        res.status(201).json(comment);
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -170,6 +188,34 @@ const getGoodComments = async (req, res, next) => {
     }
 };
 
+const bookmarkGood = async (req, res, next) => {
+    try {
+        const { user } = res.locals;
+        const { goodId } = req.params;
+
+        const good = await Good.findOne({ where: { goodId } });
+
+        let message = 'Bookmark thành công!';
+
+        if (await user.hasBookmarkedGood(good)) {
+            message = 'Hủy Bookmark thành công';
+            await user.removeBookmarkedGood(good);
+        } else {
+            await user.addBookmarkedGood(good);
+        }
+
+        res.status(200).json({
+            message,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Lỗi từ Bookmark Good!',
+            errors: error,
+        });
+    }
+};
+
 const router = new Router();
 
 router.post('/', userCheck, authCheck, createGood);
@@ -178,5 +224,6 @@ router.get('/:goodId', userCheck, getGood);
 router.delete('/:goodId', userCheck, authCheck, deleteGood);
 router.post('/:goodId/comments', userCheck, authCheck, commentOnGood);
 router.get('/:goodId/comments', userCheck, getGoodComments);
+router.post('/:goodId/bookmark', userCheck, authCheck, bookmarkGood);
 
 module.exports = router;

@@ -1,10 +1,13 @@
-const { NULL } = require('node-sass');
 const { DataTypes } = require('sequelize');
 
 const sequelize = require('../database/database');
 const Comment = require('./Comment');
 const Image = require('./Image');
+<<<<<<< HEAD
 const Tag = require('./Tag');
+=======
+
+>>>>>>> 435a7685e30a10eb305cb850825b26199dce4658
 const Good = sequelize.define(
     'Good',
     {
@@ -37,6 +40,20 @@ const Good = sequelize.define(
             type: DataTypes.STRING(50),
             allowNull: false,
         },
+        bookmarkersCount: {
+            // Get this user's followers count using sequelize literal
+            type: DataTypes.VIRTUAL(DataTypes.INTEGER, [
+                [
+                    sequelize.literal(
+                        `(SELECT COUNT(*) FROM users_bookmarks WHERE users_bookmarks.goodId = Good.goodId)`
+                    ),
+                    'bookmarkersCount',
+                ],
+            ]),
+        },
+        isBookmarkedByCurrentUser: {
+            type: DataTypes.VIRTUAL,
+        },
     },
     {
         // Other model options go here
@@ -44,6 +61,13 @@ const Good = sequelize.define(
         timestamps: true, // add createdAt and updatedAt
     }
 );
+
+Good.prototype.setIsBookmarkedByCurrentUser = async function (user) {
+    const bookmarkers = await this.getBookmarker();
+    this.isBookmarkedByCurrentUser =
+        bookmarkers.find((bookmarker) => bookmarker.userId === user.userId) !==
+        undefined;
+};
 
 // Associations
 Good.hasMany(Comment, {
@@ -61,13 +85,13 @@ Comment.belongsTo(Good, {
 
 Good.hasMany(Image, {
     as: 'images',
-    foreignKey: {name : 'goodImgId', defaultValue: null},
+    foreignKey: { name: 'goodImgId', defaultValue: null },
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });
 Image.belongsTo(Good, {
     as: 'Good',
-    foreignKey: {name : 'goodImgId', defaultValue: null},
+    foreignKey: { name: 'goodImgId', defaultValue: null },
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });

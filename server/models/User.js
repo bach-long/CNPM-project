@@ -6,6 +6,7 @@ const sequelize = require('../database/database');
 const Good = require('./Good');
 const Comment = require('./Comment');
 const Image = require('./Image');
+
 const User = sequelize.define(
     'User',
     {
@@ -19,11 +20,14 @@ const User = sequelize.define(
             allowNull: false,
             unique: true,
             validate: {
-                emailCustomValidator(value) {
-                    if (!validator.isEmail(value)) {
-                        throw new Error('Không đúng định dạng email!');
-                    }
+                isEmail: {
+                    msg: 'Không đúng định dạng email!',
                 },
+                // emailCustomValidator(value) {
+                //     if (!validator.isEmail(value)) {
+                //         throw new Error('Không đúng định dạng email!');
+                //     }
+                // },
             },
         },
         username: {
@@ -69,11 +73,14 @@ const User = sequelize.define(
             type: DataTypes.VIRTUAL(DataTypes.INTEGER, [
                 [
                     sequelize.literal(
-                        '(SELECT COUNT(*) FROM users_followers WHERE followedId = userId)'
+                        '(SELECT COUNT(*) FROM users_followers WHERE followedId = User.userId)'
                     ),
                     'followersCount',
                 ],
             ]),
+        },
+        isFollowedByCurrentUser: {
+            type: DataTypes.VIRTUAL,
         },
     },
     {
@@ -94,6 +101,13 @@ User.prototype.instanceLevelMethod = function () {
     return 'bar';
 };
 */
+User.prototype.setIsFollowedByCurrentUser = async function (user) {
+    const followingUsers = await this.getFollower();
+    this.isFollowedByCurrentUser =
+        followingUsers.find(
+            (followingUser) => followingUser.userId === user.userId
+        ) !== undefined;
+};
 
 // Override toJSON, hide password
 User.prototype.toJSON = function () {
@@ -178,15 +192,15 @@ Good.belongsToMany(User, {
     onUpdate: 'CASCADE',
 });
 
-User.hasMany(Image, {
-    as: 'images',
-    foreignKey: {name : 'userImgId', defaultValue: null},
+User.hasOne(Image, {
+    as: 'avatar',
+    foreignKey: { name: 'userImgId', defaultValue: null },
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });
 Image.belongsTo(User, {
     as: 'user',
-    foreignKey: {name : 'userImgId', defaultValue: null},
+    foreignKey: { name: 'userImgId', defaultValue: null },
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });

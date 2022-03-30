@@ -1,4 +1,3 @@
-
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
@@ -16,6 +15,7 @@ dotenv.config({ path: './.env' });
 const app = express();
 
 // Middlewares
+app.use(express.static('uploads'));
 app.use(morgan('dev', { skip: (req, res) => process.env.NODE_ENV === 'test' }));
 app.use(express.json());
 app.use(cookieParser());
@@ -27,7 +27,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/goods', goodRouter);
 app.use('/api/users', userRouter);
 app.use('/api/fileupload', fileUploadRouter);
-app.use(express.static('uploads'))
+
 app.all('*', (req, res) => {
     res.status(404).json({ message: 'Không tìm thấy route này!' });
 });

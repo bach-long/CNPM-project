@@ -120,12 +120,14 @@ module.exports = {
 
         const firstGood = await Good.findOne({ where: { goodId: 1 } });
         await user1.addBookmarkedGood(firstGood);
+        await user2.addBookmarkedGood(firstGood);
     },
 
     async down(queryInterface, Sequelize) {
         await queryInterface.bulkDelete('users');
         await queryInterface.bulkDelete('goods');
         await queryInterface.bulkDelete('comments');
+        await queryInterface.bulkDelete('images');
         await queryInterface.bulkDelete('sqlite_sequence'); // auto increment table
     },
 };

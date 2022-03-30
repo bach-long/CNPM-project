@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database/database');
 const Image = require('./Image');
+
 const Comment = sequelize.define(
     'Comment',
     {
@@ -22,14 +23,14 @@ const Comment = sequelize.define(
 );
 
 Comment.hasMany(Image, {
-    as: 'comments',
-    foreignKey: {name : 'cmtImgId', defaultValue: null},
+    as: 'images',
+    foreignKey: { name: 'cmtImgId', defaultValue: null },
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });
 Image.belongsTo(Comment, {
     as: 'Comment',
-    foreignKey: {name : 'cmtImgId', defaultValue: null},
+    foreignKey: { name: 'cmtImgId', defaultValue: null },
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });
