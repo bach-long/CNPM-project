@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database/database');
+const Group = require('./Group');
 const Tag = sequelize.define(
     'Tag',
     {
@@ -19,5 +20,17 @@ const Tag = sequelize.define(
         timestamps: true, // add createdAt and updatedAt
     }
 );
+Group.hasMany(Tag, {
+    as: 'tags',
+    foreignKey: {name : 'groupId', defaultValue: null},
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+});
+Tag.belongsTo(Group, {
+    as: 'Group',
+    foreignKey: {name : 'groupId', defaultValue: null},
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+});
 
 module.exports = Tag;

@@ -36,39 +36,6 @@ const upload = multer({
     // },
 });
 
-<<<<<<< HEAD
-router.post('/', upload.any(),async (req, res, next) => {
-    //nhận dữ liệu từ form
-    const file = req.files[0];
-    // Kiểm tra nếu không phải dạng file thì báo lỗi
-    if (!file) {
-        const error = new Error('Upload file again!');
-        error.httpStatusCode = 400;
-        return next(error);
-    }
-    sharp(req.files[0].path).resize(262, 317).toFile('./uploads/'+ '262x317-'+req.files[0].filename, function(err) {
-        if (err) {
-            console.error('sharp>>>', err)
-        }
-        console.log('ok okoko')
-    })
-    // file đã được lưu vào thư mục uploads
-    // gọi tên file: req.file.filename và render ra màn hình
-    //res.sendFile(__dirname + `/uploads/${req.file.filename}`);
-    console.log(req.body);
-    try {
-        // TODO: Validate và ném lỗi đọc được
-        link = req.files[0].path;
-        cmtImgId = req.body.cmtImgId ? req.body.cmtImgId : null ;
-        goodImgId = req.body.goodImgId ? req.body.goodImgId : null;
-        userImgId = req.body.userImgId ? req.body.userImgId : null;
-        // create good
-        const img = await Img.create({
-            link,
-            cmtImgId,
-            goodImgId,
-            userImgId,
-=======
 const validateRequest = (req, res, next) => {
     const files = req.files;
     const hasCmtImgId = req.body.cmtImgId ? 1 : 0;
@@ -78,7 +45,6 @@ const validateRequest = (req, res, next) => {
     if (!req.files.length) {
         return res.status(400).json({
             message: 'Không có file nào được upload',
->>>>>>> 435a7685e30a10eb305cb850825b26199dce4658
         });
     }
 
@@ -89,9 +55,6 @@ const validateRequest = (req, res, next) => {
         });
     }
 
-<<<<<<< HEAD
-        res.status(200).json(img);
-=======
     if (hasCmtImgId + hasUserImgId + hasGoodImgId > 1) {
         deleteFiles(files);
         return res.status(400).json({
@@ -134,7 +97,6 @@ const handleUserImage = async (req, res, next) => {
         );
 
         res.status(200).json(await user.getAvatar());
->>>>>>> 435a7685e30a10eb305cb850825b26199dce4658
     } catch (error) {
         console.log(error);
         res.status(500).json({

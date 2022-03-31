@@ -3,11 +3,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../database/database');
 const Comment = require('./Comment');
 const Image = require('./Image');
-<<<<<<< HEAD
 const Tag = require('./Tag');
-=======
-
->>>>>>> 435a7685e30a10eb305cb850825b26199dce4658
 const Good = sequelize.define(
     'Good',
     {
