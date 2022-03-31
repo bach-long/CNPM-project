@@ -2,8 +2,8 @@ const request = require('supertest');
 const jwt = require('jsonwebtoken');
 
 const app = require('../app');
-const User = require('../models/User');
-const sequelize = require('../database/database');
+const sequelize = require('../sequelize');
+const { User } = require('../sequelize').models;
 
 describe('Đăng ký, Đăng nhập, Lấy User Info và Đăng xuất', () => {
     describe('POST /api/auth/register', () => {

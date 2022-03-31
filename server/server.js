@@ -1,4 +1,4 @@
-const sequelize = require('./database/database.js');
+const sequelize = require('./sequelize');
 const app = require('./app');
 
 const initDatabase = async () => {

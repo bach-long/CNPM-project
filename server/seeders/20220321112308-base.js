@@ -1,7 +1,6 @@
 'use strict';
 
-const Good = require('../models/Good');
-const User = require('../models/User');
+const { User, Good } = require('../sequelize').models;
 
 module.exports = {
     async up(queryInterface, Sequelize) {

@@ -4,9 +4,7 @@ const fs = require('fs');
 
 const userCheck = require('../middlewares/userCheck');
 const authCheck = require('../middlewares/authCheck');
-const Image = require('../models/Image');
-const Good = require('../models/Good');
-const Comment = require('../models/Comment');
+const { Good, Comment, Image } = require('../sequelize').models;
 
 const router = new Router();
 
