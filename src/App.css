@@ -1,0 +1,11 @@
+.app {
+    background-color: rgb(255 186 0);
+    overflow: hidden;
+}
+
+.wrapHeading {
+}
+
+.clear {
+    clear:both;
+}
