@@ -1,9 +1,8 @@
 const { Router } = require('express');
 
-const Good = require('../models/Good');
-const User = require('../models/User');
 const userCheck = require('../middlewares/userCheck');
 const authCheck = require('../middlewares/authCheck');
+const { User, Good } = require('../sequelize').models;
 
 const getUser = async (req, res, next) => {
     try {

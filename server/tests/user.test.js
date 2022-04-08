@@ -2,10 +2,8 @@ const request = require('supertest');
 const jwt = require('jsonwebtoken');
 
 const app = require('../app');
-const User = require('../models/User');
-const Comment = require('../models/Comment');
-const Good = require('../models/Good');
-const sequelize = require('../database/database');
+const sequelize = require('../sequelize');
+const { User, Good, Comment } = require('../sequelize').models;
 
 describe('Các Route với User', () => {
     let token;

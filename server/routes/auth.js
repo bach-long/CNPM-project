@@ -6,7 +6,7 @@ const { isEmpty } = require('validator');
 const authCheck = require('../middlewares/authCheck.js');
 const userCheck = require('../middlewares/userCheck.js');
 
-const User = require('../models/User');
+const { User } = require('../sequelize').models;
 
 const register = async (req, res, next) => {
     try {

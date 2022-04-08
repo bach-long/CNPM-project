@@ -4,11 +4,8 @@ const path = require('path');
 const fs = require('fs');
 
 const app = require('../app');
-const User = require('../models/User');
-const Comment = require('../models/Comment');
-const Good = require('../models/Good');
-const sequelize = require('../database/database');
-const Image = require('../models/Image');
+const sequelize = require('../sequelize');
+const { User, Good, Comment, Image } = require('../sequelize').models;
 
 describe('Xử lý ảnh', () => {
     let token;
