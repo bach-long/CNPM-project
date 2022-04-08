@@ -36,6 +36,49 @@ const createGood = async (req, res, next) => {
     }
 };
 
+const getGoodsById = async (req, res, next) => {
+    try {
+        let currentPage = +req.query.page || 1;
+        currentPage = currentPage > 0 ? currentPage : 1;
+        let countPerPage = +req.query.count || 20;
+        countPerPage = countPerPage > 0 ? countPerPage : 20;
+
+        const goodsCount = await Good.count();
+        const totalPageCount = Math.ceil(goodsCount / countPerPage);
+
+        const goods = await Good.findAll({
+            where: {
+                tagId: req.body.tagId
+            },
+            order: [['createdAt', 'DESC']],
+            offset: (currentPage - 1) * countPerPage,
+            limit: countPerPage,
+        });
+
+        // Set user specific things like bookmarked using res.locals.user
+        if (res.locals.user) {
+            await Promise.all(
+                goods.map(async (good) => {
+                    await good.setIsBookmarkedByCurrentUser(res.locals.user);
+                })
+            );
+        }
+
+        res.status(200).json({
+            page: currentPage,
+            limit: countPerPage,
+            totalPageCount,
+            goods,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Lỗi từ Get Goods!',
+            errors: error,
+        });
+    }
+};
+
 const getGoods = async (req, res, next) => {
     try {
         let currentPage = +req.query.page || 1;

@@ -4,6 +4,7 @@ const sequelize = require('../database/database');
 const Comment = require('./Comment');
 const Image = require('./Image');
 const Tag = require('./Tag');
+const Property = require('./Property')
 const Good = sequelize.define(
     'Good',
     {
@@ -103,5 +104,16 @@ Tag.belongsTo(Good, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
 });
-
+Good.hasMany(Property, {
+    as: 'properties',
+    foreignKey: { name: 'goodId', defaultValue: null },
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+});
+Property.belongsTo(Good, {
+    as: 'Good',
+    foreignKey: { name: 'goodId', defaultValue: null },
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+});
 module.exports = Good;
