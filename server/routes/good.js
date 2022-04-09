@@ -20,14 +20,10 @@ const createGood = async (req, res, next) => {
             price,
             state,
             userId: user.userId,
+            tagId
         });
 
-        const tag = await Tag.findByPk(tagId);
-        await good.addTag(tag);
-        let result = await Good.findOne({
-            where: { name: name },
-            include: Tag
-        });
+        res.status(200).json(good)
         // console.log(await good.getUser()); // works
         // console.log(await user.getGoods()); // works
 
@@ -51,14 +47,8 @@ const getGoodsById = async (req, res, next) => {
         const goodsCount = await Good.count();
         const totalPageCount = Math.ceil(goodsCount / countPerPage);
 
-        const goods = await Tag.findByPk(req.params.tagId, {
-            include: [{
-                model: Good,
-                attributes: ['name'],
-                through: {
-                    attributes: ['GoodGoodId', 'TagTagId']
-                }
-            },],
+        const goods = await Good.findAll({
+            where: {tagId: req.params.tagId},
             order: [['createdAt', 'DESC']],
             offset: (currentPage - 1) * countPerPage,
             limit: countPerPage,

@@ -1,7 +1,8 @@
+const { triggerAsyncId } = require("async_hooks");
 
 
 const applyExtraSetup = (sequelize) => {
-    const { User, Good, Comment, Image, Group, Tag, Property, Good_Tag } = sequelize.models;
+    const { User, Good, Comment, Image, Group, Tag, Property } = sequelize.models;
 
     // User Goods
     User.hasMany(Good, {
@@ -134,12 +135,18 @@ const applyExtraSetup = (sequelize) => {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
     })
-    Good.belongsToMany(Tag,{through: Good_Tag});
-    Tag.belongsToMany(Good, {through: Good_Tag});
-    Good.hasMany(Good_Tag);
-    Good_Tag.belongsTo(Good);
-    Tag.hasMany(Good_Tag)
-    Good_Tag.belongsTo(Tag);
+    Tag.hasMany(Good, {
+        as: 'goods',
+        foreignKey: {name: 'tagId'},
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE'
+    })
+    Good.belongsTo(Tag, {
+        as: 'Tag',
+        foreignKey: {name: 'tagId'},
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    })
     Good.hasMany(Property, {
         as: 'properties',
         foreignKey: {name: 'goodId'},
