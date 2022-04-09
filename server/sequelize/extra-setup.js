@@ -1,5 +1,7 @@
+
+
 const applyExtraSetup = (sequelize) => {
-    const { User, Good, Comment, Image } = sequelize.models;
+    const { User, Good, Comment, Image, Group, Tag, Property, Good_Tag } = sequelize.models;
 
     // User Goods
     User.hasMany(Good, {
@@ -120,6 +122,36 @@ const applyExtraSetup = (sequelize) => {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
     });
+    Group.hasMany(Tag, {
+        as: 'tags',
+        foreignKey: {name: 'groupId'},
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    })
+    Tag.belongsTo(Group, {
+        as: 'Group',
+        foreignKey: {name: 'groupId'},
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    })
+    Good.belongsToMany(Tag,{through: Good_Tag});
+    Tag.belongsToMany(Good, {through: Good_Tag});
+    Good.hasMany(Good_Tag);
+    Good_Tag.belongsTo(Good);
+    Tag.hasMany(Good_Tag)
+    Good_Tag.belongsTo(Tag);
+    Good.hasMany(Property, {
+        as: 'properties',
+        foreignKey: {name: 'goodId'},
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    })
+    Property.belongsTo(Good, {
+        as: 'Good',
+        foreignKey: {name: 'goodId'},
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    })
 };
 
 module.exports = { applyExtraSetup };

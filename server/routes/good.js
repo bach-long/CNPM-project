@@ -3,11 +3,11 @@ const { Router } = require('express');
 const userCheck = require('../middlewares/userCheck');
 const authCheck = require('../middlewares/authCheck');
 
-const { Good, Comment } = require('../sequelize').models;
+const { Good, Comment, Tag } = require('../sequelize').models;
 
 const createGood = async (req, res, next) => {
     try {
-        const { name, description, address, price, state } = req.body;
+        const { name, description, address, price, state, tagId } = req.body;
         const user = res.locals.user;
 
         // TODO: Validate và ném lỗi đọc được
@@ -22,10 +22,16 @@ const createGood = async (req, res, next) => {
             userId: user.userId,
         });
 
+        const tag = await Tag.findByPk(tagId);
+        await good.addTag(tag);
+        let result = await Good.findOne({
+            where: { name: name },
+            include: Tag
+        });
         // console.log(await good.getUser()); // works
         // console.log(await user.getGoods()); // works
 
-        res.status(201).json(good);
+        res.status(201).json(result);
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -45,10 +51,14 @@ const getGoodsById = async (req, res, next) => {
         const goodsCount = await Good.count();
         const totalPageCount = Math.ceil(goodsCount / countPerPage);
 
-        const goods = await Good.findAll({
-            where: {
-                tagId: req.body.tagId
-            },
+        const goods = await Tag.findByPk(req.params.tagId, {
+            include: [{
+                model: Good,
+                attributes: ['name'],
+                through: {
+                    attributes: ['GoodGoodId', 'TagTagId']
+                }
+            },],
             order: [['createdAt', 'DESC']],
             offset: (currentPage - 1) * countPerPage,
             limit: countPerPage,
@@ -267,5 +277,6 @@ router.delete('/:goodId', userCheck, authCheck, deleteGood);
 router.post('/:goodId/comments', userCheck, authCheck, commentOnGood);
 router.get('/:goodId/comments', userCheck, getGoodComments);
 router.post('/:goodId/bookmark', userCheck, authCheck, bookmarkGood);
+router.get('/getByTag/:goodId/:tagId', userCheck, getGoodsById);
 
 module.exports = router;
