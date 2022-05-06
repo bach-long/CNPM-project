@@ -7,6 +7,7 @@ import Product from "./component/Content/Product";
 import Contact from "./component/Contact/Contact";
 import Modal from "./component/Heading/Modal";
 import Login from "./component/Heading/Login";
+import Blog from "./component/Content/Blog";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/products/:id" element={<Product />} />
           <Route path="/login" element={<Modal />} />
           <Route path="/sigin" element={<Login />} />
+          <Route path="/blog" element={<Blog />} />
         </Routes>
         <Contact />
       </div>

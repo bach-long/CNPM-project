@@ -37,23 +37,23 @@ const Home = () => {
           <div className="carousel-inner">
             <div className="carousel-item active mt-3">
               <img
-                src="\assets\background_run.png"
+                src="\assets\background_run1.png"
                 className="d-block w-100"
-                alt="..."
+                alt="backGround"
               />
             </div>
-            <div className="carousel-item">
+            <div className="carousel-item mt-3">
               <img
-                src="\assets\background_run.png"
+                src="\assets\background_run2.png"
                 className="d-block w-100"
-                alt="..."
+                alt="backGround"
               />
             </div>
-            <div className="carousel-item">
+            <div className="carousel-item mt-3">
               <img
-                src="\assets\background_run.png"
+                src="\assets\background_run3.png"
                 className="d-block w-100"
-                alt="..."
+                alt="backGround"
               />
             </div>
           </div>

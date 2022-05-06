@@ -1,9 +1,16 @@
+
+
 .imageContent {
     margin: 12px;
 }
 
 .clear {
     clear: both;
+}
+
+.hw50 {
+    height: 50px;
+    width: 50px;
 }
 
 .home {
@@ -27,6 +34,11 @@
     margin-right: 12px;
 }
 
+.textJustify {
+    text-align: justify;
+   text-justify: inter-word;
+}
+
 .cardBanner {
     width: 33px;
     height: 33px;
@@ -39,7 +51,7 @@
     display: flex;
     align-items: center;
 }
-
+ 
 .boxItem:hover {
     cursor: pointer;
     opacity: 0.4;
@@ -60,4 +72,83 @@
     display: flex;
     justify-content: space-between;
     margin: 24px 24px 12px 12px;
+}
+
+.height24 {
+    height: 24px;
+}
+
+.shadow {
+    box-shadow: 0 0 10px rgba(0, 0 , 0, 0.3);
+}
+
+.greenBtn {
+    background-color: #33a837!important;
+    border-radius: 3px;
+    color: white!important;
+    font-weight: bolder;
+    border: 2px #333;
+}
+
+.greenBtn:hover {
+    background-color: #16831a!important;
+    color: white;
+}
+
+
+.blog {
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+}
+/**Product*/
+.productImage {
+    margin-top: 16px;
+    height: 400px;
+    max-width: 400px;
+}
+
+.boxProductOffer {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wrapProductOffer {
+    display: flex;
+    overflow: auto;
+    margin: 8px 0px;
+    width: 90%;
+    scroll-behavior: smooth;
+}
+
+.wrapProductOffer::-webkit-scrollbar {
+    width: 0;
+}
+
+
+.cardOffer {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    margin: 8px 10px;
+}
+.card_box_image {
+    height: 200px;
+    width: 200px;
+    display: flex;
+    justify-content: center;
+}
+.card_image {
+    height: 100%;
+    width: auto;
+    max-width: 180px;
+}
+.scroll_bn {
+    font-size: 16px;
+}
+.scroll_bn:hover {
+    cursor: pointer;
+    color: green;
 }

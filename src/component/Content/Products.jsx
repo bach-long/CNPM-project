@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import styles from "./Content.module.css";
 
 const Products = () => {
@@ -10,6 +10,7 @@ const Products = () => {
   const [filter, setFilter] = useState(data);
   const [loading, setLoading] = useState(false);
   let componentMounted = true;
+
 
   useEffect(() => {
     const getProducts = async () => {
@@ -20,7 +21,6 @@ const Products = () => {
         setData(await response.clone().json());
         setFilter(await response.json());
         setLoading(false);
-        console.log(filter);
       }
 
       return () => {
@@ -109,6 +109,7 @@ const Products = () => {
                     </h5>
                     <p className="card-text">${product.price}</p>
                     <Link
+                      onClick={() => filterProduct(product.category)}
                       to={`/products/${product.id}`}
                       className="btn btn-primary"
                     >
