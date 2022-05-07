@@ -8,6 +8,7 @@ import Contact from "./component/Contact/Contact";
 import Modal from "./component/Heading/Modal";
 import Login from "./component/Heading/Login";
 import Blog from "./component/Content/Blog";
+import Cart from "./component/Content/Cart"
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path="/login" element={<Modal />} />
           <Route path="/sigin" element={<Login />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/cart" element={<Cart/>} />
         </Routes>
         <Contact />
       </div>

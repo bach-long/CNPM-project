@@ -72,7 +72,7 @@ function Search() {
               <i className="fa fa-pencil-square-o"></i>
             </Link>
             <Link
-              to="/"
+              to="/cart"
               className="btn btn-outline-dark me-2 position-relative"
             >
               <i className="fa fa-shopping-cart me-2"></i>

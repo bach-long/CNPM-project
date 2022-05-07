@@ -285,6 +285,7 @@ const Product = () => {
         <div className="mx-4">
           <h2>San pham tuong tu</h2>
         </div>
+        <hr />
         <div className={clsx(styles.boxProductOffer)}>
           <div className={clsx(styles.scroll_bn)} onClick={scrollLeft}>
             <i className="fa fa-chevron-left"></i>
@@ -292,7 +293,7 @@ const Product = () => {
           <div className={clsx(styles.wrapProductOffer)} ref={boxScroll}>
             {filter.map((p) => {
               return (
-                <div className={clsx(styles.cardOffer, styles.shadow)}>
+                <div className={clsx(styles.cardOffer,styles.cardProduct)}>
                   <div className={clsx(styles.card_box_image)}>
                     <img
                       src={p.image}
