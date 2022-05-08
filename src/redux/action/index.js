@@ -13,3 +13,10 @@ export const delCart = (product) => {
     }
 }
 
+export const user = (infoUser) => {
+    return {
+        type: "LOGIN",
+        payload: infoUser
+    }
+}
+

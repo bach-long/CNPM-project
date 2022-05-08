@@ -109,7 +109,6 @@ const Products = () => {
                     </h5>
                     <p className="card-text">${product.price}</p>
                     <Link
-                      onClick={() => filterProduct(product.category)}
                       to={`/products/${product.id}`}
                       className="btn btn-primary"
                     >

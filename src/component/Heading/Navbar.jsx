@@ -14,7 +14,7 @@ function Navbar() {
           )}
         >
           <Link className="navbar-brand fw-bold fs-4" to="#">
-            SUPERMARKET
+            GREENMARKET
           </Link>
 
           <div

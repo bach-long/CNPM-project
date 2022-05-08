@@ -104,6 +104,10 @@
     cursor: pointer;
     color: red;
 }
+
+.search_buttons {
+    height: 36px;
+}
 /*end Search*/
 
 .h52{
@@ -304,7 +308,6 @@
 }
 
 .authForm_aside {
-    margin-top: 12px; 
     width: 100%;
     display: flex;
     justify-content: center;
@@ -313,6 +316,15 @@
 .authForm_policyText {
     width: 300px;
     text-align: center;
+    line-height: 12px;
+    font-size: 12px;
+}
+
+.authForm_textLogin {
+    margin-top: 12px;
+    width: 300px;
+    text-align: center;
+    line-height: 16px;
 }
 
 .authForm_logo{
@@ -320,3 +332,14 @@
     height: 79px;
 }
 
+.authForm_ReStart {
+    color: red;
+    margin-left: 4px;
+    margin-top: 4px;
+}
+
+.error {
+    font-size: 12px;
+    color: red;
+    margin: 8px 24px;
+}

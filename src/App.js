@@ -9,6 +9,8 @@ import Modal from "./component/Heading/Modal";
 import Login from "./component/Heading/Login";
 import Blog from "./component/Content/Blog";
 import Cart from "./component/Content/Cart"
+import PageUser from "./component/Content/pageUser"
+
 
 function App() {
   return (
@@ -19,12 +21,14 @@ function App() {
           <Search></Search>
         </div>
         <Routes>
+          
           <Route path="/" element={<Home />} />
           <Route path="/products/:id" element={<Product />} />
           <Route path="/login" element={<Modal />} />
           <Route path="/sigin" element={<Login />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/cart" element={<Cart/>} />
+          <Route path="/userInfor" element={<PageUser/>} />
         </Routes>
         <Contact />
       </div>

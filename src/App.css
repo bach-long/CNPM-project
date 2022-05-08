@@ -13,3 +13,23 @@
 .bgSmoker {
     background-color: #ccc;
 }
+
+
+.input-control:focus {
+    outline: none;
+}
+
+.input-control.success {
+    background-color: #09c372;
+}
+
+
+
+.input-control.error {
+    background-color: red;
+}
+
+.input-control .error {
+    color: red;
+}
+

@@ -67,6 +67,12 @@
     text-align: center;
 }
 
+.textNoLink {
+    text-decoration: none!important;
+    color: black;
+    font-weight: bold;
+}
+
 .cardProduct:hover {
     box-shadow: 0 0 10px rgba(0, 0 , 0, 0.3);
     cursor: pointer;
@@ -244,4 +250,83 @@
 }
 
 
+/**Profile User*/
+.prodfile_avatarUser {
+    font-size: 60px!important;
+}
 
+.profile_NameUser {
+    font-weight: bold;
+    font-size: 26px;
+    margin: 0 16px;
+    text-align: center;
+}
+
+.profile_box {
+    border-style: groove;
+}
+
+.profile_BoxRadius {
+    border-radius: 10px;
+}
+
+
+.profile_row {
+    height: 36px;
+    display: flex;
+    align-content: center;
+}
+
+.profile_numberFollow {
+    font-weight: bold;
+    margin-right: 4px;
+}
+
+.profile_icon {
+    text-align: center;
+    margin-top: 3px;
+    width: 20px;
+    margin-right: 4px;
+}
+
+.profile_textDesc {
+    display: flex;
+    color: rgb(134, 134, 134);
+}
+
+.justifyText {
+    font-size: 100px!important;
+    display: flex;
+    text-justify: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.textBoxNull {
+    font-weight: bolder;
+    font-style: italic;
+    font-size: 20px;
+}
+
+
+.heightBox {
+    min-height: 400px;
+}
+
+.textBoxBlog {
+    font-size: 26px;
+    margin-left: 16px;
+    font-weight: bold;
+    margin-top: 16px;
+}
+
+.rowBox1{
+    margin-left: 16px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    display: flex;
+}
+
+.h36{
+    height: 36px;
+}

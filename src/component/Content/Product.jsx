@@ -4,7 +4,7 @@ import { addCart } from "../../redux/action";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import clsx from "clsx";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import styles from "./Content.module.css";
 
 
@@ -20,6 +20,8 @@ const Product = () => {
   };
 
   const boxScroll = useRef(null);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const getProduct = async () => {
@@ -35,7 +37,7 @@ const Product = () => {
       setLoading(false);
     };
     getProduct();
-  }, []);
+  }, [id]);
 
   /**scrollbar */
 
@@ -293,7 +295,7 @@ const Product = () => {
           <div className={clsx(styles.wrapProductOffer)} ref={boxScroll}>
             {filter.map((p) => {
               return (
-                <div className={clsx(styles.cardOffer,styles.cardProduct)}>
+                <div className={clsx(styles.cardOffer,styles.cardProduct)} onClick={()=>navigate(`/products/${p.id}`)}>
                   <div className={clsx(styles.card_box_image)}>
                     <img
                       src={p.image}
@@ -301,7 +303,7 @@ const Product = () => {
                       alt={p.category}
                     />
                   </div>
-                  <div className="card-body">
+                  <div className={clsx(styles.textNoLink,"card-body")}>
                     <p className="card-text">{p.title}</p>
                     <p className="card-text">{"Gia: " + p.price + "$"}</p>
                   </div>
