@@ -87,7 +87,7 @@ describe('Các Route với Good', () => {
     });
 
     describe('GET /api/goods lấy ra tất cả các goods', () => {
-        it('Trả về page 1 và tối đa 20 goods nếu không có query', async () => {
+        it('Trả về page và số tối đa goods', async () => {
             const response = await request(app)
                 .get('/api/goods')
                 .expect('Content-Type', /json/)
@@ -95,8 +95,8 @@ describe('Các Route với Good', () => {
 
             expect(response.body).toEqual(
                 expect.objectContaining({
-                    page: 1,
-                    limit: 20,
+                    page: expect.any(Number),
+                    limit: expect.any(Number),
                     totalPageCount: expect.any(Number),
                     goods: expect.arrayContaining([
                         expect.objectContaining({
@@ -131,6 +131,23 @@ describe('Các Route với Good', () => {
             }
         });
 
+        it('Mỗi good đều có trường images là các ảnh của good đó', async () => {
+            const response = await request(app)
+                .get('/api/goods')
+                .expect('Content-Type', /json/)
+                .expect(200);
+
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    goods: expect.arrayContaining([
+                        expect.objectContaining({
+                            images: expect.any(Array),
+                        }),
+                    ]),
+                })
+            );
+        });
+
         it('GET /api/goods/:id Trả về good đúng với id', async () => {
             const response = await request(app)
                 .get('/api/goods/2')
@@ -150,6 +167,7 @@ describe('Các Route với Good', () => {
                 })
             );
         });
+
         it('GET /api/goods/:id trả về phải có trường isBookmarkedByCurrentUser nếu user đã log in', async () => {
             const response = await request(app)
                 .get('/api/goods/2')
@@ -160,6 +178,20 @@ describe('Các Route với Good', () => {
             expect(response.body).toEqual(
                 expect.objectContaining({
                     isBookmarkedByCurrentUser: expect.any(Boolean),
+                })
+            );
+        });
+
+        it('GET /api/goods/:id trả về phải có trường images là các ảnh của good đó', async () => {
+            const response = await request(app)
+                .get('/api/goods/2')
+                .set('Cookie', [`jwt=${token}`])
+                .expect('Content-Type', /json/)
+                .expect(200);
+
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    images: expect.any(Array),
                 })
             );
         });

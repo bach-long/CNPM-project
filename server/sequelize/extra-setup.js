@@ -1,8 +1,8 @@
-const { triggerAsyncId } = require("async_hooks");
-
+const { triggerAsyncId } = require('async_hooks');
 
 const applyExtraSetup = (sequelize) => {
-    const { User, Good, Comment, Image, Group, Tag, Property, Notification } = sequelize.models;
+    const { User, Good, Comment, Image, Group, Property, Notification } =
+        sequelize.models;
 
     // User Goods
     User.hasMany(Good, {
@@ -123,57 +123,45 @@ const applyExtraSetup = (sequelize) => {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
     });
-    //Tag_group
-    Group.hasMany(Tag, {
-        as: 'tags',
-        foreignKey: {name: 'groupId'},
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
-    })
-    Tag.belongsTo(Group, {
-        as: 'Group',
-        foreignKey: {name: 'groupId'},
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
-    })
-    //addTag
-    Tag.hasMany(Good, {
+
+    //add Group as tag
+    Group.hasMany(Good, {
         as: 'goods',
-        foreignKey: {name: 'tagId'},
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE'
-    })
-    Good.belongsTo(Tag, {
-        as: 'Tag',
-        foreignKey: {name: 'tagId'},
+        foreignKey: { name: 'tagId' },
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
-    })
+    });
+    Good.belongsTo(Group, {
+        as: 'Tag',
+        foreignKey: { name: 'tagId' },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    });
     //Property
     Good.hasMany(Property, {
         as: 'properties',
-        foreignKey: {name: 'goodId'},
+        foreignKey: { name: 'goodId' },
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
-    })
+    });
     Property.belongsTo(Good, {
         as: 'Good',
-        foreignKey: {name: 'goodId'},
+        foreignKey: { name: 'goodId' },
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
-    })
+    });
     User.hasMany(Notification, {
         as: 'notifications',
-        foreignKey: {name: 'userId'},
+        foreignKey: { name: 'userId' },
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
-    })
+    });
     Notification.belongsTo(User, {
         as: 'User',
-        foreignKey: {name: 'userId'},
+        foreignKey: { name: 'userId' },
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
-    })
+    });
 };
 
 module.exports = { applyExtraSetup };

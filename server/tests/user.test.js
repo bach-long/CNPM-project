@@ -122,31 +122,31 @@ describe('Các Route với User', () => {
         });
 
         it('FollowerCount phải +1 nếu được follow bởi 1 user khác', async () => {
-            let testuser = await User.findOne({ where: { username: 'testuser' } });
-            const oldFollowersCount = testuser.followersCount;
+            let user1 = await User.findOne({ where: { username: 'user1' } });
+            const oldFollowersCount = user1.followersCount;
 
             const response = await request(app)
-                .post('/api/users/testuser/follow')
+                .post('/api/users/user1/follow')
                 .set('Cookie', [`jwt=${token}`])
                 .expect('Content-Type', /json/)
                 .expect(200);
 
-            testuser = await User.findOne({ where: { username: 'testuser' } });
-            expect(testuser.followersCount).toBe(oldFollowersCount + 1);
+            user1 = await User.findOne({ where: { username: 'user1' } });
+            expect(user1.followersCount).toBe(oldFollowersCount + 1);
         });
 
         it('FollowerCount phải -1 nếu bị unfollow bởi 1 user khác', async () => {
-            let testuser = await User.findOne({ where: { username: 'testuser' } });
-            const oldFollowersCount = testuser.followersCount;
+            let user1 = await User.findOne({ where: { username: 'user1' } });
+            const oldFollowersCount = user1.followersCount;
 
             const response = await request(app)
-                .post('/api/users/testuser/follow')
+                .post('/api/users/user1/follow')
                 .set('Cookie', [`jwt=${token}`])
                 .expect('Content-Type', /json/)
                 .expect(200);
 
-            testuser = await User.findOne({ where: { username: 'testuser' } });
-            expect(testuser.followersCount).toBe(oldFollowersCount - 1);
+            user1 = await User.findOne({ where: { username: 'user1' } });
+            expect(user1.followersCount).toBe(oldFollowersCount - 1);
         });
 
         it('Không được follow chính bản thân mình (400)', async () => {

@@ -16,9 +16,9 @@ module.exports = (sequelize) => {
         {
             // Other model options go here
             tableName: 'groups',
-            timestamps: true, // add createdAt and updatedAt
+            timestamps: false, // add createdAt and updatedAt
         }
     );
     return Group;
-}
+};
 // Associations

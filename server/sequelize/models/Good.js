@@ -31,27 +31,27 @@ module.exports = (sequelize) => {
             },
             state: {
                 type: DataTypes.STRING(50),
-                allowNull: false,
+                allowNull: true,
             },
             brand: {
                 type: DataTypes.STRING(50),
-                allowNull: false,
+                allowNull: true,
             },
             type: {
                 type: DataTypes.STRING(50),
-                allowNull: false,
+                allowNull: true,
             },
             maintenance: {
                 type: DataTypes.STRING(50),
-                allowNull: false,
+                allowNull: true,
             },
             details: {
                 type: DataTypes.STRING(50),
-                allowNull: false,
+                allowNull: true,
             },
             color: {
                 type: DataTypes.STRING(50),
-                allowNull: false,
+                allowNull: true,
             },
             bookmarkersCount: {
                 // Get this user's followers count using sequelize literal

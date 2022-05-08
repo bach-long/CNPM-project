@@ -112,6 +112,62 @@ module.exports = {
                 updatedAt: new Date('2022-03-21T12:57:30.839Z'),
             },
         ]);
+
+        await queryInterface.bulkInsert('groups', [
+            {
+                groupId: 1,
+                groupName: 'Bất động sản',
+            },
+            {
+                groupId: 2,
+                groupName: 'Xe cộ',
+            },
+            {
+                groupId: 3,
+                groupName: 'Đồ điện tử',
+            },
+            {
+                groupId: 4,
+                groupName: 'Việc làm',
+            },
+            {
+                groupId: 5,
+                groupName: 'Thú cưng',
+            },
+            {
+                groupId: 6,
+                groupName: 'Đồ ăn, thực phầm các loại',
+            },
+            {
+                groupId: 7,
+                groupName: 'Tủ lanh, máy lạnh, máy giặt',
+            },
+            {
+                groupId: 8,
+                groupName: 'Đồ gia dụng, nội thất, cây cảnh',
+            },
+            {
+                groupId: 9,
+                groupName: 'Mẹ và bé',
+            },
+            {
+                groupId: 10,
+                groupName: 'Thời trang, đồ dùng cá nhân',
+            },
+            {
+                groupId: 11,
+                groupName: 'Giải trí, Thể thao, Sở thích',
+            },
+            {
+                groupId: 12,
+                groupName: 'Đồ dùng văn phòng, công nông nghiệp',
+            },
+            {
+                groupId: 13,
+                groupName: 'Dịch vụ, Du lịch',
+            },
+        ]);
+
         const user1 = await User.findOne({ where: { userId: 1 } });
         const user2 = await User.findOne({ where: { userId: 2 } });
 
@@ -127,6 +183,7 @@ module.exports = {
         await queryInterface.bulkDelete('goods');
         await queryInterface.bulkDelete('comments');
         await queryInterface.bulkDelete('images');
+        await queryInterface.bulkDelete('groups');
         await queryInterface.bulkDelete('sqlite_sequence'); // auto increment table
     },
 };

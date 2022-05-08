@@ -3,11 +3,23 @@ const { Router } = require('express');
 const userCheck = require('../middlewares/userCheck');
 const authCheck = require('../middlewares/authCheck');
 
-const { Good, Comment } = require('../sequelize').models;
+const { Good, Comment, Image } = require('../sequelize').models;
 
 const createGood = async (req, res, next) => {
     try {
-        const { name, description, address, price, state, brand, type, maintenance, details, color, tagId } = req.body;
+        const {
+            name,
+            description,
+            address,
+            price,
+            state,
+            brand,
+            type,
+            maintenance,
+            details,
+            color,
+            tagId,
+        } = req.body;
         const user = res.locals.user;
 
         // TODO: Validate và ném lỗi đọc được
@@ -19,13 +31,13 @@ const createGood = async (req, res, next) => {
             address,
             price,
             state,
-            brand, 
-            type, 
-            maintenance, 
-            details, 
+            brand,
+            type,
+            maintenance,
+            details,
             color,
             userId: user.userId,
-            tagId
+            tagId,
         });
 
         // console.log(await good.getUser()); // works
@@ -54,11 +66,9 @@ const getGoods = async (req, res, next) => {
             order: [['createdAt', 'DESC']],
             offset: (currentPage - 1) * countPerPage,
             limit: countPerPage,
+            include: [{ model: Image, as: 'images' }],
         });
-        const images = [];
-        goods.forEach((good) => {
-            images.push(good.getImages()[0]);
-        });
+
         // Set user specific things like bookmarked using res.locals.user
         if (res.locals.user) {
             await Promise.all(
@@ -73,7 +83,6 @@ const getGoods = async (req, res, next) => {
             limit: countPerPage,
             totalPageCount,
             goods,
-            images,
         });
     } catch (error) {
         console.log(error);
@@ -92,6 +101,7 @@ const getGood = async (req, res, next) => {
             where: {
                 goodId,
             },
+            include: [{ model: Image, as: 'images' }],
         });
 
         if (!good) {
@@ -104,7 +114,7 @@ const getGood = async (req, res, next) => {
         if (res.locals.user) {
             await good.setIsBookmarkedByCurrentUser(res.locals.user);
         }
-        res.status(200).json({good: good, images: good.getImages()});
+        res.status(200).json(good);
     } catch (error) {
         console.log(error);
         res.status(500).json({
