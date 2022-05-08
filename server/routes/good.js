@@ -3,11 +3,11 @@ const { Router } = require('express');
 const userCheck = require('../middlewares/userCheck');
 const authCheck = require('../middlewares/authCheck');
 
-const { Good, Comment, Tag } = require('../sequelize').models;
+const { Good, Comment } = require('../sequelize').models;
 
 const createGood = async (req, res, next) => {
     try {
-        const { name, description, address, price, state, tagId } = req.body;
+        const { name, description, address, price, state, brand, type, maintenance, details, color, tagId } = req.body;
         const user = res.locals.user;
 
         // TODO: Validate và ném lỗi đọc được
@@ -19,60 +19,23 @@ const createGood = async (req, res, next) => {
             address,
             price,
             state,
+            brand, 
+            type, 
+            maintenance, 
+            details, 
+            color,
             userId: user.userId,
             tagId
         });
 
-        res.status(200).json(good)
         // console.log(await good.getUser()); // works
         // console.log(await user.getGoods()); // works
 
-        res.status(201).json(result);
+        res.status(201).json(good);
     } catch (error) {
         console.log(error);
         res.status(500).json({
             message: 'Lỗi từ Create Good!',
-            errors: error,
-        });
-    }
-};
-
-const getGoodsById = async (req, res, next) => {
-    try {
-        let currentPage = +req.query.page || 1;
-        currentPage = currentPage > 0 ? currentPage : 1;
-        let countPerPage = +req.query.count || 20;
-        countPerPage = countPerPage > 0 ? countPerPage : 20;
-
-        const goodsCount = await Good.count();
-        const totalPageCount = Math.ceil(goodsCount / countPerPage);
-
-        const goods = await Good.findAll({
-            where: {tagId: req.params.tagId},
-            order: [['createdAt', 'DESC']],
-            offset: (currentPage - 1) * countPerPage,
-            limit: countPerPage,
-        });
-
-        // Set user specific things like bookmarked using res.locals.user
-        if (res.locals.user) {
-            await Promise.all(
-                goods.map(async (good) => {
-                    await good.setIsBookmarkedByCurrentUser(res.locals.user);
-                })
-            );
-        }
-
-        res.status(200).json({
-            page: currentPage,
-            limit: countPerPage,
-            totalPageCount,
-            goods,
-        });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            message: 'Lỗi từ Get Goods!',
             errors: error,
         });
     }
@@ -87,13 +50,15 @@ const getGoods = async (req, res, next) => {
 
         const goodsCount = await Good.count();
         const totalPageCount = Math.ceil(goodsCount / countPerPage);
-
         const goods = await Good.findAll({
             order: [['createdAt', 'DESC']],
             offset: (currentPage - 1) * countPerPage,
             limit: countPerPage,
         });
-
+        const images = [];
+        goods.forEach((good) => {
+            images.push(good.getImages()[0]);
+        });
         // Set user specific things like bookmarked using res.locals.user
         if (res.locals.user) {
             await Promise.all(
@@ -108,6 +73,7 @@ const getGoods = async (req, res, next) => {
             limit: countPerPage,
             totalPageCount,
             goods,
+            images,
         });
     } catch (error) {
         console.log(error);
@@ -138,8 +104,7 @@ const getGood = async (req, res, next) => {
         if (res.locals.user) {
             await good.setIsBookmarkedByCurrentUser(res.locals.user);
         }
-
-        res.status(200).json(good);
+        res.status(200).json({good: good, images: good.getImages()});
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -267,6 +232,5 @@ router.delete('/:goodId', userCheck, authCheck, deleteGood);
 router.post('/:goodId/comments', userCheck, authCheck, commentOnGood);
 router.get('/:goodId/comments', userCheck, getGoodComments);
 router.post('/:goodId/bookmark', userCheck, authCheck, bookmarkGood);
-router.get('/getByTag/:goodId/:tagId', userCheck, getGoodsById);
 
 module.exports = router;

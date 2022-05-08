@@ -33,6 +33,26 @@ module.exports = (sequelize) => {
                 type: DataTypes.STRING(50),
                 allowNull: false,
             },
+            brand: {
+                type: DataTypes.STRING(50),
+                allowNull: false,
+            },
+            type: {
+                type: DataTypes.STRING(50),
+                allowNull: false,
+            },
+            maintenance: {
+                type: DataTypes.STRING(50),
+                allowNull: false,
+            },
+            details: {
+                type: DataTypes.STRING(50),
+                allowNull: false,
+            },
+            color: {
+                type: DataTypes.STRING(50),
+                allowNull: false,
+            },
             bookmarkersCount: {
                 // Get this user's followers count using sequelize literal
                 type: DataTypes.VIRTUAL(DataTypes.INTEGER, [

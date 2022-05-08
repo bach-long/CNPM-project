@@ -39,6 +39,8 @@ describe('Các Route với Good', () => {
                     address: '123 Xuan Thuy, Cau Giay, Hanoi',
                     price: 1500000,
                     state: 'new',
+                    userId: user.userId,
+                    tagId: 1,
                 })
                 .expect('Content-Type', /json/)
                 .expect(401);
@@ -60,6 +62,8 @@ describe('Các Route với Good', () => {
                     address: '123 Xuan Thuy, Cau Giay, Hanoi',
                     price: 1500000,
                     state: 'new',
+                    userId: user.userId,
+                    tagId: 1,
                 })
                 .set('Cookie', [`jwt=${token}`])
                 .expect('Content-Type', /json/)
@@ -76,6 +80,7 @@ describe('Các Route với Good', () => {
                     address: '123 Xuan Thuy, Cau Giay, Hanoi',
                     price: 1500000,
                     state: 'new',
+                    tagId: 1,
                 })
             );
         });

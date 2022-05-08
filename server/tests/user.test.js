@@ -32,13 +32,13 @@ describe('Các Route với User', () => {
     describe('GET /api/users/:username', () => {
         it('Trả về user đúng với username', async () => {
             const response = await request(app)
-                .get(`/api/users/user1`)
+                .get(`/api/users/testuser`)
                 .expect('Content-Type', /json/)
                 .expect(200);
 
             expect(response.body).toEqual(
                 expect.objectContaining({
-                    username: 'user1',
+                    username: 'testuser',
                 })
             );
         });
@@ -52,7 +52,7 @@ describe('Các Route với User', () => {
 
         it('Trả về user với trường isFollowedByCurrentUser nếu có user đang đăng nhập', async () => {
             const response = await request(app)
-                .get(`/api/users/user1`)
+                .get(`/api/users/testuser`)
                 .set('Cookie', `jwt=${token}`)
                 .expect('Content-Type', /json/)
                 .expect(200);
@@ -69,14 +69,14 @@ describe('Các Route với User', () => {
         let data;
         beforeAll(async () => {
             const response = await request(app)
-                .get(`/api/users/user1/goods`)
+                .get(`/api/users/testuser/goods`)
                 .expect('Content-Type', /json/)
                 .expect(200);
             data = response.body;
         });
         it('Trả về list các goods của đúng userId', async () => {
             for (let good of data) {
-                expect(good.userId).toBe(1);
+                expect(good.userId).toBe(user.userId);
             }
         });
         it('Trả về list các goods giảm dần theo createdAt', async () => {
@@ -90,7 +90,7 @@ describe('Các Route với User', () => {
         });
         it('Các good trả về phải có trường isBookmarkedByCurrentUser nếu user đã log in', async () => {
             const response = await request(app)
-                .get('/api/users/user1/goods')
+                .get('/api/users/testuser/goods')
                 .set('Cookie', [`jwt=${token}`])
                 .expect('Content-Type', /json/)
                 .expect(200);
@@ -122,31 +122,31 @@ describe('Các Route với User', () => {
         });
 
         it('FollowerCount phải +1 nếu được follow bởi 1 user khác', async () => {
-            let user1 = await User.findOne({ where: { username: 'user1' } });
-            const oldFollowersCount = user1.followersCount;
+            let testuser = await User.findOne({ where: { username: 'testuser' } });
+            const oldFollowersCount = testuser.followersCount;
 
             const response = await request(app)
-                .post('/api/users/user1/follow')
+                .post('/api/users/testuser/follow')
                 .set('Cookie', [`jwt=${token}`])
                 .expect('Content-Type', /json/)
                 .expect(200);
 
-            user1 = await User.findOne({ where: { username: 'user1' } });
-            expect(user1.followersCount).toBe(oldFollowersCount + 1);
+            testuser = await User.findOne({ where: { username: 'testuser' } });
+            expect(testuser.followersCount).toBe(oldFollowersCount + 1);
         });
 
         it('FollowerCount phải -1 nếu bị unfollow bởi 1 user khác', async () => {
-            let user1 = await User.findOne({ where: { username: 'user1' } });
-            const oldFollowersCount = user1.followersCount;
+            let testuser = await User.findOne({ where: { username: 'testuser' } });
+            const oldFollowersCount = testuser.followersCount;
 
             const response = await request(app)
-                .post('/api/users/user1/follow')
+                .post('/api/users/testuser/follow')
                 .set('Cookie', [`jwt=${token}`])
                 .expect('Content-Type', /json/)
                 .expect(200);
 
-            user1 = await User.findOne({ where: { username: 'user1' } });
-            expect(user1.followersCount).toBe(oldFollowersCount - 1);
+            testuser = await User.findOne({ where: { username: 'testuser' } });
+            expect(testuser.followersCount).toBe(oldFollowersCount - 1);
         });
 
         it('Không được follow chính bản thân mình (400)', async () => {

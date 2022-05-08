@@ -2,7 +2,7 @@ const { triggerAsyncId } = require("async_hooks");
 
 
 const applyExtraSetup = (sequelize) => {
-    const { User, Good, Comment, Image, Group, Tag, Property } = sequelize.models;
+    const { User, Good, Comment, Image, Group, Tag, Property, Notification } = sequelize.models;
 
     // User Goods
     User.hasMany(Good, {
@@ -123,6 +123,7 @@ const applyExtraSetup = (sequelize) => {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
     });
+    //Tag_group
     Group.hasMany(Tag, {
         as: 'tags',
         foreignKey: {name: 'groupId'},
@@ -135,6 +136,7 @@ const applyExtraSetup = (sequelize) => {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
     })
+    //addTag
     Tag.hasMany(Good, {
         as: 'goods',
         foreignKey: {name: 'tagId'},
@@ -147,6 +149,7 @@ const applyExtraSetup = (sequelize) => {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
     })
+    //Property
     Good.hasMany(Property, {
         as: 'properties',
         foreignKey: {name: 'goodId'},
@@ -156,6 +159,18 @@ const applyExtraSetup = (sequelize) => {
     Property.belongsTo(Good, {
         as: 'Good',
         foreignKey: {name: 'goodId'},
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    })
+    User.hasMany(Notification, {
+        as: 'notifications',
+        foreignKey: {name: 'userId'},
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    })
+    Notification.belongsTo(User, {
+        as: 'User',
+        foreignKey: {name: 'userId'},
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
     })
