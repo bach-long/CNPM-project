@@ -61,7 +61,7 @@ const PageUser = () => {
                 </div>
               </div>
               <div>
-                <button className={clsx( styles.rowBox1,styles.h36,"btn", "btn-warning","mb-4")}>
+                <button className={clsx( styles.rowBox1,styles.h36,"btn", "btn-warning","mb-4",styles.flowUser)}>
                   <i className="fa fa-plus mt-1 me-2"></i>
                   <p>Theo dõi</p>
                 </button>

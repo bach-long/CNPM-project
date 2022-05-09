@@ -13,6 +13,13 @@ export const delCart = (product) => {
     }
 }
 
+export const setCountZero = (product) => {
+    return {
+        type: "DELZERO",
+        payload: product
+    }
+}
+
 export const user = (infoUser) => {
     return {
         type: "LOGIN",

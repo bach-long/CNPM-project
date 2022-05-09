@@ -42,36 +42,12 @@ function Search() {
               <div className={clsx(styles.wrapInput)}>
                 <input
                   className={clsx(styles.inputSearch)}
+                  name="search"
                   type="search"
                   placeholder="Tìm kiếm sản phẩm trên SUPERMARKET"
                   aria-label="Search"
                 />
 
-                <div className={clsx(styles.searchHistory)} id="history">
-                  <div>
-                    <p
-                      className={clsx("fw-lighter", styles.headerSearchHistory)}
-                    >
-                      Lịch sử tìm kiếm
-                    </p>
-                  </div>
-                  <div>
-                    <p className={clsx(styles.textSearchHistory)}>IphoneX</p>
-                    <p className={clsx(styles.textSearchHistory)}>Wave alpha</p>
-                    <p className={clsx(styles.textSearchHistory)}>Áo T-shirt</p>
-                  </div>
-                  <div>
-                    <p
-                      className={clsx(
-                        styles.footerSearchHistory,
-                        "px-3",
-                        "py-2"
-                      )}
-                    >
-                      Xóa lịch sử tìm kiếm
-                    </p>
-                  </div>
-                </div>
               </div>
               <button className="btn btn-outline-success" type="submit">
                 <i className="fa fa-search"></i>

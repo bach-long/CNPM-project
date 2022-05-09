@@ -33,6 +33,12 @@ const handleCart = (state = cart, action) => {
           x.id === product.id ? { ...x, qty: x.qty - 1 } : x
         );
       }
+
+    case "DELZERO":
+      const exist2 = state.find((x) => x.id === product.id);
+      return state.filter(x=> x.id != exist2.id);
+
+      
     default:
       return state;
   }

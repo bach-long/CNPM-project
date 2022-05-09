@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./Content.module.css";
 
 const Products = () => {
@@ -10,6 +10,9 @@ const Products = () => {
   const [filter, setFilter] = useState(data);
   const [loading, setLoading] = useState(false);
   let componentMounted = true;
+  const navigate = useNavigate();
+
+
 
 
   useEffect(() => {
@@ -43,7 +46,7 @@ const Products = () => {
         <div className="col-md-3">
           <Skeleton height={350} />
         </div>
-        <div className="col-md-3">
+        <div className="col-md-3 mb-4">
           <Skeleton height={350} />
         </div>
       </>
@@ -95,7 +98,7 @@ const Products = () => {
         {filter.map((product) => {
           return (
             <>
-              <div className={`col-md-3 mb-4 ${styles.cardProduct}`}>
+              <div className={`col-md-3 mb-4 ${styles.cardProduct}`}  onClick={()=>navigate(`/products/${product.id}`)}>
                 <div className="card h-100 text-center" key={product.id}>
                   <img
                     src={product.image}

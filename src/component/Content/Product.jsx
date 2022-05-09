@@ -7,8 +7,6 @@ import clsx from "clsx";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import styles from "./Content.module.css";
 
-
-
 const Product = () => {
   const { id } = useParams();
   const [product, setProduct] = useState([]);
@@ -21,7 +19,6 @@ const Product = () => {
 
   const boxScroll = useRef(null);
   const navigate = useNavigate();
-
 
   useEffect(() => {
     const getProduct = async () => {
@@ -41,13 +38,13 @@ const Product = () => {
 
   /**scrollbar */
 
-  const scrollLeft = ()=>{
+  const scrollLeft = () => {
     boxScroll.current.scrollLeft -= 400;
-  }
+  };
 
-  const scrollRight = ()=>{
+  const scrollRight = () => {
     boxScroll.current.scrollLeft += 400;
-  }
+  };
 
   /**Loaing */
   const Loading = () => {
@@ -64,6 +61,67 @@ const Product = () => {
           <Skeleton height={50} width={100} style={{ marginLeft: 6 }} />
         </div>
       </>
+    );
+  };
+
+  /**Loading OfferProduct */
+
+  const LoadingOffer = () => {
+    return (
+      <div className={clsx(styles.boxProductOffer)}>
+        <div className={clsx(styles.scroll_bn)}>
+          <i className="fa fa-chevron-left"></i>
+        </div>
+        <div className={clsx(styles.wrapProductOffer)}>
+          <Skeleton height={200} width={150} className="mx-3"></Skeleton>
+          <Skeleton height={200} width={150} className="mx-3"></Skeleton>
+          <Skeleton height={200} width={150} className="mx-3"></Skeleton>
+          <Skeleton height={200} width={150} className="mx-3"></Skeleton>
+          <Skeleton height={200} width={150} className="mx-3 mb-4"></Skeleton>
+        </div>
+        <div className={clsx(styles.scroll_bn)}>
+          <i className="fa fa-chevron-right"></i>
+        </div>
+      </div>
+    );
+  };
+
+  /**Show productOffer */
+
+  const ShowProductOffer = () => {
+    return (
+      <div className={clsx(styles.boxProductOffer)}>
+        <div className={clsx(styles.scroll_bn)} onClick={scrollLeft}>
+          <i className="fa fa-chevron-left"></i>
+        </div>
+        <div className={clsx(styles.wrapProductOffer)} ref={boxScroll}>
+          {filter.map((p) => {
+            return (
+              <div
+                className={clsx(styles.cardOffer, styles.cardProduct)}
+                onClick={() => navigate(`/products/${p.id}`)}
+              >
+                <div className={clsx(styles.card_box_image)}>
+                  <img
+                    src={p.image}
+                    className={clsx(styles.card_image)}
+                    alt={p.category}
+                  />
+                </div>
+                <div className={clsx(styles.textNoLink, "card-body")}>
+                  <p className={clsx(styles.productOffer_title, "card-text")}>
+                    {p.title.slice(0,60)}
+                  </p>
+                  <p className={clsx("card-text", styles.colorText_Red )}>{"Gia: " + p.price + "$"}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div className={clsx(styles.scroll_bn)} onClick={scrollRight}>
+          <i className="fa fa-chevron-right"></i>
+        </div>
+      </div>
     );
   };
 
@@ -288,33 +346,7 @@ const Product = () => {
           <h2>San pham tuong tu</h2>
         </div>
         <hr />
-        <div className={clsx(styles.boxProductOffer)}>
-          <div className={clsx(styles.scroll_bn)} onClick={scrollLeft}>
-            <i className="fa fa-chevron-left"></i>
-          </div>
-          <div className={clsx(styles.wrapProductOffer)} ref={boxScroll}>
-            {filter.map((p) => {
-              return (
-                <div className={clsx(styles.cardOffer,styles.cardProduct)} onClick={()=>navigate(`/products/${p.id}`)}>
-                  <div className={clsx(styles.card_box_image)}>
-                    <img
-                      src={p.image}
-                      className={clsx(styles.card_image)}
-                      alt={p.category}
-                    />
-                  </div>
-                  <div className={clsx(styles.textNoLink,"card-body")}>
-                    <p className="card-text">{p.title}</p>
-                    <p className="card-text">{"Gia: " + p.price + "$"}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          <div className={clsx(styles.scroll_bn)} onClick={scrollRight}>
-            <i className="fa fa-chevron-right" ></i>
-          </div>
-        </div>
+        {loading?<LoadingOffer/>:<ShowProductOffer/>}
       </div>
     </>
   );

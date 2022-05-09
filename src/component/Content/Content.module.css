@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+.colorText_Red {
+    color: red;
+}
+
 .imageContent {
     margin: 12px;
 }
@@ -77,6 +81,8 @@
     box-shadow: 0 0 10px rgba(0, 0 , 0, 0.3);
     cursor: pointer;
 }
+
+
 
 .containerBanner {
     display: flex;
@@ -176,13 +182,17 @@
 /*Cart product*/
 .cart {
     min-height: 400px;
+    border-radius: 8px;
 }
 
+.cart_cardProduct {
+    min-height: 400px;
+}
 
 .boxCart {
     box-sizing: border-box;
-
 }
+
 
 .boxCart:hover {
     box-shadow: 0 0 10px rgba(0, 0 , 0, 0.3);
@@ -198,6 +208,28 @@
     align-items: center;
     height: 100px;
     width: 100px;
+}
+
+.cart_product_boxImg:hover {
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0 , 0, 0.3);
+
+}
+
+.cart_boxButtonBuy {
+    margin-right: 0;
+    margin-left: auto;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.cart_buttonBuy{
+    margin-right: 8px;
+    width: 100px;
+    height: 40px;
+    border: none;
+    border-radius: 8px;
+    background-color: rgb(255, 44, 97);
 }
 
 .cart_product_img {
@@ -241,6 +273,28 @@
     justify-content: center;
     align-items: center;
     width: 5%;
+    box-sizing: border-box;
+}
+
+
+.cart_productDeleteBtn {
+    font-weight: bold;
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgb(124, 124, 124);
+}
+
+.cart_productDeleteBtn:hover {
+    color: red;
+    cursor: pointer;
+}
+
+.cardProductNull {
+    display: flex;
+    justify-content: center;
+    min-height: 400px;
 }
 
 .amountButton {
@@ -248,6 +302,14 @@
     width: 30px;
     border-style: ridge
 }
+/**End card product*/
+
+
+/**ProductOffer*/
+.productOffer_title {
+    height: 96px;
+}
+/**ProductOFfer end*/
 
 
 /**Profile User*/
@@ -325,6 +387,10 @@
     margin-top: 8px;
     margin-bottom: 8px;
     display: flex;
+}
+
+.flowUser {
+    box-sizing: border-box;
 }
 
 .h36{
