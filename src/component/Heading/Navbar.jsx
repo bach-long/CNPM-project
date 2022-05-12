@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import styles from "./Heading.module.css";
 function Navbar() {
   return (
-    <div className={styles.navHeading}>
+    <div className={ clsx(styles.navHeading,"bgColorMain")}>
       <nav className="navbar navbar-expand-lg navbar-light pb-0 pt-0">
         <div
           className={clsx(

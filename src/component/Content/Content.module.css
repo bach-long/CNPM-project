@@ -3,9 +3,9 @@
     padding: 0;
     box-sizing: border-box;
 }
-
 .colorText_Red {
     color: red;
+    
 }
 
 .imageContent {
@@ -20,6 +20,12 @@
     height: 50px;
     width: 50px;
 }
+
+.h36{
+    height: 36px;
+}
+
+/*Home**/
 
 .home {
      margin-top: 108px;
@@ -124,60 +130,9 @@
     max-width: 400px;
 }
 
-.boxProductOffer {
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.wrapProductOffer {
-    display: flex;
-    overflow: auto;
-    margin: 8px 0px;
-    width: 90%;
-    scroll-behavior: smooth;
-}
-
-.wrapProductOffer::-webkit-scrollbar {
-    width: 0;
-}
 
 
-.cardOffer {
-    display: flex;
-    flex-direction: column;
-    width: 200px;
-    margin: 8px 10px;
-}
-
-
-.card_box_image {
-    height: 200px;
-    width: 200px;
-    display: flex;
-    justify-content: center;
-}
-.card_image {
-    height: 100%;
-    width: auto;
-    max-width: 180px;
-}
-.scroll_bn {
-    font-size: 16px;
-    height: 30px;
-    width: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #ccc;
-    border-radius: 20px;
-}
-.scroll_bn:hover {
-    cursor: pointer;
-    color: rgb(255, 0, 0);
-    background-color: #333;
-}
+/**Product end*/
 
 /*Cart product*/
 .cart {
@@ -309,6 +264,62 @@
 .productOffer_title {
     height: 96px;
 }
+
+
+.boxProductOffer {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wrapProductOffer {
+    display: flex;
+    overflow: auto;
+    margin: 8px 0px;
+    width: 90%;
+    scroll-behavior: smooth;
+}
+
+.wrapProductOffer::-webkit-scrollbar {
+    width: 0;
+}
+
+
+.cardOffer {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    margin: 8px 10px;
+}
+
+
+.card_box_image {
+    height: 200px;
+    width: 200px;
+    display: flex;
+    justify-content: center;
+}
+.card_image {
+    height: 100%;
+    width: auto;
+    max-width: 180px;
+}
+.scroll_bn {
+    font-size: 16px;
+    height: 30px;
+    width: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ccc;
+    border-radius: 20px;
+}
+.scroll_bn:hover {
+    cursor: pointer;
+    color: rgb(255, 0, 0);
+    background-color: #333;
+}
 /**ProductOFfer end*/
 
 
@@ -375,7 +386,7 @@
     min-height: 400px;
 }
 
-.textBoxBlog {
+.inforUser_textBoxBlog {
     font-size: 26px;
     margin-left: 16px;
     font-weight: bold;
@@ -391,8 +402,8 @@
 
 .flowUser {
     box-sizing: border-box;
+    display: flex!important;
+    flex-direction: row;
+    line-height: 16px;
 }
 
-.h36{
-    height: 36px;
-}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import styles from "./Content.module.css";
 import clsx from "clsx";
@@ -12,6 +12,10 @@ const Cart = () => {
   const state = useSelector((state) => state.handleCart);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const pageCart = useRef(null);
+  var listCheckBox;
+
+
 
   const addProduct = (product) => {
     dispatch(addCart(product));
@@ -25,6 +29,26 @@ const Cart = () => {
     dispatch(setCountZero(product));
   };
 
+
+  useEffect(() => {
+    listCheckBox = pageCart.current.querySelectorAll("input");
+    console.log(listCheckBox)
+  }, [state]);
+
+
+  const  checkAll = (e) => {
+    const check = e.target.checked;
+    if (check) {
+      listCheckBox.forEach(function(checkbox) {
+        checkbox.checked = true;
+      })
+    } else {
+      listCheckBox.forEach(function(checkbox) {
+        checkbox.checked = false;
+      })
+    }
+  }
+
   function countCart() {
     var c = 0;
     state.forEach((p) => {
@@ -34,6 +58,9 @@ const Cart = () => {
     });
     return c;
   }
+
+
+  
 
   const CardProductNull = () => {
     return (
@@ -64,7 +91,8 @@ const Cart = () => {
                 )}
               >
                 <div className={clsx(styles.cart_product_checkbox)}>
-                  <input type="checkbox" />
+                  <input type="checkbox" name={product.id}
+                  />
                 </div>
                 <div
                   className={clsx(styles.cart_product_boxImg)}
@@ -129,12 +157,15 @@ const Cart = () => {
     <>
       <div
         className={clsx(styles.home, "bg-light", styles.cart, "font-monospace")}
+        ref={pageCart}
       >
         <h3 className="mx-3 mb-0">GIO HANG</h3>
         <hr />
         <div className="d-flex">
           <div className="mt-2 mx-3">
-            <input type="checkbox" />
+            <input type="checkbox" name="selectAll"
+            onClick={checkAll}
+            />
           </div>
           <div className="font-monospace mx-2 mb-1 fs-5">Chon tat ca</div>
         </div>

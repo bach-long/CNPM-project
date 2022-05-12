@@ -1,3 +1,5 @@
+
+
 .navHeading {
     top: 0%;
     z-index: 5;
@@ -5,7 +7,7 @@
     height: 52px;
     width: 100%;
     margin: 0;
-    background-color: rgb(255 186 0);
+    /* background-color: rgb(255 186 0); */
 }
 
 .wrapNav {
@@ -24,7 +26,7 @@
     height: 52px;
     width: 100%;
     margin: 0;
-    background-color: rgb(255 186 0);
+    /* background-color: rgb(255 186 0); */
 }
 
 .inputSearch {

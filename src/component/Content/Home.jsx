@@ -4,8 +4,8 @@ import Products from "./Products";
 import clsx from "clsx";
 import styles from "./Content.module.css";
 const Home = () => {
-  return (
-    <div className={clsx(styles.home, "justify-content-center")}>
+  const SliderBanner = ()=> {
+    return (
       <div className={clsx(styles.wrapBanner)}>
         <div
           id="carouselExampleIndicators"
@@ -133,6 +133,12 @@ const Home = () => {
           </div>
         </div>
       </div>
+    );
+  }
+
+  return (
+    <div className={clsx(styles.home, "justify-content-center")}>
+      <SliderBanner></SliderBanner>
       <Products />
       <div className="descriptionWrapper bg-light">
         <div className="descriptionMarket">

@@ -28,11 +28,10 @@ const PageUser = () => {
       )
   }
 
-  return (
-    <>
-      <div className={clsx(styles.home, styles.profile_BoxRadius)}>
-        <div className={clsx(styles.wrapInforUser, "d-flex",styles.profile_BoxRadius)}>
-          <div className={clsx(styles.profile_box, "col-md-5",styles.profile_BoxRadius, "bg-light")}>
+
+  const Box1Profile = () => {
+    return (
+      <div className={clsx(styles.profile_box, "col-md-5",styles.profile_BoxRadius, "bg-light")}>
             <div>
               <div className={clsx( styles.rowBox1)}>
                 <i
@@ -63,12 +62,17 @@ const PageUser = () => {
               <div>
                 <button className={clsx( styles.rowBox1,styles.h36,"btn", "btn-warning","mb-4",styles.flowUser)}>
                   <i className="fa fa-plus mt-1 me-2"></i>
-                  <p>Theo dõi</p>
+                  <div>Theo dõi</div>
                 </button>
               </div>
             </div>
           </div>
-          <div className={clsx(styles.profile_box, "col-md-7",styles.profile_BoxRadius, "bg-light")}>
+    )
+  }
+
+  const Box2Profile = ()=> {
+    return (
+      <div className={clsx(styles.profile_box, "col-md-7",styles.profile_BoxRadius, "bg-light")}>
             <div className="mx-4">
               <div className={clsx(styles.profile_row)}>
                 <div className={clsx(styles.profile_textDesc)}>
@@ -142,6 +146,15 @@ const PageUser = () => {
               </div>
             </div>
           </div>
+    );
+  }
+
+  return (
+    <>
+      <div className={clsx(styles.home, styles.profile_BoxRadius)}>
+        <div className={clsx(styles.wrapInforUser, "d-flex",styles.profile_BoxRadius)}>
+          <Box1Profile></Box1Profile>
+          <Box2Profile></Box2Profile>
         </div>
       </div>
 
@@ -149,7 +162,7 @@ const PageUser = () => {
         className={clsx(styles.home, "bg-light", "mt-4", styles.profile_box, styles.heightBox, styles.profile_BoxRadius)}
       >
         <div className={clsx(styles.inforUser_blogUp)}>
-          <div className={clsx(styles.textBoxBlog)}>
+          <div className={clsx(styles.inforUser_textBoxBlog)}>
             <p>Tin đã đăng</p>
           </div>
           <hr/>

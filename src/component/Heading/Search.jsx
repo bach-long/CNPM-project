@@ -28,7 +28,7 @@ function Search() {
   }
 
   return (
-    <div className={styles.search}>
+    <div className={clsx(styles.search,"bgColorMain")}>
       <nav className="navbar navbar-light ">
         <div
           className={clsx(

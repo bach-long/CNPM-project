@@ -1,6 +1,13 @@
+:root {
+    --bg-color-main: rgb(101, 209, 255);
+}
 .app {
-    background-color: rgb(255 186 0);
+    background-color: var(--bg-color-main);
     overflow: hidden;
+}
+
+.bgColorMain {
+    background-color: var(--bg-color-main);
 }
 
 .wrapHeading {
@@ -15,21 +22,10 @@
 }
 
 
-.input-control:focus {
-    outline: none;
-}
-
-.input-control.success {
-    background-color: #09c372;
-}
 
 
 
-.input-control.error {
-    background-color: red;
-}
 
-.input-control .error {
-    color: red;
-}
+
+
 
