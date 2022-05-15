@@ -61,7 +61,7 @@ function Search() {
               <p className="mx-2">{statusLogin?inforUser.username:''}</p>
             </Link>
             <Link
-              to="/cart"
+              to={statusLogin?"/cart":"/sigin"}
               className="btn btn-outline-dark me-2 position-relative"
             >
               <i className="fa fa-shopping-cart me-2"></i>

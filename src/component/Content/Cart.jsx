@@ -15,8 +15,6 @@ const Cart = () => {
   const pageCart = useRef(null);
   var listCheckBox;
 
-
-
   const addProduct = (product) => {
     dispatch(addCart(product));
   };
@@ -32,7 +30,7 @@ const Cart = () => {
 
   useEffect(() => {
     listCheckBox = pageCart.current.querySelectorAll("input");
-    console.log(listCheckBox)
+
   }, [state]);
 
 

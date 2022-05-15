@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import { addCart } from "../../redux/action";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -13,6 +13,8 @@ const Product = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState([]);
   const dispatch = useDispatch();
+  const [statusLogin, setStatusLogin] = useState(false); 
+  const inforUser = useSelector((state)=> state.Login);  
   const addProduct = (product) => {
     dispatch(addCart(product));
   };
@@ -35,6 +37,10 @@ const Product = () => {
     };
     getProduct();
   }, [id]);
+
+  useEffect(()=> {
+    setStatusLogin(inforUser.username)
+  })
 
   /**scrollbar */
 
@@ -290,13 +296,14 @@ const Product = () => {
           <div className="buttons d-flex flex-column">
             <button
               className="btn btn-outline-dark mx-1 mt-2"
-              onClick={() => addProduct(product)}
+              // onClick={() => addProduct(product)}
+              onClick={() => !statusLogin?navigate('/sigin'):addProduct(product)}
             >
               <i className="fa fa-cart-plus"></i>
               Thêm vào giỏ hàng
             </button>
             <Link
-              to="/cart"
+              to={statusLogin?"/cart":"/sigin"}
               className={clsx(styles.greenBtn, "btn", "mx-1", "mt-2")}
             >
               Mua ngay

@@ -1,5 +1,5 @@
 :root {
-    --bg-color-main: rgb(101, 209, 255);
+    --bg-color-main: rgb(255, 216, 60);
 }
 .app {
     background-color: var(--bg-color-main);

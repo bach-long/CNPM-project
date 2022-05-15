@@ -76,14 +76,15 @@ function Navbar() {
                   </footer>
                 </div>
               </li>
+              
               <li className="nav-item me-3">
                 <Link className="nav-link" to="#">
-                  <i className="fa fa-server me-2"></i>Quản lý tin
+                  <i className="fa fa-commenting-o me-2"></i>Chat
                 </Link>
               </li>
               <li className="nav-item me-3">
                 <Link className="nav-link" to="#">
-                  <i className="fa fa-commenting-o me-2"></i>Chat
+                  <i className="fa fa-server me-2"></i>Quản lý tin
                 </Link>
               </li>
               <li className="nav-item dropdown me-3">
@@ -103,17 +104,12 @@ function Navbar() {
                 >
                   <li>
                     <Link className="dropdown-item" to="#">
-                      Action
+                      Thông tin tài khoản
                     </Link>
                   </li>
                   <li>
                     <Link className="dropdown-item" to="#">
-                      Another action
-                    </Link>
-                  </li>
-                  <li>
-                    <Link className="dropdown-item" to="#">
-                      Something else here
+                      Đăng xuất
                     </Link>
                   </li>
                 </ul>

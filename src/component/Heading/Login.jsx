@@ -11,37 +11,35 @@ const Login = () => {
   const navigate = useNavigate();
   const [messageError, setmessageError] = useState('');
   var status = 0;
-  const tokenString = localStorage.getItem('token');
+  const token = localStorage.getItem('token');
 
   const username = useRef(null);
   const password = useRef(null);
   const dispatch = useDispatch();
   
+
   const postData = (data) => {
     var ojData = {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
+      headers:{
+        Accept: 'application/json',
+                 'Content-Type': 'application/json',
+               },
+               'Authorization': `Bearer ${token}`,
       body: JSON.stringify(data)
     }
     fetch("http://127.0.0.1:5000/api/auth/login", ojData)
       .then(function(response) {
         status = response.status;
-        console.log(status);
-        console.log(response.status);
           return response.json();
       })
         
       .then(function(res) {
-        if (res.token === tokenString) {
+        if (status === 200) {
+          localStorage.setItem("token", res.token)
           dispatch(user(res.user))
           navigate('/')
-        } else if (status === 200) {
-          sessionStorage.setItem('token', JSON.stringify(res.token));
-          dispatch(user(res.user))
-          navigate('/')
+          setmessageError('Dang nhap thanh cong')
         } else if (status === 400) {
           setmessageError('Email va mat khau k duoc de trong');
         } else if (status === 404 ) {
@@ -62,7 +60,7 @@ const Login = () => {
     username.current.value = '';
     password.current.value = '';
     setmessageError('')
-    postData(data);
+   postData(data);
   }
 
 
