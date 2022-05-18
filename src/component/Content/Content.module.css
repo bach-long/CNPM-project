@@ -330,6 +330,42 @@
 /**End card product*/
 
 
+
+/**Comment*/
+.boxComments {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    padding-left: 8px;
+    margin-right: 8px;
+    
+}
+
+.boxUsers {
+    height: 36px;
+    display: flex;
+    flex-direction: row;
+}
+
+.boxRate {
+    margin-left: 44px;
+    line-height: 16px;
+    margin-bottom: 8px;
+}
+
+.comment {
+    margin-top: 4px;
+}
+
+.boxFeedBack {
+    background-color: #ccc;
+    margin-top: 8px;
+    box-sizing: border-box;
+    
+}
+/***End comment*/
+
+
 /**ProductOffer*/
 .productOffer_title {
     height: 96px;
@@ -476,4 +512,18 @@
     flex-direction: row;
     line-height: 16px;
 }
+
+/**Pagination*/
+.paginationBox {
+    display: flex;
+    justify-content: center;
+}
+
+.pagination_listButton {
+    display: flex;
+    flex-direction: row;
+}
+
+
+/**Pagination end*/
 

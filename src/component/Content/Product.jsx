@@ -6,6 +6,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import clsx from "clsx";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import styles from "./Content.module.css";
+import Comment from "./Comment";
 
 const Product = () => {
   const { id } = useParams();
@@ -349,12 +350,14 @@ const Product = () => {
       </div>
 
       <div className={clsx(styles.home, "bg-light", "mt-2")}>
-        <div className="mx-4">
+        <div className="mx-4 pt-2">
           <h2>San pham tuong tu</h2>
         </div>
         <hr />
         {loading?<LoadingOffer/>:<ShowProductOffer/>}
       </div>
+
+        <Comment/>
     </>
   );
 };

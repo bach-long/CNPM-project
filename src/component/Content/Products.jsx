@@ -4,6 +4,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./Content.module.css";
+import Pagination from "./Pagination";
 
 const Products = () => {
   const [data, setData] = useState([]);
@@ -123,6 +124,7 @@ const Products = () => {
             </>
           );
         })}
+        <Pagination/>
       </>
     );
   };
@@ -131,7 +133,7 @@ const Products = () => {
     <div>
       <div className="my-5 bg-light">
         <div className="row">
-          <div className="col-12 mb-5">
+          <div className="col-12 mb-5 pt-3">
             <h1
               className="display-6 fw-bolder
                         text-center"
@@ -144,6 +146,7 @@ const Products = () => {
         <div className="row justify-content-center m-3">
           {loading ? <Loading /> : <ShowProducts />}
         </div>
+        
       </div>
     </div>
   );
