@@ -1,7 +1,7 @@
 const { triggerAsyncId } = require('async_hooks');
 
 const applyExtraSetup = (sequelize) => {
-    const { User, Good, Comment, Image, Group, Property, Notification } =
+    const { User, Good, Comment, Image, Tag, Property, Notification } =
         sequelize.models;
 
     // User Goods
@@ -124,14 +124,14 @@ const applyExtraSetup = (sequelize) => {
         onUpdate: 'CASCADE',
     });
 
-    //add Group as tag
-    Group.hasMany(Good, {
+    //add tag
+    Tag.hasMany(Good, {
         as: 'goods',
         foreignKey: { name: 'tagId' },
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
     });
-    Good.belongsTo(Group, {
+    Good.belongsTo(Tag, {
         as: 'Tag',
         foreignKey: { name: 'tagId' },
         onDelete: 'CASCADE',

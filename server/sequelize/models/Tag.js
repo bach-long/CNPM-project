@@ -16,7 +16,7 @@ module.exports = (sequelize) => {
         {
             // Other model options go here
             tableName: 'tags',
-            timestamps: true, // add createdAt and updatedAt
+            timestamps: false, // add createdAt and updatedAt
         }
     );
     return Tag;

@@ -16,7 +16,7 @@ module.exports = (sequelize) => {
         },
         {
             tableName: 'images',
-            timestamps: true,
+            timestamps: false,
         }
     );
 
