@@ -99,6 +99,35 @@ const getUserFollowers = async (req, res, next) => {
     }
 };
 
+const getUserFollowings = async (req, res, next) => {
+    try {
+        const { username } = req.params;
+
+        const user = await User.findOne({ where: { username } });
+
+        if (!user) {
+            return res.status(404).json({
+                errors: {
+                    username: 'Username không tồn tại!',
+                },
+            });
+        }
+
+        const followings = await user.getFollowed(); // No 's'
+
+        res.status(200).json({
+            count: followings.length,
+            followings,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Lỗi từ Get User Followings!',
+            errors: error,
+        });
+    }
+};
+
 const follow = async (req, res, next) => {
     try {
         const { username } = req.params;
@@ -150,5 +179,6 @@ router.get('/:username', userCheck, getUser);
 router.get('/:username/goods', userCheck, getUserGoods);
 router.post('/:username/follow', userCheck, authCheck, follow);
 router.get('/:username/followers', getUserFollowers);
+router.get('/:username/followings', getUserFollowings);
 
 module.exports = router;

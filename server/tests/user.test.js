@@ -173,6 +173,22 @@ describe('Các Route với User', () => {
         });
     });
 
+    describe('GET /api/users/:username/followings', () => {
+        it('Trả về count và list các user mà tôi đang follow', async () => {
+            const response = await request(app)
+                .get(`/api/users/${user.username}/followings`)
+                .expect('Content-Type', /json/)
+                .expect(200);
+
+            expect(response.body).toEqual(
+                expect.objectContaining({
+                    count: expect.any(Number),
+                    followings: expect.any(Array),
+                })
+            );
+        });
+    });
+
     afterAll(async () => {
         await Good.destroy({ where: { goodId: good.goodId } });
         await User.destroy({ where: { userId: user.userId } });
