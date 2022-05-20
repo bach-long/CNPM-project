@@ -2,7 +2,7 @@ const { Router } = require('express');
 
 const userCheck = require('../middlewares/userCheck');
 const authCheck = require('../middlewares/authCheck');
-const { User, Good } = require('../sequelize').models;
+const { User, Image } = require('../sequelize').models;
 
 const getUser = async (req, res, next) => {
     try {
@@ -46,7 +46,10 @@ const getUserGoods = async (req, res, next) => {
             });
         }
 
-        const goods = await user.getGoods();
+        const goods = await user.getGoods({
+            order: [['updatedAt', 'DESC']],
+            include: [{ model: Image, as: 'images' }],
+        });
 
         if (res.locals.user) {
             await Promise.all(

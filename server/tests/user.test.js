@@ -79,6 +79,13 @@ describe('Các Route với User', () => {
                 expect(good.userId).toBe(user.userId);
             }
         });
+        it('Trả về list các goods có trường images', async () => {
+            for (let good of data) {
+                expect(good).toEqual(
+                    expect.objectContaining({ images: expect.any(Array) })
+                );
+            }
+        });
         it('Trả về list các goods giảm dần theo createdAt', async () => {
             for (let i = 0; i < data.length - 1; i++) {
                 expect(

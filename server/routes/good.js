@@ -2,6 +2,7 @@ const { Router } = require('express');
 
 const userCheck = require('../middlewares/userCheck');
 const authCheck = require('../middlewares/authCheck');
+const { Op } = require('sequelize');
 
 const { Good, Comment, Image } = require('../sequelize').models;
 
@@ -60,14 +61,21 @@ const getGoods = async (req, res, next) => {
         let countPerPage = +req.query.count || 20;
         countPerPage = countPerPage > 0 ? countPerPage : 20;
 
-        const goodsCount = await Good.count();
-        const totalPageCount = Math.ceil(goodsCount / countPerPage);
+        const query = req.query.query || '';
+
         const goods = await Good.findAll({
+            where: {
+                name: {
+                    [Op.like]: `%${query}%`,
+                },
+            },
             order: [['createdAt', 'DESC']],
             offset: (currentPage - 1) * countPerPage,
             limit: countPerPage,
             include: [{ model: Image, as: 'images' }],
         });
+        const goodsCount = goods.length;
+        const totalPageCount = Math.ceil(goodsCount / countPerPage);
 
         // Set user specific things like bookmarked using res.locals.user
         if (res.locals.user) {
