@@ -1,5 +1,12 @@
-const sequelize = require('./sequelize');
 const app = require('./app');
+const sequelize = require('./sequelize');
+const { createServer } = require("http");
+const { Server } = require("socket.io");
+const httpServer = createServer(app);
+const io = new Server(httpServer, {cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"]
+  }});
 
 const initDatabase = async () => {
     try {
@@ -17,6 +24,10 @@ initDatabase();
 
 const port = process.env.PORT || 5000;
 
-const server = app.listen(port, () => {
+const server = httpServer.listen(port, () => {
     console.log(`App đang chạy trên port ${port}...`);
 });
+
+io.on("connection", socket=>{
+    console.log('connected to client');
+})

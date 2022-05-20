@@ -9,6 +9,7 @@ const goodRouter = require('./routes/good');
 const userRouter = require('./routes/user');
 const fileUploadRouter = require('./routes/image');
 const notifyRouter = require('./routes/notify');
+const chatRouter = require('./routes/chat');
 
 // Config
 dotenv.config({ path: './.env' });
@@ -29,6 +30,7 @@ app.use('/api/goods', goodRouter);
 app.use('/api/users', userRouter);
 app.use('/api/fileupload', fileUploadRouter);
 app.use('/api/notify', notifyRouter);
+app.use('/api/chat', chatRouter);
 
 app.all('*', (req, res) => {
     res.status(404).json({ message: 'Không tìm thấy route này!' });
