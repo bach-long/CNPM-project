@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -6,15 +6,91 @@ import { Link, useNavigate } from "react-router-dom";
 import styles from "./Content.module.css";
 import Pagination from "./Pagination";
 
+
 const Products = () => {
   const [data, setData] = useState([]);
   const [filter, setFilter] = useState(data);
   const [loading, setLoading] = useState(false);
+  const [page,setPage] = useState(1);
   let componentMounted = true;
   const navigate = useNavigate();
+  const pathshort = "/assets/iconKhamPha/";
+  const doc = useRef(null);
 
+  
+  const listProductLine = [
+    {
+      name: "Bat dong san",
+      src: `${pathshort}free.png`,
+      category: "men's clothing",
+    },
+    {
+      name: "Bat dong san",
+      src: `${pathshort}dichvudulich.png`,
+      category: "women's clothing",
+    },
+    { name: "Bat dong san", src: `${pathshort}doan.png`, category: "jewelery" },
+    {
+      name: "Bat dong san",
+      src: `${pathshort}dodientu.png`,
+      category: "electronics",
+    },
+    {
+      name: "Bat dong san",
+      src: `${pathshort}dodungvanphong.png`,
+      category: "men's clothing",
+    },
+    {
+      name: "Bat dong san",
+      src: `${pathshort}dogiadung.png`,
+      category: "men's clothing",
+    },
+    {
+      name: "Bat dong san",
+      src: `${pathshort}giaitri.png`,
+      category: "men's clothing",
+    },
+    {
+      name: "Bat dong san",
+      src: `${pathshort}maygiat.png`,
+      category: "men's clothing",
+    },
+    {
+      name: "Bat dong san",
+      src: `${pathshort}mevabe.png`,
+      category: "men's clothing",
+    },
+    {
+      name: "Bat dong san",
+      src: `${pathshort}nhacua.png`,
+      category: "men's clothing",
+    },
+    {
+      name: "Bat dong san",
+      src: `${pathshort}thoitrang.png`,
+      category: "men's clothing",
+    },
+    {
+      name: "Bat dong san",
+      src: `${pathshort}thucung.png`,
+      category: "men's clothing",
+    },
+    {
+      name: "Bat dong san",
+      src: `${pathshort}vieclam.png`,
+      category: "men's clothing",
+    },
+    {
+      name: "Bat dong san",
+      src: `${pathshort}xeco.png`,
+      category: "men's clothing",
+    },
+  ];
 
-
+  function getCurPage(page) {
+    setPage(page);
+    console.log(page)
+  }
 
   useEffect(() => {
     const getProducts = async () => {
@@ -30,6 +106,7 @@ const Products = () => {
       return () => {
         componentMounted = false;
       };
+      
     };
 
     getProducts();
@@ -59,47 +136,48 @@ const Products = () => {
     setFilter(updatedList);
   };
 
+
   const ShowProducts = () => {
     return (
       <>
-        <div className="buttons d-flex justify-content-center mb-5 pb-5">
-          <button
-            className="btn btn-outline-dark me-2"
+        <div className="buttons mb-4 pb-4">
+        <button
+            className="btn btn-outline-dark me-2 mb-2"
             onClick={() => setFilter(data)}
-          >
+        >
             All
-          </button>
-          <button
-            className="btn btn-outline-dark me-2"
-            onClick={() => filterProduct("men's clothing")}
-          >
-            Men's Clothing
-          </button>
-          <button
-            className="btn btn-outline-dark me-2"
-            onClick={() => filterProduct("women's clothing")}
-          >
-            Women's Clothing
-          </button>
-          <button
-            className="btn btn-outline-dark me-2"
-            onClick={() => filterProduct("jewelery")}
-          >
-            Jewelery
-          </button>
-          <button
-            className="btn btn-outline-dark me-2"
-            onClick={() => filterProduct("electronics")}
-          >
-            Electronic
-          </button>
-          <div className={clsx(styles.clear)}></div>
+        </button>
+        <div className="grid">
+          {listProductLine.map((productLine,index) => {
+            return (
+              <button
+                key={index}
+                className="btn btn-outline-dark me-2 mb-1"
+                onClick={() => filterProduct(productLine.category)}
+              >
+                <div>
+                  <img
+                    src={productLine.src}
+                    alt=""
+                    style={{ height: "84px", weight: "84px" }}
+                  />
+                  <div>{productLine.name}</div>
+                </div>
+              </button>
+            );
+          })}
+          </div>
         </div>
+        <h1>San pham</h1>
+        <hr />
 
-        {filter.map((product) => {
+        {filter.map((product,index) => {
           return (
-            <>
-              <div className={`col-md-3 mb-4 ${styles.cardProduct}`}  onClick={()=>navigate(`/products/${product.id}`)}>
+              <div
+              key={index}
+                className={`col-md-3 mb-4 ${styles.cardProduct}`}
+                onClick={() => navigate(`/products/${product.id}`)}
+              >
                 <div className="card h-100 text-center" key={product.id}>
                   <img
                     src={product.image}
@@ -121,17 +199,17 @@ const Products = () => {
                   </div>
                 </div>
               </div>
-            </>
           );
         })}
-        <Pagination/>
+        <Pagination getData={getCurPage} page={page}/>
       </>
     );
   };
 
+
   return (
     <div>
-      <div className="my-5 bg-light">
+      <div className="my-5 bg-light" ref={doc}>
         <div className="row">
           <div className="col-12 mb-5 pt-3">
             <h1
@@ -146,7 +224,6 @@ const Products = () => {
         <div className="row justify-content-center m-3">
           {loading ? <Loading /> : <ShowProducts />}
         </div>
-        
       </div>
     </div>
   );

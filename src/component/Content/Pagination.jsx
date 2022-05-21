@@ -2,15 +2,19 @@ import React, { useRef, useEffect, useState } from "react";
 import clsx from "clsx";
 import styles from "./Content.module.css";
 import { Link } from "react-router-dom";
-import * as ReactDOM from "react-dom";
-const Pagination = () => {
-  const [numberPage, setNumberPage] = useState(1);
+import { actionSetCurPage } from "../../redux/action";
+import { useDispatch} from "react-redux";
+
+
+const Pagination = (props) => {
+  const [numberPage, setNumberPage] = useState(props.page);
   const [truncate, setTruncate] = useState(true);
   const paginationBox = useRef(null);
   const btnPrevPg = useRef(null);
   const btnNextPg = useRef(null);
   const btnFirstPg = useRef(null);
   const btnLastPg = useRef(null);
+  const dispatch = useDispatch();
   var r = [];
   var valuePage = {
     truncate: true,
@@ -23,7 +27,6 @@ const Pagination = () => {
     const { totalPages, numLinksTwoSide: delta } = valuePage;
 
     const range = delta + 4; // use for handle visible number of links left side
-    console.log("pagination run");
     let render = [];
     let renderTwoSide = [];
     let dot = (
@@ -81,9 +84,10 @@ const Pagination = () => {
     }
   }
 
+
   function renderPage(index, active = "") {
     return (
-      <li className={`page-item ${active}`}>
+      <li className={`page-item ${active}`} key={index}>
         <a className="page-link" action="javascript: false"
               href="javascript: false"  value={index}>
           {index}
@@ -96,34 +100,37 @@ const Pagination = () => {
     const ele = e.target;
     if (ele.getAttribute("value")) {
       setNumberPage(parseInt(ele.getAttribute("value")));
+      props.getData(parseInt(ele.getAttribute("value")))
     }
   };
 
   const nextPage = () => {
     if (numberPage < valuePage.totalPages) {
       setNumberPage(numberPage + 1);
+      props.getData(numberPage + 1)
     }
   };
 
   const prevPage = () => {
     if (numberPage > 1) {
       setNumberPage(numberPage - 1);
-      console.log(numberPage);
+      props.getData(numberPage - 1)
     }
   };
 
   const firstPage = () => {
     setNumberPage(1);
+    props.getData(1)
   };
 
   const lastPage = () => {
     setNumberPage(valuePage.totalPages);
+    props.getData(valuePage.totalPages)
   };
   pagination();
 
   useEffect(() => {
     pagination();
-    console.log(numberPage);
   }, [numberPage]);
 
   return (

@@ -10,6 +10,7 @@ import Login from "./component/Heading/Login";
 import Blog from "./component/Content/Blog";
 import Cart from "./component/Content/Cart"
 import PageUser from "./component/Content/PageUser"
+import Chat from "./component/Content/Chat";
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/cart" element={<Cart/>} />
           <Route path="/userInfor" element={<PageUser/>} />
+          <Route path="/chat" element={<Chat/>}/>
         </Routes>
         <Contact />
       </div>

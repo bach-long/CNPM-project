@@ -78,7 +78,7 @@ function Navbar() {
               </li>
               
               <li className="nav-item me-3">
-                <Link className="nav-link" to="#">
+                <Link className="nav-link" to="/chat">
                   <i className="fa fa-commenting-o me-2"></i>Chat
                 </Link>
               </li>

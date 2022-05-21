@@ -527,3 +527,26 @@
 
 /**Pagination end*/
 
+
+/**Chat**/
+.chat {
+    height: 600px;
+}
+
+.userChat {
+    background-color: white;
+    box-shadow: 0 0 3px rgba(0, 0 , 0, 0.3);
+}
+
+.boxChat {
+    background-color: #ccc;
+}
+
+.chat_wrapListUser{
+    height: 100%;
+    overflow: auto;
+    max-height: 515px;
+
+}
+
+/**End chat**/

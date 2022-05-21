@@ -13,11 +13,11 @@ const Home = () => {
       <Banner></Banner>
       <Products />
       <div className="descriptionWrapper bg-light">
-        <div className="descriptionMarket">
+        <div className="descriptionMarket py-2">
           <h3 className="m-3">
             Chợ Tốt - Chợ Mua Bán, Rao Vặt Trực Tuyến Hàng Đầu Của Người Việt
           </h3>
-          <div className={clsx(styles.textContent)}>
+          <div className={clsx(styles.textContent, "mx-4")}>
             <p>
               Chợ Tốt chính thức gia nhập thị trường Việt Nam vào đầu năm 2012,
               với mục đích tạo ra cho bạn một kênh rao vặt trung gian, kết nối
