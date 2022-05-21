@@ -65,12 +65,52 @@ const Chat = () => {
                 <p className="m-0 p-0 mx-1 text-black-50 fw-bold">
                   Ten San Pham
                 </p>
-                <p className="m-0 p-0 mx-1 text-black-50 fw-bold">Gia</p>
+                <p className="m-0 p-0 mx-1 fw-bold" style={{ color: "red" }}>
+                  Gia
+                </p>
               </div>
             </div>
           </div>
           <hr className="my-0" />
-          <div className="bg-light" style={{ height: "435px" }}></div>
+          <div
+            className={clsx("bg-light", styles.boxChatMessage)}
+            style={{ height: "435px" }}
+          >
+            <div className="text-center fst-italic"><p>Bạn và người bán đã được kết nối hãy chat với nhau nào</p></div>
+            <div className={clsx(styles.messageBlue)}>
+              <p className={clsx(styles.messageContent)}>This is an awesome message!</p>
+              <div className={clsx(styles.messageTimestampLeft,"text-right")}><p className="m-0">SMS 13:37</p></div>
+            </div>
+
+            <div className={clsx(styles.messageOrange)}>
+              <p className={clsx(styles.messageContent)}>
+                I agree that your message is awesome!
+              </p>
+              <div className={clsx(styles.messageTimestampRight)}><p className="m-0">SMS 13:37</p></div>
+            </div>
+
+            <div className={clsx(styles.messageBlue)}>
+              <p className={clsx(styles.messageContent)}>Thanks!</p>
+              <div className={clsx(styles.messageTimestampLeft)}><p className="m-0">SMS 13:37</p></div>
+            </div>
+
+            <div className={clsx(styles.messageBlue)}>
+              <p className={clsx(styles.messageContent)}>This is an awesome message!</p>
+              <div className={clsx(styles.messageTimestampLeft,"text-right")}><p className="m-0">SMS 13:37</p></div>
+            </div>
+
+            <div className={clsx(styles.messageOrange)}>
+              <p className={clsx(styles.messageContent)}>
+                I agree that your message is awesome!
+              </p>
+              <div className={clsx(styles.messageTimestampRight)}><p className="m-0">SMS 13:37</p></div>
+            </div>
+
+            <div className={clsx(styles.messageBlue)}>
+              <p className={clsx(styles.messageContent)}>Thanks!</p>
+              <div className={clsx(styles.messageTimestampLeft)}><p className="m-0">SMS 13:37</p></div>
+            </div>
+          </div>
           <div className="d-flex mt-1">
             <input
               type="text"
@@ -78,7 +118,9 @@ const Chat = () => {
               style={{ width: "94%", borderStyle: "none" }}
             />
             <div className="" style={{ width: "5%" }}>
-              <button><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+              <button>
+                <i class="fa fa-paper-plane" aria-hidden="true"></i>
+              </button>
             </div>
           </div>
         </div>
