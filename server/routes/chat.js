@@ -2,16 +2,13 @@ const { Router } = require('express');
 
 const userCheck = require('../middlewares/userCheck');
 const authCheck = require('../middlewares/authCheck');
-const { Op } = require("sequelize");
-const router = require('./good');
+const { Op } = require('sequelize');
+
 const { User, Conversation, ChatContext } = require('../sequelize').models;
 
 const CreateConversation = async (req, res, next) => {
     try {
-        const {
-            goodId,
-            username2,
-        } = req.body;
+        const { goodId, username2 } = req.body;
         const username1 = res.locals.user.username;
 
         // TODO: Validate và ném lỗi đọc được
@@ -43,16 +40,13 @@ const ConversationList = async (req, res, next) => {
         // TODO: Validate và ném lỗi đọc được
 
         // create good
-        list = Conversation.findAll({
+        list = await Conversation.findAll({
             where: {
-              [Op.or]: [
-                { username1: username },
-                { username2: username }
-              ]
-            }
-          });
+                [Op.or]: [{ username1: username }, { username2: username }],
+            },
+        });
 
-        res.status(201).json(list);
+        res.status(200).json(list);
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -62,12 +56,9 @@ const ConversationList = async (req, res, next) => {
     }
 };
 
-const CreateMessage =  async (req, res, next) => {
+const CreateMessage = async (req, res, next) => {
     try {
-        const {
-            conversationId,
-            message
-        } = req.body;
+        const { conversationId, message } = req.body;
         const username = res.locals.user.username;
         // TODO: Validate và ném lỗi đọc được
 
@@ -93,24 +84,20 @@ const CreateMessage =  async (req, res, next) => {
 
 const GetContext = async (req, res, next) => {
     try {
-        const {
-            conversationId,
-        } = req.body;
+        const { conversationId } = req.query;
         const username = res.locals.user.username;
 
         // TODO: Validate và ném lỗi đọc được
 
         // create good
-        allContext = ChatContext.findAll({
+        allContext = await ChatContext.findAll({
             where: {
                 conversationId: conversationId,
-                order: [
-                    ['createdAt', 'ASC'],
-                ]
-            }
-          });
+            },
+            order: [['createdAt', 'ASC']],
+        });
 
-        res.status(201).json(allContext);
+        res.status(200).json(allContext);
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -119,6 +106,8 @@ const GetContext = async (req, res, next) => {
         });
     }
 };
+
+const router = new Router();
 
 router.post('/conversation', userCheck, authCheck, CreateConversation);
 router.post('/message', userCheck, authCheck, CreateMessage);

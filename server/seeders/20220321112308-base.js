@@ -176,6 +176,60 @@ module.exports = {
         const firstGood = await Good.findOne({ where: { goodId: 1 } });
         await user1.addBookmarkedGood(firstGood);
         await user2.addBookmarkedGood(firstGood);
+
+        // Chat
+        await queryInterface.bulkInsert('conversations', [
+            {
+                conversationId: 1,
+                username1: 'user1',
+                username2: 'user2',
+                createdAt: new Date('2022-03-21T12:42:13.910Z'),
+                updatedAt: new Date('2022-03-21T12:42:13.910Z'),
+            },
+        ]);
+
+        await queryInterface.bulkInsert('chatcontexts', [
+            {
+                chatContextId: 1,
+                conversationId: 1,
+                username: 'user1',
+                context: 'Hello',
+                createdAt: new Date('2022-03-21T12:42:15.910Z'),
+                updatedAt: new Date('2022-03-21T12:42:15.910Z'),
+            },
+            {
+                chatContextId: 2,
+                conversationId: 1,
+                username: 'user2',
+                context: 'Hello',
+                createdAt: new Date('2022-03-21T12:42:16.910Z'),
+                updatedAt: new Date('2022-03-21T12:42:16.910Z'),
+            },
+            {
+                chatContextId: 3,
+                conversationId: 1,
+                username: 'user1',
+                context: 'How are you?',
+                createdAt: new Date('2022-03-21T12:42:17.910Z'),
+                updatedAt: new Date('2022-03-21T12:42:17.910Z'),
+            },
+            {
+                chatContextId: 4,
+                conversationId: 1,
+                username: 'user2',
+                context: "I'm fine, thank you!",
+                createdAt: new Date('2022-03-21T12:42:18.910Z'),
+                updatedAt: new Date('2022-03-21T12:42:18.910Z'),
+            },
+            {
+                chatContextId: 5,
+                conversationId: 1,
+                username: 'user2',
+                context: 'And you?',
+                createdAt: new Date('2022-03-21T12:42:19.910Z'),
+                updatedAt: new Date('2022-03-21T12:42:19.910Z'),
+            },
+        ]);
     },
 
     async down(queryInterface, Sequelize) {
@@ -184,6 +238,8 @@ module.exports = {
         await queryInterface.bulkDelete('goods');
         await queryInterface.bulkDelete('comments');
         await queryInterface.bulkDelete('images');
+        await queryInterface.bulkDelete('conversations');
+        await queryInterface.bulkDelete('chatcontexts');
         await queryInterface.bulkDelete('sqlite_sequence'); // auto increment table
     },
 };

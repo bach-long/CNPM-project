@@ -7,10 +7,7 @@ module.exports = (sequelize) => {
             conversationId: {
                 type: DataTypes.INTEGER(11),
                 autoIncrement: true,
-                primaryKey: true
-            },
-            goodId: {
-                type: DataTypes.INTEGER(11),
+                primaryKey: true,
             },
             username1: {
                 type: DataTypes.STRING(50),
