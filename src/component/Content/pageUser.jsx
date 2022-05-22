@@ -98,7 +98,7 @@ const PageUser = () => {
               >
                 <div className="card h-100 text-center" key={good.id}>
                   <img
-                    src={img0}
+                    src={`http://localhost:5000/${img0}`}
                     className="card-img-top"
                     alt={good.name}
                     height="250px"
