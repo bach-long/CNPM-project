@@ -2,15 +2,18 @@ import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import styles from "./Content.module.css";
 import { Link, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { user } from "../../redux/action";
 
 const PageUser = () => {
   const [blogGoods, setBlogGoods] = useState([]);
   const [inforUser, setInforUser] = useState({});
   const username = useLocation().state.username;
   var checkBlogUp = true;
+  const dispatch = useDispatch();
 
   useEffect(() => {
+  
     const getUserGoods = async () => {
       const response = await fetch(
         `http://127.0.0.1:5000/api/users/${username}/goods`
@@ -23,6 +26,27 @@ const PageUser = () => {
     };
 
     getUserGoods();
+
+    const token = localStorage.getItem('token')
+    var status;
+    var ojData = {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    };
+    return fetch("http://127.0.0.1:5000/api/auth/me", ojData)
+      .then(function (response) {
+        status = response.status;
+        return response.json();
+      })
+      .then(function (res) {
+        if (status === 200) {
+          dispatch(user(res));
+      }
+      });
   }, []);
 
   console.log(blogGoods);

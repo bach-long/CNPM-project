@@ -2,7 +2,35 @@ import clsx from "clsx";
 import React from "react";
 import { Link } from "react-router-dom";
 import styles from "./Heading.module.css";
+import { useSelector, useDispatch } from "react-redux";
+import { user } from "../../redux/action";
 function Navbar() {
+  const dispatch = useDispatch();
+  const logout = () => {
+    const token = localStorage.getItem('token')
+    dispatch(user({}));
+    localStorage.removeItem('token');
+    var status;
+    var ojData = {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    };
+    return fetch("http://127.0.0.1:5000/api/auth/logout", ojData)
+      .then(function (response) {
+        status = response.status;
+        return response.json();
+      })
+      .then(function (res) {
+        if (status === 200) {
+          console.log(res)
+      }
+    });
+  }
+
   return (
     <div className={ clsx(styles.navHeading,"bgColorMain")}>
       <nav className="navbar navbar-expand-lg navbar-light pb-0 pt-0">
@@ -108,7 +136,7 @@ function Navbar() {
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" to="#">
+                    <Link className="dropdown-item" to="/sigin" onClick={logout}>
                       Đăng xuất
                     </Link>
                   </li>

@@ -7,6 +7,35 @@ import { useDispatch } from "react-redux";
 import { user } from "../../redux/action";
 
 const Home = () => {
+  const dispatch = useDispatch();
+  const reloadLogin = ()=> {
+    const token = localStorage.getItem('token')
+    var status;
+    var ojData = {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    };
+    return fetch("http://127.0.0.1:5000/api/auth/me", ojData)
+      .then(function (response) {
+        status = response.status;
+        return response.json();
+      })
+      .then(function (res) {
+        if (status === 200) {
+          dispatch(user(res));
+      }
+      });
+  }
+  useEffect(
+    
+    reloadLogin,[])
+
+  
+  
   
   return (
     <div className={clsx(styles.home, "justify-content-center")}>
@@ -83,3 +112,4 @@ const Home = () => {
 };
 
 export default Home;
+

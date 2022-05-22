@@ -4,12 +4,36 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./Content.module.css";
-import Pagination from "./Pagination";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { user } from "../../redux/action";
 
 const Chat = () => {
   const array = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
   const [checkBoxChatNull, setCheckBoxChat] = useState(false);
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    const token = localStorage.getItem('token')
+    var status;
+    var ojData = {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    };
+    return fetch("http://127.0.0.1:5000/api/auth/me", ojData)
+      .then(function (response) {
+        status = response.status;
+        return response.json();
+      })
+      .then(function (res) {
+        if (status === 200) {
+          dispatch(user(res));
+      }
+      });
+  },[])
+
   const BoxChatNull = () => {
     return (
       <div className={clsx(styles.boxChat, "col-md-8")}>
