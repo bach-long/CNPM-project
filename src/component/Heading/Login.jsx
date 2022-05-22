@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 import { user } from "../../redux/action";
 
 
-
 const Login = () => {
   const navigate = useNavigate();
   const [messageError, setmessageError] = useState('');
@@ -16,11 +15,11 @@ const Login = () => {
   const username = useRef(null);
   const password = useRef(null);
   const dispatch = useDispatch();
-  
 
   const postData = (data) => {
     var ojData = {
       method: 'POST',
+      credentials: "same-origin",
       headers:{
         Accept: 'application/json',
                  'Content-Type': 'application/json',
@@ -36,7 +35,8 @@ const Login = () => {
         
       .then(function(res) {
         if (status === 200) {
-          localStorage.setItem("token", res.token)
+          sessionStorage.setItem("user", res.user)
+          
           dispatch(user(res.user))
           navigate('/')
           setmessageError('Dang nhap thanh cong')
@@ -63,6 +63,9 @@ const Login = () => {
    postData(data);
   }
 
+   useEffect(()=> {
+     console.log(1)
+   })
 
   return (
     <>

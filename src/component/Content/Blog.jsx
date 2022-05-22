@@ -1,11 +1,88 @@
 import React, { useRef, useEffect, useState } from "react";
 import clsx from "clsx";
 import styles from "./Content.module.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Blog = () => {
   const inputFile = useRef();
+  const [messageError, setmessageError] = useState('test');
   const [files, setFiles] = useState([]);
+  const tagID = ['Bất động sản', 'Xe cộ', 'Đồ điện tử', 'Việc làm', 'Thú cưng','Đồ ăn và thực phẩm', 'Tủ lạnh máy giặt', 'Đồ gia dụng','Mẹ và bé', 'Thời trang và đồ dùng cá nhân', 'Giải trí, thể thao', 'Đồ dùng văn phòng', 'Dịch vụ du lịch']
+  const name = useRef(null);
+  const price = useRef(null);
+  const state = useRef(null);
+  const brand = useRef(null);
+  const type = useRef(null);
+  const maintenance = useRef(null);
+  const details = useRef(null);
+  const color = useRef(null);
+  const tag = useRef(null);
+  const description = useRef(null);
+  const address = useRef(null);
+  var status;
+  const navigate = useNavigate();
+  const token = localStorage.getItem('token');
+
+
+
+  const sendData = ()=> {
+    var data = {
+      name: name.current.value,
+      description: description.current.value,
+      address: address.current.value,
+      price: price.current.value,
+      state: state.current.value,
+      brand: brand.current.value,
+      type: type.current.value.checked?'Ban Chuyen':'Ca nhan',
+      maintenance: maintenance.current.value,
+      details: details.current.value,
+      color: color.current.value,
+      tagId: tag.current.selectedOptions[0].getAttribute('value')
+    }
+    console.log(data)
+    // name.current.value = '';
+    // description.current.value = '';
+    // address.current.value = '';
+    // price.current.value = '';
+    // state.current.value = '';
+    // brand.current.value = '';
+    // type.current.value = '';
+    // details.current.value = '';
+    // color.current.value = '';
+    // brand.current.value = '';
+    setmessageError('')
+   postData(data);
+  }
+
+
+
+  const postData = (data) => {
+    var ojData = {
+      method: 'POST',
+      credentials: "same-origin",
+      headers:{
+        Accept: 'application/json',
+                 'Content-Type': 'application/json',
+               },
+      body: JSON.stringify(data),
+      'Authorization': `Bearer ${token}`,
+    }
+    fetch("http://127.0.0.1:5000/api/goods/", ojData)
+      .then(function(response) {
+        status = response.status;
+          return response.json();
+      })
+        
+      .then(function(res) {
+        if (status === 201) {
+          navigate('/')
+          setmessageError('Dang nhap thanh cong')
+        } else {
+          console.log(res)
+          setmessageError(res.error)
+        }
+      })
+  }
 
   useEffect(() => {
     console.log(typeof files);
@@ -121,20 +198,25 @@ const Blog = () => {
               type="text"
               name="inputName"
               placeholder="Tên"
+              ref={name}
             />
             <select
               className={clsx(styles.blog_lineInput, "form-select")}
               aria-label="Default select example"
+              ref={tag}
             >
               <option selected>Chọn loại sản phẩm</option>
-              <option value="1">One</option>
-              <option value="2">Two</option>
-              <option value="3">Three</option>
+              {tagID.map((tag,index)=> {
+                return (
+                  <option value={index + 1}>{tag}</option>
+                )
+              })}
             </select>
-            <input
+            <textarea
               className={clsx(styles.blog_lineInput)}
-              type="text"
               placeholder="Mô tả chi tiết"
+              style={{height:'100px'}}
+              ref={description}
             />
           </div>
           <h3>Thông tin chi tiết</h3>
@@ -144,14 +226,17 @@ const Blog = () => {
                 className={clsx(styles.blog_lineInput)}
                 type="text"
                 placeholder="Hãng"
+                ref={brand}
               />
               <input
                 className={clsx(styles.blog_lineInput)}
                 placeholder="Giá"
+                ref={price}
               />
               <input
                 className={clsx(styles.blog_lineInput)}
                 placeholder="Tình trạng"
+                ref={state}
               />
             </div>
             <div className="col-md-6">
@@ -159,21 +244,23 @@ const Blog = () => {
                 className={clsx(styles.blog_lineInput)}
                 type="text"
                 placeholder="Bảo hành"
+                ref={maintenance}
               />
               <input
                 className={clsx(styles.blog_lineInput)}
                 type="text"
                 placeholder="Thông số"
+                ref={details}
               />
               <input
                 className={clsx(styles.blog_lineInput)}
                 type="text"
                 placeholder="Màu sắc"
+                ref={color}
               />
             </div>
           </div>
           <h3>Người bán</h3>
-          <p>Cá nhân/bán chuyên</p>
           <div
             className="btn-group"
             role="group"
@@ -197,6 +284,7 @@ const Blog = () => {
               name="btnradio"
               id="btnradio3"
               autocomplete="off"
+              ref={type}
             />
             <label className="btn btn-outline-primary" for="btnradio3">
               Bán chuyên
@@ -207,8 +295,10 @@ const Blog = () => {
               className={clsx(styles.blog_lineInput)}
               type="text"
               placeholder="Địa chỉ người bán"
+              ref={address}
             />
-            <button className="btn btn-warning mt-3">Đăng tin</button>
+            <div style={{color:'red', fontSize:'13px'}} className="fst-italic">{messageError}</div>
+            <button className="btn btn-warning mt-3" onClick={()=>sendData()}>Đăng tin</button>
           </div>
         </div>
       </div>

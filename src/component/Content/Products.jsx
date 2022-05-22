@@ -20,68 +20,70 @@ const Products = () => {
   
   const listProductLine = [
     {
-      name: "Bat dong san",
+      name: "Cho tặng miễn phí",
       src: `${pathshort}free.png`,
       category: "men's clothing",
     },
     {
-      name: "Bat dong san",
+      name: "Dịch vụ du lịch",
       src: `${pathshort}dichvudulich.png`,
       category: "women's clothing",
     },
-    { name: "Bat dong san", src: `${pathshort}doan.png`, category: "jewelery" },
+    { name: "Đồ ăn", 
+      src: `${pathshort}doan.png`, 
+      category: "jewelery" },
     {
-      name: "Bat dong san",
+      name: "Đồ điện tử",
       src: `${pathshort}dodientu.png`,
       category: "electronics",
     },
     {
-      name: "Bat dong san",
+      name: "Đồ dùng văn phòng",
       src: `${pathshort}dodungvanphong.png`,
       category: "men's clothing",
     },
     {
-      name: "Bat dong san",
+      name: "Đồ gia dụng",
       src: `${pathshort}dogiadung.png`,
       category: "men's clothing",
     },
     {
-      name: "Bat dong san",
+      name: "Giải trí",
       src: `${pathshort}giaitri.png`,
       category: "men's clothing",
     },
     {
-      name: "Bat dong san",
+      name: "Máy giặt tủ lạnh",
       src: `${pathshort}maygiat.png`,
       category: "men's clothing",
     },
     {
-      name: "Bat dong san",
+      name: "Mẹ và bé",
       src: `${pathshort}mevabe.png`,
       category: "men's clothing",
     },
     {
-      name: "Bat dong san",
+      name: "Bất động sản",
       src: `${pathshort}nhacua.png`,
       category: "men's clothing",
     },
     {
-      name: "Bat dong san",
+      name: "Thời trang",
       src: `${pathshort}thoitrang.png`,
       category: "men's clothing",
     },
     {
-      name: "Bat dong san",
+      name: "Thú cưng",
       src: `${pathshort}thucung.png`,
       category: "men's clothing",
     },
     {
-      name: "Bat dong san",
+      name: "Việc làm",
       src: `${pathshort}vieclam.png`,
       category: "men's clothing",
     },
     {
-      name: "Bat dong san",
+      name: "Xe cộ",
       src: `${pathshort}xeco.png`,
       category: "men's clothing",
     },
@@ -154,6 +156,7 @@ const Products = () => {
                 key={index}
                 className="btn btn-outline-dark me-2 mb-1"
                 onClick={() => filterProduct(productLine.category)}
+                style={{height:'135px', width:'120px'}}
               >
                 <div>
                   <img
@@ -161,7 +164,7 @@ const Products = () => {
                     alt=""
                     style={{ height: "84px", weight: "84px" }}
                   />
-                  <div>{productLine.name}</div>
+                  <div style={{fontSize:'14px'}}>{productLine.name}</div>
                 </div>
               </button>
             );
