@@ -7,7 +7,6 @@ const io = new Server(httpServer, {cors: {
     origin: "http://localhost:3000",
     methods: ["GET", "POST"]
   }});
-
 const initDatabase = async () => {
     try {
         await sequelize.authenticate();
@@ -30,4 +29,7 @@ const server = httpServer.listen(port, () => {
 
 io.on("connection", socket=>{
     console.log('connected to client');
+})
+io.on('sendMessage', ()=>{
+    console.log('someone send message')
 })

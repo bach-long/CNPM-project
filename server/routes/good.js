@@ -193,6 +193,23 @@ const commentOnGood = async (req, res, next) => {
     }
 };
 
+const getGoodsByTag = async (req, res, next) => {
+    try {
+        const { tagId } = req.params;
+        const goods = await Good.findAll({ where: { tagId: tagId } });
+
+        // TODO: Set user specific things like liked comment using res.locals.user
+
+        res.json(goods);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Lỗi từ Get Good By Tag!',
+            errors: error,
+        });
+    }
+};
+
 const getGoodComments = async (req, res, next) => {
     try {
         const { goodId } = req.params;
@@ -250,5 +267,6 @@ router.delete('/:goodId', userCheck, authCheck, deleteGood);
 router.post('/:goodId/comments', userCheck, authCheck, commentOnGood);
 router.get('/:goodId/comments', userCheck, getGoodComments);
 router.post('/:goodId/bookmark', userCheck, authCheck, bookmarkGood);
+router.get('/:tagId/getGoodsByTag', userCheck, authCheck, getGoodsByTag)
 
 module.exports = router;
