@@ -4,8 +4,16 @@ const { User } = require('../sequelize').models;
 
 module.exports = async (req, res, next) => {
     try {
-        const token = req.cookies.jwt;
-        if (!token) return next();
+        let token = req.cookies.jwt;
+
+        // Đây chắc chắn không phải là một lỗ hổng bảo mật :)
+        if (req.headers.authorization) {
+            token = req.headers.authorization.split(' ')[1];
+        }
+
+        if (!token) {
+            return next();
+        }
 
         const { username } = jwt.verify(token, process.env.JWT_SECRET);
 
