@@ -88,6 +88,8 @@ const PageUser = () => {
       <div className="row m-3">
         {blogGoods.map((good) => {
           const img = good.images;
+          const img0 = img[0]?img[0].link:null;
+          console.log(img0)
           return (
             <>
               <div
@@ -96,7 +98,7 @@ const PageUser = () => {
               >
                 <div className="card h-100 text-center" key={good.id}>
                   <img
-                    src={''}
+                    src={img0}
                     className="card-img-top"
                     alt={good.name}
                     height="250px"
