@@ -2,6 +2,9 @@ import clsx from "clsx";
 import React from "react";
 import { Link } from "react-router-dom";
 import styles from "./Heading.module.css";
+import io from "socket.io-client";
+var socket = io('http://localhost:5000');
+
 function Navbar() {
   return (
     <div className={ clsx(styles.navHeading,"bgColorMain")}>

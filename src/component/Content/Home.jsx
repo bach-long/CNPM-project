@@ -5,7 +5,6 @@ import clsx from "clsx";
 import styles from "./Content.module.css";
 import { useDispatch } from "react-redux";
 import { user } from "../../redux/action";
-
 const Home = () => {
   
   return (

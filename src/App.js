@@ -9,7 +9,7 @@ import Modal from "./component/Heading/Modal";
 import Login from "./component/Heading/Login";
 import Blog from "./component/Content/Blog";
 import Cart from "./component/Content/Cart"
-import PageUser from "./component/Content/PageUser"
+import PageUser from "./component/Content/pageUser"
 
 
 function App() {
