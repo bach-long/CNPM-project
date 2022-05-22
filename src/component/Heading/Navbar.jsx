@@ -1,11 +1,16 @@
 import clsx from "clsx";
-import React from "react";
+import React,{useState, useEffect} from "react";
 import { Link } from "react-router-dom";
 import styles from "./Heading.module.css";
 import { useSelector, useDispatch } from "react-redux";
 import { user } from "../../redux/action";
 function Navbar() {
+  const [statusLogin, setStatusLogin] = useState(false); 
+  const inforUser = useSelector((state)=> state.Login);  
   const dispatch = useDispatch();
+  useEffect(()=> {
+    setStatusLogin(inforUser.username)
+  })
   const logout = () => {
     const token = localStorage.getItem('token')
     dispatch(user({}));
@@ -106,12 +111,12 @@ function Navbar() {
               </li>
               
               <li className="nav-item me-3">
-                <Link className="nav-link" to="/chat">
+                <Link className="nav-link" to={statusLogin?"/chat":"/sigin"}>
                   <i className="fa fa-commenting-o me-2"></i>Chat
                 </Link>
               </li>
               <li className="nav-item me-3">
-                <Link className="nav-link" to="#">
+                <Link className="nav-link" to={statusLogin?"/userInfor":"/sigin"}>
                   <i className="fa fa-server me-2"></i>Quản lý tin
                 </Link>
               </li>
@@ -131,7 +136,7 @@ function Navbar() {
                   aria-labelledby="navbarDropdownMenuLink"
                 >
                   <li>
-                    <Link className="dropdown-item" to="#">
+                    <Link className="dropdown-item" to={statusLogin?"/userInfor":"/sigin"}>
                       Thông tin tài khoản
                     </Link>
                   </li>
