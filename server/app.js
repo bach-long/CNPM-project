@@ -21,8 +21,13 @@ app.use(express.static('uploads'));
 app.use(morgan('dev', { skip: (req, res) => process.env.NODE_ENV === 'test' }));
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
-app.options('*', cors());
+
+const corsOptions = {
+    credentials: true,
+    origin: true,
+}
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // Routes
 app.use('/api/auth', authRouter);
