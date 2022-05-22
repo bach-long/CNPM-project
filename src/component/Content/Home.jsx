@@ -6,17 +6,46 @@ import styles from "./Content.module.css";
 import { useDispatch } from "react-redux";
 import { user } from "../../redux/action";
 const Home = () => {
+  const dispatch = useDispatch();
+  const reloadLogin = ()=> {
+    const token = localStorage.getItem('token')
+    var status;
+    var ojData = {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    };
+    return fetch("http://127.0.0.1:5000/api/auth/me", ojData)
+      .then(function (response) {
+        status = response.status;
+        return response.json();
+      })
+      .then(function (res) {
+        if (status === 200) {
+          dispatch(user(res));
+      }
+      });
+  }
+  useEffect(
+    
+    reloadLogin,[])
+
+  
+  
   
   return (
     <div className={clsx(styles.home, "justify-content-center")}>
       <Banner></Banner>
       <Products />
       <div className="descriptionWrapper bg-light">
-        <div className="descriptionMarket">
+        <div className="descriptionMarket py-2">
           <h3 className="m-3">
             Chợ Tốt - Chợ Mua Bán, Rao Vặt Trực Tuyến Hàng Đầu Của Người Việt
           </h3>
-          <div className={clsx(styles.textContent)}>
+          <div className={clsx(styles.textContent, "mx-4")}>
             <p>
               Chợ Tốt chính thức gia nhập thị trường Việt Nam vào đầu năm 2012,
               với mục đích tạo ra cho bạn một kênh rao vặt trung gian, kết nối
@@ -82,3 +111,4 @@ const Home = () => {
 };
 
 export default Home;
+

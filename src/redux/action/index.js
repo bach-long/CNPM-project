@@ -1,3 +1,4 @@
+import { useDispatch } from "react-redux";
 // for add item to cart
 export const addCart = (product) => {
   return {
@@ -31,6 +32,13 @@ export const regist = (infoUser) => {
   return {
     type: "REGIST",
     payload: infoUser,
+  };
+};
+
+export const sendToken = (token) => {
+  return {
+    type: "TOKEN",
+    payload: token,
   };
 };
 

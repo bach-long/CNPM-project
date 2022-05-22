@@ -7,6 +7,7 @@ import clsx from "clsx";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import styles from "./Content.module.css";
 import Comment from "./Comment";
+import { user } from "../../redux/action";
 
 const Product = () => {
   const { id } = useParams();
@@ -42,6 +43,29 @@ const Product = () => {
   useEffect(()=> {
     setStatusLogin(inforUser.username)
   })
+
+  useEffect(()=> {
+    const token = localStorage.getItem('token')
+    var status;
+    var ojData = {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    };
+    return fetch("http://127.0.0.1:5000/api/auth/me", ojData)
+      .then(function (response) {
+        status = response.status;
+        return response.json();
+      })
+      .then(function (res) {
+        if (status === 200) {
+          dispatch(user(res));
+      }
+      });
+  },[])
 
   /**scrollbar */
 

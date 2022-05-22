@@ -4,7 +4,7 @@ import { Link, useNavigate  } from "react-router-dom";
 import styles from "./Heading.module.css";
 import { useDispatch } from "react-redux";
 import { user } from "../../redux/action";
-
+import { useCookies } from "react-cookie";
 
 
 const Login = () => {
@@ -12,15 +12,15 @@ const Login = () => {
   const [messageError, setmessageError] = useState('');
   var status = 0;
   const token = localStorage.getItem('token');
-
+  const [cookies, setCookie] = useCookies(["user"]);
   const username = useRef(null);
   const password = useRef(null);
   const dispatch = useDispatch();
-  
 
   const postData = (data) => {
     var ojData = {
       method: 'POST',
+      credentials: "include",
       headers:{
         Accept: 'application/json',
                  'Content-Type': 'application/json',
@@ -63,6 +63,9 @@ const Login = () => {
    postData(data);
   }
 
+   useEffect(()=> {
+     console.log(1)
+   })
 
   return (
     <>

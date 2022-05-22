@@ -7,6 +7,8 @@ import { useDispatch } from "react-redux";
 import { addCart } from "../../redux/action";
 import { delCart } from "../../redux/action";
 import { setCountZero } from "../../redux/action";
+import { user } from "../../redux/action";
+
 
 const Cart = () => {
   const state = useSelector((state) => state.handleCart);
@@ -32,6 +34,30 @@ const Cart = () => {
     listCheckBox = pageCart.current.querySelectorAll("input");
 
   }, [state]);
+
+  useEffect(()=>{
+    const token = localStorage.getItem('token')
+    var status;
+    var ojData = {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    };
+    return fetch("http://127.0.0.1:5000/api/auth/me", ojData)
+      .then(function (response) {
+        status = response.status;
+        return response.json();
+      })
+      .then(function (res) {
+        if (status === 200) {
+          dispatch(user(res));
+      }
+      });
+  },[])
+
 
 
   const  checkAll = (e) => {

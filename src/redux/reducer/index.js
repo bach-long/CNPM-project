@@ -5,7 +5,7 @@ import {combineReducers} from "redux";
 
 
 const rootReducers = combineReducers({
-    handleCart ,Login,
+    handleCart ,Login
 })
 
 export default rootReducers;

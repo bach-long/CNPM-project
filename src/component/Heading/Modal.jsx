@@ -56,7 +56,7 @@ const Modal = () => {
         console.log(res.errors)
         if (status === 201) {
           dispatch(user(res))
-          navigate('/userInfor')
+          navigate('/userInfor', {state:{username:res.username}})
         } else {
           if (res.errors.email) {
             setmessageError(res.errors.email);

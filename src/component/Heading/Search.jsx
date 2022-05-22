@@ -10,10 +10,18 @@ function Search() {
   const state = useSelector((state) => state.handleCart);
   const [statusLogin, setStatusLogin] = useState(false); 
   const inforUser = useSelector((state)=> state.Login);  
-  
+  console.log(inforUser)
 
   useEffect(()=> {
     setStatusLogin(inforUser.username)
+    // if (statusLogin) {
+    //   const getUserGoods = async () => {
+    //     const response = await fetch(`http://fakestoreapi.com/products/${id}`);
+    //     const response2 = await fetch("http://fakestoreapi.com/products");
+    //     var p = await response.json();
+    //     var products = await response2.json();
+    //   };
+    // }
   })
 
   
@@ -56,7 +64,7 @@ function Search() {
           </div>
 
           <div className={clsx("buttons", "d-flex", styles.search_buttons)}>
-            <Link to={statusLogin?'/userInfor':'/sigin' } className="btn btn-outline-dark me-2 d-flex">
+            <Link to={statusLogin?'/userInfor':'/sigin'} state={{ username: inforUser.username }}  className="btn btn-outline-dark me-2 d-flex">
               <i className={statusLogin?"fa fa-user-circle-o mt-1":"fa fa-sign-in mt-1"}></i>
               <p className="mx-2">{statusLogin?inforUser.username:''}</p>
             </Link>
@@ -65,12 +73,12 @@ function Search() {
               className="btn btn-outline-dark me-2 position-relative"
             >
               <i className="fa fa-shopping-cart me-2"></i>
-              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                 {countCart()}
-                <span class="visually-hidden">unread messages</span>
+                <span className="visually-hidden">unread messages</span>
               </span>
             </Link>
-            <Link to="/blog" className="btn btn-outline-dark me-2">
+            <Link to={statusLogin?"/blog":"/sigin"} className="btn btn-outline-dark me-2">
               <i className="fa fa-pencil-square-o"></i>
             </Link>
             

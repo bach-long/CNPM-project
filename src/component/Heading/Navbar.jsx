@@ -6,6 +6,32 @@ import io from "socket.io-client";
 var socket = io('http://localhost:5000');
 
 function Navbar() {
+  const dispatch = useDispatch();
+  const logout = () => {
+    const token = localStorage.getItem('token')
+    dispatch(user({}));
+    localStorage.removeItem('token');
+    var status;
+    var ojData = {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    };
+    return fetch("http://127.0.0.1:5000/api/auth/logout", ojData)
+      .then(function (response) {
+        status = response.status;
+        return response.json();
+      })
+      .then(function (res) {
+        if (status === 200) {
+          console.log(res)
+      }
+    });
+  }
+
   return (
     <div className={ clsx(styles.navHeading,"bgColorMain")}>
       <nav className="navbar navbar-expand-lg navbar-light pb-0 pt-0">
@@ -81,7 +107,7 @@ function Navbar() {
               </li>
               
               <li className="nav-item me-3">
-                <Link className="nav-link" to="#">
+                <Link className="nav-link" to="/chat">
                   <i className="fa fa-commenting-o me-2"></i>Chat
                 </Link>
               </li>
@@ -111,7 +137,7 @@ function Navbar() {
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item" to="#">
+                    <Link className="dropdown-item" to="/sigin" onClick={logout}>
                       Đăng xuất
                     </Link>
                   </li>
