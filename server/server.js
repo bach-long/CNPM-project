@@ -30,9 +30,24 @@ const server = httpServer.listen(port, () => {
     console.log(`App đang chạy trên port ${port}...`);
 });
 
-io.on("connection", socket => {
-    console.log('connected to client');
-})
-io.on('sendMessage', ()=>{
-    console.log('someone send message')
-})
+io.on("connection", function(socket) {
+  sockets = new Object();
+  console.log('connected');
+    socket.on("online", data => {
+      sockets[data.username] = socket.id;
+    });
+    socket.on("sendMessage", function(data) {
+      console.log(data, sockets);
+    });
+  
+    socket.on("send_personal_message", function(data) {
+      
+    });
+  
+    socket.on("disconnect", reason => {
+      
+    });
+    socket.on('sendMessage', (data)=>{
+      
+    })
+  });
