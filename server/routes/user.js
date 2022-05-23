@@ -2,7 +2,8 @@ const { Router } = require('express');
 
 const userCheck = require('../middlewares/userCheck');
 const authCheck = require('../middlewares/authCheck');
-const { User, Image } = require('../sequelize').models;
+const { route } = require('./auth');
+const { User, Image, Cart, Good } = require('../sequelize').models;
 
 const getUser = async (req, res, next) => {
     try {
@@ -176,6 +177,23 @@ const follow = async (req, res, next) => {
     }
 };
 
+//them gio hang
+const cartInfo = async (req,res,next) => {
+    try {
+        Cart.findOne({userId: res.locals.user.userId});
+        goodsInCart = await Cart.findAll({include: Good});
+        res.status(200).json({
+            goodsInCart,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Lỗi từ CartInfo!',
+            errors: error,
+        });
+    }
+}
+
 const router = new Router();
 
 router.get('/:userId', userCheck, getUser);
@@ -183,5 +201,6 @@ router.get('/:userId/goods', userCheck, getUserGoods);
 router.post('/:userId/follow', userCheck, authCheck, follow);
 router.get('/:userId/followers', getUserFollowers);
 router.get('/:userId/followings', getUserFollowings);
+router.get('/Cart/Info', cartInfo);
 
 module.exports = router;

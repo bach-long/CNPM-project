@@ -1,7 +1,7 @@
 const { triggerAsyncId } = require('async_hooks');
 
 const applyExtraSetup = (sequelize) => {
-    const { User, Good, Comment, Image, Tag, Property, Notification } =
+    const { User, Good, Comment, Image, Tag, Property, Notification, Cart, Cart_Good } =
         sequelize.models;
 
     // User Goods
@@ -159,6 +159,45 @@ const applyExtraSetup = (sequelize) => {
     Notification.belongsTo(User, {
         as: 'User',
         foreignKey: { name: 'userId' },
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    });
+    User.hasOne(Cart, {
+        as: 'Cart',
+        foreignKey: {name: 'userId'},
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    })
+    Cart.belongsTo(User, {
+        as: 'User',
+        foreignKey: {name:'userId'},
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    })
+
+    //many to many cart and good
+    Good.hasMany(Cart_Good, {
+        as: 'cartgoods',
+        foreignKey: {name:'goodId'},
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    });
+    Cart_Good.belongsTo(Good, {
+        as: 'Good',
+        foreignKey: {name:'goodId'},
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    });
+    //
+    Cart.hasMany(Cart_Good, {
+        as: 'cartgoods',
+        foreignKey: {name:'cartId'},
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    });
+    Cart_Good.belongsTo(Cart, {
+        as: 'Cart',
+        foreignKey: {name:'cartId'},
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
     });

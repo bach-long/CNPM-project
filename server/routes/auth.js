@@ -6,7 +6,7 @@ const { isEmpty } = require('validator');
 const authCheck = require('../middlewares/authCheck.js');
 const userCheck = require('../middlewares/userCheck.js');
 
-const { User } = require('../sequelize').models;
+const { User, Cart } = require('../sequelize').models;
 
 const register = async (req, res, next) => {
     try {
@@ -41,6 +41,10 @@ const register = async (req, res, next) => {
             address,
             sdt,
         });
+
+        await Cart.create({
+            userId: user.userId
+        })
 
         res.status(201).json(user);
     } catch (err) {
