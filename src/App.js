@@ -12,7 +12,6 @@ import Cart from "./component/Content/Cart"
 import PageUser from "./component/Content/PageUser"
 import Chat from "./component/Content/Chat";
 
-
 function App() {
   return (
     <>

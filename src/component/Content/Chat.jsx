@@ -6,11 +6,19 @@ import { Link, useNavigate } from "react-router-dom";
 import styles from "./Content.module.css";
 import { useSelector, useDispatch } from "react-redux";
 import { user } from "../../redux/action";
+import { Selector } from "react-redux";
+import socket from './socket';
 
+socket.emit('online', 'hello');
+//const inforUser = useSelector((state)=> state.Login);
+//socket.emit('online', inforUser);
 const Chat = () => {
   const array = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
   const [checkBoxChatNull, setCheckBoxChat] = useState(false);
   const dispatch = useDispatch();
+  function handleSendMessage(e) {
+    socket.emit('sendMessage', 'i send this');
+  }
   useEffect(()=>{
     const token = localStorage.getItem('token')
     var status;
@@ -142,7 +150,7 @@ const Chat = () => {
               style={{ width: "94%", borderStyle: "none" }}
             />
             <div className="" style={{ width: "5%" }}>
-              <button>
+              <button onClick={e=>handleSendMessage(e)}>
                 <i class="fa fa-paper-plane" aria-hidden="true"></i>
               </button>
             </div>

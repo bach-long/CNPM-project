@@ -5,6 +5,7 @@ import styles from "./Heading.module.css";
 import { useDispatch } from "react-redux";
 import { user } from "../../redux/action";
 import { useCookies } from "react-cookie";
+import socket from "../Content/socket";
 
 
 const Login = () => {
@@ -37,9 +38,11 @@ const Login = () => {
       .then(function(res) {
         if (status === 200) {
           localStorage.setItem("token", res.token)
+          socket.emit('online', res.user);
           dispatch(user(res.user))
           navigate('/')
           setmessageError('Dang nhap thanh cong')
+
         } else if (status === 400) {
           setmessageError('Email va mat khau k duoc de trong');
         } else if (status === 404 ) {
