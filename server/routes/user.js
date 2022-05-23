@@ -6,9 +6,9 @@ const { User, Image } = require('../sequelize').models;
 
 const getUser = async (req, res, next) => {
     try {
-        const { username } = req.params;
+        const { userId } = req.params;
 
-        const user = await User.findOne({ where: { username } });
+        const user = await User.findOne({ where: { userId } });
 
         if (!user) {
             return res.status(404).json({
@@ -178,7 +178,7 @@ const follow = async (req, res, next) => {
 
 const router = new Router();
 
-router.get('/:username', userCheck, getUser);
+router.get('/:userId', userCheck, getUser);
 router.get('/:username/goods', userCheck, getUserGoods);
 router.post('/:username/follow', userCheck, authCheck, follow);
 router.get('/:username/followers', getUserFollowers);

@@ -29,10 +29,10 @@ describe('Các Route với User', () => {
         });
     });
 
-    describe('GET /api/users/:username', () => {
+    describe('GET /api/users/:userId', () => {
         it('Trả về user đúng với username', async () => {
             const response = await request(app)
-                .get(`/api/users/testuser`)
+                .get(`/api/users/${user.userId}`)
                 .expect('Content-Type', /json/)
                 .expect(200);
 
@@ -45,14 +45,14 @@ describe('Các Route với User', () => {
 
         it('Trả về 404 nếu username không tồn tại', async () => {
             await request(app)
-                .get(`/api/users/xxxxxthisxuserxdoesxnotxexistxxxxx`)
+                .get(`/api/users/999999999999999999`)
                 .expect('Content-Type', /json/)
                 .expect(404);
         });
 
         it('Trả về user với trường isFollowedByCurrentUser nếu có user đang đăng nhập', async () => {
             const response = await request(app)
-                .get(`/api/users/testuser`)
+                .get(`/api/users/${user.userId}`)
                 .set('Cookie', `jwt=${token}`)
                 .expect('Content-Type', /json/)
                 .expect(200);
