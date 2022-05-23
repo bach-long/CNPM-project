@@ -12,7 +12,6 @@ const Login = () => {
   const [messageError, setmessageError] = useState('');
   var status = 0;
   const token = localStorage.getItem('token');
-  const [cookies, setCookie] = useCookies(["user"]);
   const username = useRef(null);
   const password = useRef(null);
   const dispatch = useDispatch();

@@ -14,12 +14,14 @@ const Product = () => {
   const [product, setProduct] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState([]);
+  const [user, setUser] = useState({});
   const dispatch = useDispatch();
-  const [statusLogin, setStatusLogin] = useState(false); 
+  const [statusLogin, setStatusLogin] = useState(false);
   const inforUser = useSelector((state)=> state.Login);  
   const addProduct = (product) => {
     dispatch(addCart(product));
   };
+
 
   const boxScroll = useRef(null);
   const navigate = useNavigate();
@@ -29,20 +31,24 @@ const Product = () => {
       setLoading(true);
       const response = await fetch(`http://127.0.0.1:5000/api/goods/${id}`);
       const response2 = await fetch("http://127.0.0.1:5000/api/goods");
-      const response3 = await fetch(`http://127.0.0.1:5000/api/goods/${id}/comments`);
       const p = await response.clone().json();
       const object = await response2.clone().json();
       const products = object.goods;
-      console.log(p)
-      console.log(products)
+      const response4 = await fetch(`http://127.0.0.1:5000/api/users/${p.userId}`)
       setProduct(p);
       setFilter(
         products.filter((pf) => pf.tagId === p.tagId && pf.goodId !== p.goodId)
       );
+      const userRes = await response4.clone().json()
+      setUser(userRes);
       setLoading(false);
     };
     getProduct();
   }, [id]);
+
+  useEffect(()=>{
+
+  })
 
   useEffect(()=> {
     setStatusLogin(inforUser.username)
@@ -69,7 +75,7 @@ const Product = () => {
           dispatch(user(res));
       }
       });
-  },[])
+  },[]);
 
   /**scrollbar */
 
@@ -279,12 +285,12 @@ const Product = () => {
                 />
               </div>
               <div className="mx-1">
-                <div>Ten Nguoi ban</div>
+                <div className=" text-uppercase">{user.username}</div>
                 <div>Hoat Dong</div>
               </div>
             </div>
             <div>
-              <button className="btn btn-outline-warning">Xem Trang</button>
+              <button className="btn btn-outline-warning" onClick={()=>navigate('/userInfor', {state:{userId:user.userId}})}>Xem Trang</button>
             </div>
           </div>
           <div className="d-flex mb-4">

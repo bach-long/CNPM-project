@@ -5,9 +5,23 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Blog = () => {
   const inputFile = useRef();
-  const [messageError, setmessageError] = useState('test');
+  const [messageError, setmessageError] = useState("test");
   const [files, setFiles] = useState([]);
-  const tagID = ['Bất động sản', 'Xe cộ', 'Đồ điện tử', 'Việc làm', 'Thú cưng','Đồ ăn và thực phẩm', 'Tủ lạnh máy giặt', 'Đồ gia dụng','Mẹ và bé', 'Thời trang và đồ dùng cá nhân', 'Giải trí, thể thao', 'Đồ dùng văn phòng', 'Dịch vụ du lịch']
+  const tagID = [
+    "Bất động sản",
+    "Xe cộ",
+    "Đồ điện tử",
+    "Việc làm",
+    "Thú cưng",
+    "Đồ ăn và thực phẩm",
+    "Tủ lạnh máy giặt",
+    "Đồ gia dụng",
+    "Mẹ và bé",
+    "Thời trang và đồ dùng cá nhân",
+    "Giải trí, thể thao",
+    "Đồ dùng văn phòng",
+    "Dịch vụ du lịch",
+  ];
   const name = useRef(null);
   const price = useRef(null);
   const state = useRef(null);
@@ -21,11 +35,9 @@ const Blog = () => {
   const address = useRef(null);
   var status;
   const navigate = useNavigate();
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
 
-
-
-  const sendData = ()=> {
+  const sendData = () => {
     var data = {
       name: name.current.value,
       description: description.current.value,
@@ -33,13 +45,13 @@ const Blog = () => {
       price: price.current.value,
       state: state.current.value,
       brand: brand.current.value,
-      type: type.current.value.checked?'Ban Chuyen':'Ca nhan',
+      type: type.current.value.checked ? "Ban Chuyen" : "Ca nhan",
       maintenance: maintenance.current.value,
       details: details.current.value,
       color: color.current.value,
-      tagId: tag.current.selectedOptions[0].getAttribute('value')
-    }
-    console.log(data)
+      tagId: tag.current.selectedOptions[0].getAttribute("value"),
+    };
+    console.log(data);
     // name.current.value = '';
     // description.current.value = '';
     // address.current.value = '';
@@ -50,43 +62,64 @@ const Blog = () => {
     // details.current.value = '';
     // color.current.value = '';
     // brand.current.value = '';
-    setmessageError('')
-   postData(data);
-  }
-
-
+    setmessageError("");
+    postData(data);
+  };
 
   const postData = (data) => {
     var ojData = {
-      method: 'POST',
+      method: "POST",
       credentials: "include",
-      headers:{
-        Accept: 'application/json',
-                 'Content-Type': 'application/json',
-                 'Authorization': `Bearer ${token}`,
-               },
-      body: JSON.stringify(data)
-    }
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    };
     fetch("http://127.0.0.1:5000/api/goods/", ojData)
-      .then(function(response) {
+      .then(function (response) {
         status = response.status;
-          return response.json();
+        return response.json();
       })
-        
-      .then(function(res) {
+      .then(function (res) {
         if (status === 201) {
-          navigate('/')
-          setmessageError('Dang nhap thanh cong')
+          var formdata = new FormData();
+          files.map((file) => {
+          formdata.append("formImageFiles", file);
+          });
+
+          formdata.append("goodImgId", res.goodId);
+
+          var ojData = {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: formdata,
+            redirect: "follow",
+          };
+          fetch("http://127.0.0.1:5000/api/fileupload", ojData)
+          .then(function (response ) {
+            status = response.status;
+            return response.json();
+          })
+          .then(res=> {
+            console.log(res)
+          })
+          .catch(error => console.log(error))
         } else {
-          console.log(res)
-          setmessageError(res.error)
+          console.log(res);
+          setmessageError(res.error);
         }
-      })
-  }
+      });
+  };
 
   useEffect(() => {
-    console.log(typeof files);
     console.log(files);
+    files.map((file) => {
+      console.log(file.val);
+    });
   }, [files]);
 
   const ImageUpload = () => {
@@ -111,9 +144,16 @@ const Blog = () => {
                       className={clsx(styles.blog_img)}
                       alt="..."
                     />
-                    <div className={clsx("carousel-caption", "d-none", "d-md-block", styles.blog_boxDescripImg)}>
-                      <p style={{color: 'black', fontWeight: "bold"}}>
-                        {(index+1) + " / " + files.length}
+                    <div
+                      className={clsx(
+                        "carousel-caption",
+                        "d-none",
+                        "d-md-block",
+                        styles.blog_boxDescripImg
+                      )}
+                    >
+                      <p style={{ color: "black", fontWeight: "bold" }}>
+                        {index + 1 + " / " + files.length}
                       </p>
                     </div>
                   </div>
@@ -206,16 +246,14 @@ const Blog = () => {
               ref={tag}
             >
               <option selected>Chọn loại sản phẩm</option>
-              {tagID.map((tag,index)=> {
-                return (
-                  <option value={index + 1}>{tag}</option>
-                )
+              {tagID.map((tag, index) => {
+                return <option value={index + 1}>{tag}</option>;
               })}
             </select>
             <textarea
               className={clsx(styles.blog_lineInput)}
               placeholder="Mô tả chi tiết"
-              style={{height:'100px'}}
+              style={{ height: "100px" }}
               ref={description}
             />
           </div>
@@ -297,8 +335,15 @@ const Blog = () => {
               placeholder="Địa chỉ người bán"
               ref={address}
             />
-            <div style={{color:'red', fontSize:'13px'}} className="fst-italic">{messageError}</div>
-            <button className="btn btn-warning mt-3" onClick={()=>sendData()}>Đăng tin</button>
+            <div
+              style={{ color: "red", fontSize: "13px" }}
+              className="fst-italic"
+            >
+              {messageError}
+            </div>
+            <button className="btn btn-warning mt-3" onClick={() => sendData()}>
+              Đăng tin
+            </button>
           </div>
         </div>
       </div>

@@ -55,7 +55,7 @@ function Search() {
           </div>
 
           <div className={clsx("buttons", "d-flex", styles.search_buttons)}>
-            <Link to={statusLogin?'/userInfor':'/sigin'} state={{ username: inforUser.username }}  className="btn btn-outline-dark me-2 d-flex">
+            <Link to={statusLogin?'/userInfor':'/sigin'} state={{ userId: inforUser.userId }}  className="btn btn-outline-dark me-2 d-flex">
               <i className={statusLogin?"fa fa-user-circle-o mt-1":"fa fa-sign-in mt-1"}></i>
               <p className="mx-2">{statusLogin?inforUser.username:''}</p>
             </Link>
