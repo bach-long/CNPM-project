@@ -29,10 +29,10 @@ describe('Các Route với User', () => {
         });
     });
 
-    describe('GET /api/users/:username', () => {
+    describe('GET /api/users/:userId', () => {
         it('Trả về user đúng với username', async () => {
             const response = await request(app)
-                .get(`/api/users/testuser`)
+                .get(`/api/users/${user.userId}`)
                 .expect('Content-Type', /json/)
                 .expect(200);
 
@@ -45,14 +45,14 @@ describe('Các Route với User', () => {
 
         it('Trả về 404 nếu username không tồn tại', async () => {
             await request(app)
-                .get(`/api/users/xxxxxthisxuserxdoesxnotxexistxxxxx`)
+                .get(`/api/users/999999999999999999`)
                 .expect('Content-Type', /json/)
                 .expect(404);
         });
 
         it('Trả về user với trường isFollowedByCurrentUser nếu có user đang đăng nhập', async () => {
             const response = await request(app)
-                .get(`/api/users/testuser`)
+                .get(`/api/users/${user.userId}`)
                 .set('Cookie', `jwt=${token}`)
                 .expect('Content-Type', /json/)
                 .expect(200);
@@ -65,11 +65,11 @@ describe('Các Route với User', () => {
         });
     });
 
-    describe('GET /api/users/:username/goods', () => {
+    describe('GET /api/users/:userId/goods', () => {
         let data;
         beforeAll(async () => {
             const response = await request(app)
-                .get(`/api/users/testuser/goods`)
+                .get(`/api/users/${user.userId}/goods`)
                 .expect('Content-Type', /json/)
                 .expect(200);
             data = response.body;
@@ -97,7 +97,7 @@ describe('Các Route với User', () => {
         });
         it('Các good trả về phải có trường isBookmarkedByCurrentUser nếu user đã log in', async () => {
             const response = await request(app)
-                .get('/api/users/testuser/goods')
+                .get(`/api/users/${user.userId}/goods`)
                 .set('Cookie', [`jwt=${token}`])
                 .expect('Content-Type', /json/)
                 .expect(200);
@@ -114,7 +114,7 @@ describe('Các Route với User', () => {
         });
     });
 
-    describe('POST /api/users/:username/follow', () => {
+    describe('POST /api/users/:userId/follow', () => {
         it('Trả về Unauthorized (401) nếu token không hợp lệ', async () => {
             const response = await request(app)
                 .post('/api/users/1/follow')
@@ -133,7 +133,7 @@ describe('Các Route với User', () => {
             const oldFollowersCount = user1.followersCount;
 
             const response = await request(app)
-                .post('/api/users/user1/follow')
+                .post('/api/users/1/follow')
                 .set('Cookie', [`jwt=${token}`])
                 .expect('Content-Type', /json/)
                 .expect(200);
@@ -147,7 +147,7 @@ describe('Các Route với User', () => {
             const oldFollowersCount = user1.followersCount;
 
             const response = await request(app)
-                .post('/api/users/user1/follow')
+                .post('/api/users/1/follow')
                 .set('Cookie', [`jwt=${token}`])
                 .expect('Content-Type', /json/)
                 .expect(200);
@@ -158,17 +158,17 @@ describe('Các Route với User', () => {
 
         it('Không được follow chính bản thân mình (400)', async () => {
             await request(app)
-                .post(`/api/users/${user.username}/follow`)
+                .post(`/api/users/${user.userId}/follow`)
                 .set('Cookie', [`jwt=${token}`])
                 .expect('Content-Type', /json/)
                 .expect(400);
         });
     });
 
-    describe('GET /api/users/:username/followers', () => {
+    describe('GET /api/users/:userId/followers', () => {
         it('Trả về count và list follower của user ứng với username', async () => {
             const response = await request(app)
-                .get(`/api/users/${user.username}/followers`)
+                .get(`/api/users/${user.userId}/followers`)
                 .expect('Content-Type', /json/)
                 .expect(200);
             expect(response.body).toEqual(
@@ -180,10 +180,10 @@ describe('Các Route với User', () => {
         });
     });
 
-    describe('GET /api/users/:username/followings', () => {
+    describe('GET /api/users/:userId/followings', () => {
         it('Trả về count và list các user mà tôi đang follow', async () => {
             const response = await request(app)
-                .get(`/api/users/${user.username}/followings`)
+                .get(`/api/users/${user.userId}/followings`)
                 .expect('Content-Type', /json/)
                 .expect(200);
 
