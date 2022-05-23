@@ -9,12 +9,17 @@ import { user } from "../../redux/action";
 import { Selector } from "react-redux";
 import socket from './socket';
 
-socket.emit('online', 'hello');
 //const inforUser = useSelector((state)=> state.Login);
 //socket.emit('online', inforUser);
 const Chat = () => {
   const array = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
   const [checkBoxChatNull, setCheckBoxChat] = useState(false);
+  function handleMessage(e) {
+    socket.emit('sendMessage', {username1: 'user1', username2: 'user2', context: 'user2 la thang nao'});
+  }
+  socket.on('getMessage', (data)=>{
+    console.log(data);
+  })
   const dispatch = useDispatch();
   const reloadLogin = ()=> {
     const token = localStorage.getItem('token')
@@ -169,7 +174,7 @@ const Chat = () => {
               style={{ width: "94%", borderStyle: "none" }}
             />
             <div className="" style={{ width: "5%" }}>
-              <button onClick={e=>handleSendMessage(e)}>
+              <button onClick={e=>handleMessage(e)}>
                 <i class="fa fa-paper-plane" aria-hidden="true"></i>
               </button>
             </div>
