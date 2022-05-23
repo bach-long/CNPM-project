@@ -194,14 +194,16 @@ const Product = () => {
                 }):''}
               </div>
               <div className="carousel-inner backgroundColor2">
-              {product.images?product.images.map((image)=> {
+              {product.images?product.images.map((image,index)=> {
                   return (
-                    <div className="carousel-item active d-flex justify-content-center">
+                    <div className={`carousel-item ${index===0?"active":''}`}>
+                      <div className="d-flex justify-content-center">
                       <img
                           src={`http://localhost:5000/${image.link}`}
                           className={clsx(styles.productImage)}
                          alt={product.name}
                         />
+                      </div>
                     </div>
                   )
                 }):''}

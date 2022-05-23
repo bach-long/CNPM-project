@@ -115,12 +115,12 @@ const Cart = () => {
                 )}
               >
                 <div className={clsx(styles.cart_product_checkbox)}>
-                  <input type="checkbox" name={product.id}
+                  <input type="checkbox" name={product.goodId}
                   />
                 </div>
                 <div
                   className={clsx(styles.cart_product_boxImg)}
-                  onClick={() => navigate(`/products/${product.id}`)}
+                  onClick={() => navigate(`/products/${product.goodId}`)}
                 >
                   <img
                     src={product.image}
@@ -130,7 +130,7 @@ const Cart = () => {
                 </div>
                 <div className={clsx(styles.cart_product_description)}>
                   <div>
-                    <p>{product.title}</p>
+                    <p>{product.name}</p>
                     <p>Miễn phí trả hàng trong 7 ngày</p>
                   </div>
                 </div>

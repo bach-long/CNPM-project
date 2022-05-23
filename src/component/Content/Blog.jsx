@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Blog = () => {
   const inputFile = useRef();
-  const [messageError, setmessageError] = useState("test");
+  const [messageError, setmessageError] = useState("Chú ý điền đầy đủ thông tin và upload ít nhất 1 ảnh");
   const [files, setFiles] = useState([]);
   const tagID = [
     "Bất động sản",
@@ -71,6 +71,7 @@ const Blog = () => {
       method: "POST",
       credentials: "include",
       headers: {
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(data),
@@ -84,7 +85,7 @@ const Blog = () => {
         if (status === 201) {
           var formdata = new FormData();
           files.map((file) => {
-          formdata.append("formImageFiles", file);
+            formdata.append("formImageFiles", file);
           });
 
           formdata.append("goodImgId", res.goodId);
@@ -92,22 +93,35 @@ const Blog = () => {
           var ojData = {
             method: "POST",
             headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
             body: formdata,
             redirect: "follow",
           };
           fetch("http://127.0.0.1:5000/api/fileupload", ojData)
-          .then(function (response ) {
-            status = response.status;
-            return response.json();
-          })
-          .then(res=> {
-            console.log(res)
-          })
-          .catch(error => console.log(error))
+            .then(function (response) {
+              status = response.status;
+              return response.json();
+            })
+            .then((resImg) => {
+              if (status === 201) {
+                navigate("/");
+              } else {
+                var requestOptions = {
+                  method: "DELETE",
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                  redirect: "follow",
+                };
+                fetch(`http://127.0.0.1:5000/api/goods/${res.goodId}`, requestOptions)
+                  .then((response) => response.text())
+                  .then((result) => console.log(result))
+                  .catch((error) => console.log("error", error));
+                setmessageError("loi anh");
+              }
+            })
+            .catch((error) => console.log(error));
         } else {
           console.log(res);
           setmessageError(res.error);
