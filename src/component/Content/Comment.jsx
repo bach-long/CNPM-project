@@ -8,7 +8,21 @@ import Pagination from "./Pagination";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import styles from "./Content.module.css";
 
-const Comment = () => {
+const Comment = (props) => {
+  const [comments, setComments] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+
+  useEffect(() => {
+    const getProduct = async () => {
+      setLoading(true);
+      const response3 = await fetch(`http://127.0.0.1:5000/api/goods/${props.id}/comments`);
+      setComments(await response3.clone().json());
+      setLoading(false);
+    };
+    getProduct();
+  }, [props.id]);
+
   function rateStar() {
     return (
       <div style={{ color: "#fbd21e", marginRight: "3px" }}>

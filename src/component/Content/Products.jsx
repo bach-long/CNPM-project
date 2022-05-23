@@ -27,65 +27,65 @@ const Products = () => {
     {
       name: "Dịch vụ du lịch",
       src: `${pathshort}dichvudulich.png`,
-      category: "women's clothing",
+      category: 13,
     },
     { name: "Đồ ăn", 
       src: `${pathshort}doan.png`, 
-      category: "jewelery" },
+      category: 6 },
     {
       name: "Đồ điện tử",
       src: `${pathshort}dodientu.png`,
-      category: "electronics",
+      category: 3,
     },
     {
       name: "Đồ dùng văn phòng",
       src: `${pathshort}dodungvanphong.png`,
-      category: "men's clothing",
+      category: 12,
     },
     {
       name: "Đồ gia dụng",
       src: `${pathshort}dogiadung.png`,
-      category: "men's clothing",
+      category: 8,
     },
     {
       name: "Giải trí",
       src: `${pathshort}giaitri.png`,
-      category: "men's clothing",
+      category: 11,
     },
     {
       name: "Máy giặt tủ lạnh",
       src: `${pathshort}maygiat.png`,
-      category: "men's clothing",
+      category: 7,
     },
     {
       name: "Mẹ và bé",
       src: `${pathshort}mevabe.png`,
-      category: "men's clothing",
+      category: 9,
     },
     {
       name: "Bất động sản",
       src: `${pathshort}nhacua.png`,
-      category: "men's clothing",
+      category: 1,
     },
     {
       name: "Thời trang",
       src: `${pathshort}thoitrang.png`,
-      category: "men's clothing",
+      category: 10,
     },
     {
       name: "Thú cưng",
       src: `${pathshort}thucung.png`,
-      category: "men's clothing",
+      category: 5,
     },
     {
       name: "Việc làm",
       src: `${pathshort}vieclam.png`,
-      category: "men's clothing",
+      category: 4,
     },
     {
       name: "Xe cộ",
       src: `${pathshort}xeco.png`,
-      category: "men's clothing",
+      category: 2,
     },
   ];
 
@@ -97,11 +97,13 @@ const Products = () => {
   useEffect(() => {
     const getProducts = async () => {
       setLoading(true);
-      const response = await fetch("http://fakestoreapi.com/products");
+      const response = await fetch("http://127.0.0.1:5000/api/goods");
 
       if (componentMounted) {
-        setData(await response.clone().json());
-        setFilter(await response.json());
+        const object = await response.clone().json();
+        setData(object.goods);
+        console.log(object.goods)
+        setFilter(object.goods);
         setLoading(false);
       }
 
@@ -134,7 +136,7 @@ const Products = () => {
   };
 
   const filterProduct = (cat) => {
-    const updatedList = data.filter((x) => x.category === cat);
+    const updatedList = data.filter((x) => x.tagId == cat);
     setFilter(updatedList);
   };
 
@@ -175,26 +177,28 @@ const Products = () => {
         <hr />
 
         {filter.map((product,index) => {
+          const img = product.images;
+          const img0 = img[0]?img[0].link:null;
           return (
               <div
               key={index}
                 className={`col-md-3 mb-4 ${styles.cardProduct}`}
-                onClick={() => navigate(`/products/${product.id}`)}
+                onClick={() => navigate(`/products/${product.goodId}`)}
               >
-                <div className="card h-100 text-center" key={product.id}>
+                <div className="card h-100 text-center" key={product.goodId}>
                   <img
-                    src={product.image}
+                    src={`http://localhost:5000/${img0}`}
                     className="card-img-top"
-                    alt={product.title}
+                    alt={product.name}
                     height="250px"
                   />
                   <div className="card-body">
                     <h5 className="card-title">
-                      {product.title.substring(0, 12)}
+                      {product.description.substring(0, 12)}
                     </h5>
                     <p className="card-text">${product.price}</p>
                     <Link
-                      to={`/products/${product.id}`}
+                      to={`/products/${product.goodId}`}
                       className="btn btn-primary"
                     >
                       BUY TICKETS

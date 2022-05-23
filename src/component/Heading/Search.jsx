@@ -10,18 +10,9 @@ function Search() {
   const state = useSelector((state) => state.handleCart);
   const [statusLogin, setStatusLogin] = useState(false); 
   const inforUser = useSelector((state)=> state.Login);  
-  console.log(inforUser)
 
   useEffect(()=> {
     setStatusLogin(inforUser.username)
-    // if (statusLogin) {
-    //   const getUserGoods = async () => {
-    //     const response = await fetch(`http://fakestoreapi.com/products/${id}`);
-    //     const response2 = await fetch("http://fakestoreapi.com/products");
-    //     var p = await response.json();
-    //     var products = await response2.json();
-    //   };
-    // }
   })
 
   

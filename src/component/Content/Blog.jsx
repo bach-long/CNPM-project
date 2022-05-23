@@ -61,11 +61,11 @@ const Blog = () => {
       method: 'POST',
       credentials: "include",
       headers:{
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
+        Accept: 'application/json',
+                 'Content-Type': 'application/json',
+                 'Authorization': `Bearer ${token}`,
                },
-      body: JSON.stringify(data),
-      // 'Authorization': `Bearer ${token}`,
+      body: JSON.stringify(data)
     }
     fetch("http://127.0.0.1:5000/api/goods/", ojData)
       .then(function(response) {

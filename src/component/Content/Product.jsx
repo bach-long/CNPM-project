@@ -27,13 +27,17 @@ const Product = () => {
   useEffect(() => {
     const getProduct = async () => {
       setLoading(true);
-      const response = await fetch(`http://fakestoreapi.com/products/${id}`);
-      const response2 = await fetch("http://fakestoreapi.com/products");
-      var p = await response.json();
-      var products = await response2.json();
+      const response = await fetch(`http://127.0.0.1:5000/api/goods/${id}`);
+      const response2 = await fetch("http://127.0.0.1:5000/api/goods");
+      const response3 = await fetch(`http://127.0.0.1:5000/api/goods/${id}/comments`);
+      const p = await response.clone().json();
+      const object = await response2.clone().json();
+      const products = object.goods;
+      console.log(p)
+      console.log(products)
       setProduct(p);
       setFilter(
-        products.filter((pf) => pf.category === p.category && pf.id !== p.id)
+        products.filter((pf) => pf.tagId === p.tagId && pf.goodId !== p.goodId)
       );
       setLoading(false);
     };
@@ -127,21 +131,23 @@ const Product = () => {
         </div>
         <div className={clsx(styles.wrapProductOffer)} ref={boxScroll}>
           {filter.map((p) => {
+            const img = p.images;
+            const img0 = img[0]?img[0].link:null;
             return (
               <div
                 className={clsx(styles.cardOffer, styles.cardProduct)}
-                onClick={() => navigate(`/products/${p.id}`)}
+                onClick={() => navigate(`/products/${p.goodId}`)}
               >
                 <div className={clsx(styles.card_box_image)}>
                   <img
-                    src={p.image}
+                    src={`http://localhost:5000/${img0}`}
                     className={clsx(styles.card_image)}
-                    alt={p.category}
+                    alt={p.name}
                   />
                 </div>
                 <div className={clsx(styles.textNoLink, "card-body")}>
                   <p className={clsx(styles.productOffer_title, "card-text")}>
-                    {p.title.slice(0,60)}
+                    {p.description.slice(0,60)}
                   </p>
                   <p className={clsx("card-text", styles.colorText_Red )}>{"Gia: " + p.price + "$"}</p>
                 </div>
@@ -168,43 +174,33 @@ const Product = () => {
               data-bs-ride="carousel"
             >
               <div className="carousel-indicators">
-                <button
-                  type="button"
-                  data-bs-target="#carouselExampleIndicators"
-                  data-bs-slide-to="0"
-                  className="active"
-                  aria-current="true"
-                  aria-label="Slide 1"
-                ></button>
-                <button
-                  type="button"
-                  data-bs-target="#carouselExampleIndicators"
-                  data-bs-slide-to="1"
-                  aria-label="Slide 2"
-                ></button>
-                <button
-                  type="button"
-                  data-bs-target="#carouselExampleIndicators"
-                  data-bs-slide-to="2"
-                  aria-label="Slide 3"
-                ></button>
+                {product.images?product.images.map((image, index)=> {
+                  return (
+                    <button
+                    type="button"
+                    data-bs-target="#carouselExampleIndicators"
+                    data-bs-slide-to={index}
+                    className="active"
+                    aria-current="true"
+                    aria-label={`Slide ${index + 1}`}
+                  ></button>
+                  )
+                }):''}
               </div>
               <div className="carousel-inner backgroundColor2">
-                <div className="carousel-item active d-flex justify-content-center">
-                  <img
-                    src={product.image}
-                    className={clsx(styles.productImage)}
-                    alt={product.title}
-                  />
-                </div>
-                <div className="carousel-item d-flex justify-content-center">
-                  <img
-                    src={product.image}
-                    className={clsx(styles.productImage)}
-                    alt={product.title}
-                  />
-                </div>
+              {product.images?product.images.map((image)=> {
+                  return (
+                    <div className="carousel-item active d-flex justify-content-center">
+                      <img
+                          src={`http://localhost:5000/${image.link}`}
+                          className={clsx(styles.productImage)}
+                         alt={product.name}
+                        />
+                    </div>
+                  )
+                }):''}
               </div>
+                
               <button
                 className="carousel-control-prev"
                 type="button"
@@ -233,32 +229,32 @@ const Product = () => {
           </div>
 
           <div className="description mt-4">
-            <h4 className="text-uppercase text-black-35">{product.category}</h4>
-            <p className="text-black-26 fw-bold">{product.title}</p>
+            <h4 className="text-uppercase text-black-35">{product.name}</h4>
+            <p className="text-black-26 fw-bold">{product.name}</p>
             <h3 className="display-6 fw-bold my-4">${product.price}</h3>
             <p className="lead">{product.description}</p>
 
             <div className="d-flex">
               <div className="col-md-6 d-flex flex-column">
                 <p>
-                  <i className="fa fa-tag mx-1"></i>Hang
+                  <i className="fa fa-tag mx-1"></i>Hang: {product.brand}
                 </p>
                 <p>
-                  <i className="fa fa-check-square-o mx-1"></i>Tinh trang
+                  <i className="fa fa-check-square-o mx-1"></i>Tinh trang: {product.state}
                 </p>
                 <p>
-                  <i className="fa fa-spinner mx-1"></i>Mau sac
+                  <i className="fa fa-spinner mx-1"></i>Mau sac: {product.color}
                 </p>
               </div>
               <div className="col-md-6 d-flex flex-column mx-1">
                 <p>
-                  <i className="fa fa-table mx-1"></i>Loai
+                  <i className="fa fa-table mx-1"></i>Loai: {product.type}
                 </p>
                 <p>
-                  <i className="fa fa-shield mx-1"></i>Bao Hanh
+                  <i className="fa fa-shield mx-1"></i>Bao Hanh: {product.maintenance}
                 </p>
                 <p>
-                  <i className="fa fa-building mx-1"></i>Thong So
+                  <i className="fa fa-building mx-1"></i>Thong So: {product.details}
                 </p>
               </div>
             </div>
@@ -381,7 +377,7 @@ const Product = () => {
         {loading?<LoadingOffer/>:<ShowProductOffer/>}
       </div>
 
-        <Comment/>
+        <Comment id={id}/>
     </>
   );
 };

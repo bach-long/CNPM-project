@@ -4,30 +4,14 @@ import styles from "./Content.module.css";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { user } from "../../redux/action";
+import Skeleton from "react-loading-skeleton";
+
 
 const PageUser = () => {
-  const [blogGoods, setBlogGoods] = useState([]);
-  const [inforUser, setInforUser] = useState({});
-  const username = useLocation().state.username;
-  var checkBlogUp = true;
   const dispatch = useDispatch();
 
   useEffect(() => {
-  
-    const getUserGoods = async () => {
-      const response = await fetch(
-        `http://127.0.0.1:5000/api/users/${username}/goods`
-      );
-      const response2 = await fetch(
-        `http://127.0.0.1:5000/api/users/${username}/`
-      );
-      setBlogGoods(await response.clone().json());
-      setInforUser(await response2.clone().json());
-    };
-
-    getUserGoods();
-
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem("token");
     var status;
     var ojData = {
       method: "GET",
@@ -45,11 +29,44 @@ const PageUser = () => {
       .then(function (res) {
         if (status === 200) {
           dispatch(user(res));
-      }
+        }
       });
   }, []);
 
-  console.log(blogGoods);
+  const [blogGoods, setBlogGoods] = useState([]);
+  const [inforUser, setInforUser] = useState({});
+  const username = useLocation().state.username;
+  const [loading, setLoading] = useState(true);
+  var checkBlogUp = true;
+
+  useEffect(() => {
+    const getUserGoods = async () => {
+      const response = await fetch(
+        `http://127.0.0.1:5000/api/users/${username}/goods`
+      );
+      const response2 = await fetch(
+        `http://127.0.0.1:5000/api/users/${username}/`
+      );
+      setBlogGoods(await response.clone().json());
+      setInforUser(await response2.clone().json());
+      setLoading(false)
+    };
+    getUserGoods();
+  }, []);
+
+  const BoxProfileGoodsLoading = () => {
+    return (
+      <div className={clsx(styles.boxProductOffer)}>
+        <div className={clsx(styles.wrapProductOffer)}>
+          <Skeleton height={200} width={150} className="mx-3"></Skeleton>
+          <Skeleton height={200} width={150} className="mx-3"></Skeleton>
+          <Skeleton height={200} width={150} className="mx-3"></Skeleton>
+          <Skeleton height={200} width={150} className="mx-3"></Skeleton>
+          <Skeleton height={200} width={150} className="mx-3 mb-4"></Skeleton>
+        </div>
+      </div>
+    );
+  };
 
   const BoxProfileNull = () => {
     return (
@@ -70,6 +87,9 @@ const PageUser = () => {
     return (
       <div className="row m-3">
         {blogGoods.map((good) => {
+          const img = good.images;
+          const img0 = img[0]?img[0].link:null;
+          console.log(img0)
           return (
             <>
               <div
@@ -78,7 +98,7 @@ const PageUser = () => {
               >
                 <div className="card h-100 text-center" key={good.id}>
                   <img
-                    // src={product.image}
+                    src={`http://localhost:5000/${img0}`}
                     className="card-img-top"
                     alt={good.name}
                     height="250px"
@@ -202,7 +222,11 @@ const PageUser = () => {
               ></i>
               <p> Dia chi:</p>
             </div>
-            <p className="mx-1">{inforUser.address?inforUser.address:'Nguoi dung chua cap nhat dia chi'}</p>
+            <p className="mx-1">
+              {inforUser.address
+                ? inforUser.address
+                : "Nguoi dung chua cap nhat dia chi"}
+            </p>
           </div>
           <div className={clsx(styles.profile_row)}>
             <div className={clsx(styles.profile_textDesc)}>
@@ -230,7 +254,9 @@ const PageUser = () => {
               ></i>
               <p>SDT: </p>
             </div>
-            <p className="mx-1">{inforUser.sdt?inforUser.sdt:'nguoi dung chua cap nhat sdt'}</p>
+            <p className="mx-1">
+              {inforUser.sdt ? inforUser.sdt : "nguoi dung chua cap nhat sdt"}
+            </p>
           </div>
         </div>
       </div>
@@ -268,7 +294,7 @@ const PageUser = () => {
           </div>
           <hr />
           <div className={clsx(styles.profile_boxBlogUp)}>
-            {checkBlogUp ? <BoxProfileNotNull /> : <BoxProfileNull />}
+            {loading?<BoxProfileGoodsLoading/>:checkBlogUp ? <BoxProfileNotNull /> : <BoxProfileNull />}
           </div>
         </div>
       </div>
