@@ -1,8 +1,12 @@
 const app = require('./app');
+const { ChatContext, Conversation} = require('./sequelize').models;
 const sequelize = require('./sequelize');
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const httpServer = createServer(app);
+const { Op } = require('sequelize');
+const e = require('cors');
+const { emit } = require('process');
 const io = new Server(httpServer, {
     cors: {
         origin: "http://localhost:3000",
@@ -35,19 +39,33 @@ io.on("connection", function(socket) {
   console.log('connected');
     socket.on("online", data => {
       sockets[data.username] = socket.id;
-    });
-    socket.on("sendMessage", function(data) {
       console.log(data, sockets);
     });
-  
-    socket.on("send_personal_message", function(data) {
-      
+    socket.on("sendMessage", function(data) {
+      const conversation= Conversation.findOne({
+      where:{ 
+      [Op.or]: [{
+        username1: data.username1,
+        username2: data.username2,
+      },{
+        username1: data.username2,
+        username2: data.username1,
+      }]
+      }
+      }).then((resolve)=>{
+        //console.log(resolve.conversationId);
+        if(resolve){
+          ChatContext.create({conversationId: resolve.conversationId, username: data.username1, context: data.context}).then((message)=>{
+            console.log(message);
+          });
+        } else {
+          Conversation.create({username1: data.username1, username2: data.username2}).then(resolve=>{
+            ChatContext.create({conversationId: resolve.conversationId, username: data.username1, context: data.context}).then((message)=>{
+              console.log(message);
+            });
+          })
+        }
+      }); 
+      io.to(sockets[data.username2]).emit('getMessage', data.context);
     });
-  
-    socket.on("disconnect", reason => {
-      
-    });
-    socket.on('sendMessage', (data)=>{
-      
-    })
   });

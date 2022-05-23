@@ -13,6 +13,10 @@ module.exports = (sequelize) => {
                 type: DataTypes.TEXT,
                 allowNull: false,
             },
+            vote: {
+                type: DataTypes.INTEGER(1),
+                allowNull: false,
+            }
         },
         {
             tableName: 'comments',

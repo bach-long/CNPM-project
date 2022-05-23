@@ -174,11 +174,13 @@ const commentOnGood = async (req, res, next) => {
     try {
         const { goodId } = req.params;
         const { content } = req.body;
+        const { vote } = req.body
 
         const good = await Good.findOne({ where: { goodId } });
 
         const comment = await Comment.create({
             content,
+            vote,
             userId: res.locals.user.userId,
             goodId: good.goodId,
         });
