@@ -63,6 +63,13 @@ const getGoods = async (req, res, next) => {
 
         const query = req.query.query || '';
 
+        const goodsCount = await Good.count({
+            where: {
+                name: {
+                    [Op.like]: `%${query}%`,
+                },
+            },
+        });
         const goods = await Good.findAll({
             where: {
                 name: {
@@ -74,7 +81,6 @@ const getGoods = async (req, res, next) => {
             limit: countPerPage,
             include: [{ model: Image, as: 'images' }],
         });
-        const goodsCount = goods.length;
         const totalPageCount = Math.ceil(goodsCount / countPerPage);
 
         // Set user specific things like bookmarked using res.locals.user
