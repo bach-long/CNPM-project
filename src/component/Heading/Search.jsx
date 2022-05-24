@@ -4,16 +4,27 @@ import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import styles from "./Heading.module.css";
 import clsx from "clsx";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 
 function Search() {
   const state = useSelector((state) => state.handleCart);
   const [statusLogin, setStatusLogin] = useState(false); 
+  const navigate = useNavigate();
   const inforUser = useSelector((state)=> state.Login);  
+  const inputSearch = useRef(null);
 
   useEffect(()=> {
     setStatusLogin(inforUser.username)
   })
+
+
+  const clickBtnSearch = ()=> {
+    const query = inputSearch.current.value;
+    if(query.length > 0) {
+      inputSearch.current.value = '';
+      navigate('/search',{state:{query:query}})
+    }
+  }
 
   
   function countCart() {
@@ -45,17 +56,17 @@ function Search() {
                   type="search"
                   placeholder="Tìm kiếm sản phẩm trên SUPERMARKET"
                   aria-label="Search"
+                  ref={inputSearch}
                 />
-
               </div>
-              <button className="btn btn-outline-success" type="submit">
+              <button className="btn btn-outline-success" onClick={clickBtnSearch}>
                 <i className="fa fa-search"></i>
               </button>
             </div>
           </div>
 
           <div className={clsx("buttons", "d-flex", styles.search_buttons)}>
-            <Link to={statusLogin?'/userInfor':'/sigin'} state={{ username: inforUser.username }}  className="btn btn-outline-dark me-2 d-flex">
+            <Link to={statusLogin?'/userInfor':'/sigin'} state={{ userId: inforUser.userId }}  className="btn btn-outline-dark me-2 d-flex">
               <i className={statusLogin?"fa fa-user-circle-o mt-1":"fa fa-sign-in mt-1"}></i>
               <p className="mx-2">{statusLogin?inforUser.username:''}</p>
             </Link>

@@ -14,12 +14,14 @@ const Product = () => {
   const [product, setProduct] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState([]);
+  const [user, setUser] = useState({});
   const dispatch = useDispatch();
-  const [statusLogin, setStatusLogin] = useState(false); 
+  const [statusLogin, setStatusLogin] = useState(false);
   const inforUser = useSelector((state)=> state.Login);  
   const addProduct = (product) => {
     dispatch(addCart(product));
   };
+
 
   const boxScroll = useRef(null);
   const navigate = useNavigate();
@@ -29,20 +31,24 @@ const Product = () => {
       setLoading(true);
       const response = await fetch(`http://127.0.0.1:5000/api/goods/${id}`);
       const response2 = await fetch("http://127.0.0.1:5000/api/goods");
-      const response3 = await fetch(`http://127.0.0.1:5000/api/goods/${id}/comments`);
       const p = await response.clone().json();
       const object = await response2.clone().json();
       const products = object.goods;
-      console.log(p)
-      console.log(products)
+      const response4 = await fetch(`http://127.0.0.1:5000/api/users/${p.userId}`)
       setProduct(p);
       setFilter(
         products.filter((pf) => pf.tagId === p.tagId && pf.goodId !== p.goodId)
       );
+      const userRes = await response4.clone().json()
+      setUser(userRes);
       setLoading(false);
     };
     getProduct();
   }, [id]);
+
+  useEffect(()=>{
+
+  })
 
   useEffect(()=> {
     setStatusLogin(inforUser.username)
@@ -69,7 +75,7 @@ const Product = () => {
           dispatch(user(res));
       }
       });
-  },[])
+  },[]);
 
   /**scrollbar */
 
@@ -188,14 +194,16 @@ const Product = () => {
                 }):''}
               </div>
               <div className="carousel-inner backgroundColor2">
-              {product.images?product.images.map((image)=> {
+              {product.images?product.images.map((image,index)=> {
                   return (
-                    <div className="carousel-item active d-flex justify-content-center">
+                    <div className={`carousel-item ${index===0?"active":''}`}>
+                      <div className="d-flex justify-content-center">
                       <img
                           src={`http://localhost:5000/${image.link}`}
                           className={clsx(styles.productImage)}
                          alt={product.name}
                         />
+                      </div>
                     </div>
                   )
                 }):''}
@@ -237,24 +245,24 @@ const Product = () => {
             <div className="d-flex">
               <div className="col-md-6 d-flex flex-column">
                 <p>
-                  <i className="fa fa-tag mx-1"></i>Hang: {product.brand}
+                  <i className="fa fa-tag mx-1"></i>Hang: {product.brand?product.brand:'Hien chua co thong tin'}
                 </p>
                 <p>
-                  <i className="fa fa-check-square-o mx-1"></i>Tinh trang: {product.state}
+                  <i className="fa fa-check-square-o mx-1"></i>Tinh trang: {product.state?product.state:'Hien chua co thong tin'}
                 </p>
                 <p>
-                  <i className="fa fa-spinner mx-1"></i>Mau sac: {product.color}
+                  <i className="fa fa-spinner mx-1"></i>Mau sac: {product.color?product.color:'Hien chua co thong tin'}
                 </p>
               </div>
               <div className="col-md-6 d-flex flex-column mx-1">
                 <p>
-                  <i className="fa fa-table mx-1"></i>Loai: {product.type}
+                  <i className="fa fa-table mx-1"></i>Loai: {product.type?product.type:'Hien chua co thong tin'}
                 </p>
                 <p>
-                  <i className="fa fa-shield mx-1"></i>Bao Hanh: {product.maintenance}
+                  <i className="fa fa-shield mx-1"></i>Bao Hanh: {product.maintenance?product.maintenance:'Hien chua co thong tin'}
                 </p>
                 <p>
-                  <i className="fa fa-building mx-1"></i>Thong So: {product.details}
+                  <i className="fa fa-building mx-1"></i>Thong So: {product.details?product.details:'Hien chua co thong tin'}
                 </p>
               </div>
             </div>
@@ -262,7 +270,7 @@ const Product = () => {
             <hr />
 
             <div className="">
-              <i className="fa fa-map-marker"></i>Dia chi nguoi ban
+              <i className="fa fa-map-marker"></i>Dia chi nguoi ban: {user.address?user.address:'Hien chua co thong tin'}
             </div>
           </div>
         </div>
@@ -279,12 +287,12 @@ const Product = () => {
                 />
               </div>
               <div className="mx-1">
-                <div>Ten Nguoi ban</div>
+                <div className=" text-uppercase">{user.username}</div>
                 <div>Hoat Dong</div>
               </div>
             </div>
             <div>
-              <button className="btn btn-outline-warning">Xem Trang</button>
+              <button className="btn btn-outline-warning" onClick={()=>navigate('/userInfor', {state:{userId:user.userId}})}>Xem Trang</button>
             </div>
           </div>
           <div className="d-flex mb-4">

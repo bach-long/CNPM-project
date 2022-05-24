@@ -7,22 +7,29 @@ import styles from "./Content.module.css";
 import { useSelector, useDispatch } from "react-redux";
 import { user } from "../../redux/action";
 import { Selector } from "react-redux";
-import socket from './socket';
+import socket from "./socket";
 
-//const inforUser = useSelector((state)=> state.Login);
+
 //socket.emit('online', inforUser);
 const Chat = () => {
-  const array = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
-  const [checkBoxChatNull, setCheckBoxChat] = useState(false);
+  const inforUser = useSelector((state)=> state.Login);
+  const [checkBoxChatNull, setCheckBoxChat] = useState(true);
+  const [listChats, setListChats] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [conversation, setConversation] = useState({});
+  const token = localStorage.getItem("token");
   function handleMessage(e) {
-    socket.emit('sendMessage', {username1: 'user1', username2: 'user3', context: 'user3 la thang nao'});
+    socket.emit("sendMessage", {
+      username1: "user1",
+      username2: "user2",
+      context: "user2 la thang nao",
+    });
   }
-  socket.on('getMessage', (data)=>{
+  socket.on("getMessage", (data) => {
     console.log(data);
-  })
+  });
   const dispatch = useDispatch();
-  const reloadLogin = ()=> {
-    const token = localStorage.getItem('token')
+  const reloadLogin = () => {
     var status;
     var ojData = {
       method: "GET",
@@ -40,31 +47,64 @@ const Chat = () => {
       .then(function (res) {
         if (status === 200) {
           dispatch(user(res));
-      }
+        }
       });
+  };
+  useEffect(reloadLogin, []);
+
+  useEffect(() => {
+    var ojData = {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    };
+    fetch("http://127.0.0.1:5000/api/chat/chatList", ojData)
+      .then((res) => res.json())
+      .then(function (res) {
+        setListChats(res);
+      })
+      .catch((error) => console.log(error));
+  }, []);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      setCheckBoxChat(false);
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    function fetchMess() {
+      var data = { conversationId: conversation.conversationId };
+      console.log(data);
+      var ojData = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      fetch(
+        `http://127.0.0.1:5000/api/chat/messages?conversationId=${conversation.conversationId}`,
+        ojData
+      )
+        .then((res) => res.json())
+        .then(function (res) {
+          console.log(res);
+          setMessages(res);
+        })
+        .catch((error) => console.log(error));
+    }
+    if (conversation !== undefined) {
+      fetchMess();
+    }
+  }, [conversation]);
+
+  function clickCardChat(chat) {
+    setConversation(chat);
   }
-  useEffect(()=>{
-    const token = localStorage.getItem('token')
-    var status;
-    var ojData = {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      },
-    };
-    return fetch("http://127.0.0.1:5000/api/auth/me", ojData)
-      .then(function (response) {
-        status = response.status;
-        return response.json();
-      })
-      .then(function (res) {
-        if (status === 200) {
-          dispatch(user(res));
-      }
-      });
-  },[])
 
   const BoxChatNull = () => {
     return (
@@ -132,40 +172,25 @@ const Chat = () => {
             className={clsx("bg-light", styles.boxChatMessage)}
             style={{ height: "435px" }}
           >
-            <div className="text-center fst-italic"><p>Bạn và người bán đã được kết nối hãy chat với nhau nào</p></div>
-            <div className={clsx(styles.messageBlue)}>
-              <p className={clsx(styles.messageContent)}>This is an awesome message!</p>
-              <div className={clsx(styles.messageTimestampLeft,"text-right")}><p className="m-0">SMS 13:37</p></div>
+            <div className="text-center fst-italic">
+              <p>Bạn và người bán đã được kết nối hãy chat với nhau nào</p>
             </div>
+            {messages.map((message) => {
+              var css = String(message.username).localeCompare(String(inforUser.username))==1?true:false;
 
-            <div className={clsx(styles.messageOrange)}>
-              <p className={clsx(styles.messageContent)}>
-                I agree that your message is awesome!
-              </p>
-              <div className={clsx(styles.messageTimestampRight)}><p className="m-0">SMS 13:37</p></div>
-            </div>
-
-            <div className={clsx(styles.messageBlue)}>
-              <p className={clsx(styles.messageContent)}>Thanks!</p>
-              <div className={clsx(styles.messageTimestampLeft)}><p className="m-0">SMS 13:37</p></div>
-            </div>
-
-            <div className={clsx(styles.messageBlue)}>
-              <p className={clsx(styles.messageContent)}>This is an awesome message!</p>
-              <div className={clsx(styles.messageTimestampLeft,"text-right")}><p className="m-0">SMS 13:37</p></div>
-            </div>
-
-            <div className={clsx(styles.messageOrange)}>
-              <p className={clsx(styles.messageContent)}>
-                I agree that your message is awesome!
-              </p>
-              <div className={clsx(styles.messageTimestampRight)}><p className="m-0">SMS 13:37</p></div>
-            </div>
-
-            <div className={clsx(styles.messageBlue)}>
-              <p className={clsx(styles.messageContent)}>Thanks!</p>
-              <div className={clsx(styles.messageTimestampLeft)}><p className="m-0">SMS 13:37</p></div>
-            </div>
+              return (
+                <div className={css?styles.messageBlue:styles.messageOrange}>
+                  <p className={clsx(styles.messageContent)}>
+                    {message.context}
+                  </p>
+                  <div
+                    className={clsx(css?styles.messageTimestampLeft:'', "text-right")}
+                  >
+                    <p className="m-0">{message.createdAt}</p>
+                  </div>
+                </div>
+              );
+            })}
           </div>
           <div className="d-flex mt-1">
             <input
@@ -174,7 +199,7 @@ const Chat = () => {
               style={{ width: "94%", borderStyle: "none" }}
             />
             <div className="" style={{ width: "5%" }}>
-              <button onClick={e=>handleMessage(e)}>
+              <button onClick={(e) => handleMessage(e)}>
                 <i class="fa fa-paper-plane" aria-hidden="true"></i>
               </button>
             </div>
@@ -192,9 +217,12 @@ const Chat = () => {
         </div>
         <hr className="m-0 p-0" />
         <div className={clsx(styles.chat_wrapListUser)}>
-          {array.map(() => {
+          {listChats.map((chat) => {
             return (
-              <div className="mt-2">
+              <div
+                className={clsx(styles.boxCardChat, "pt-2")}
+                onClick={(e) => clickCardChat(chat)}
+              >
                 <div
                   className={clsx(
                     styles.cardUser,
@@ -213,7 +241,7 @@ const Chat = () => {
                     <div>
                       <div className="d-flex">
                         <p className="m-0 p-0 mx-1 text-black-50 fw-bold">
-                          Ten User
+                          {chat.username2}
                         </p>
                         <p className="m-0 p-0 mb-1">THoi gian chat</p>
                       </div>
@@ -244,8 +272,6 @@ const Chat = () => {
             );
           })}
         </div>
-
-        <div className="d-flex justify-content-center mt-2">Xoa tat ca</div>
       </div>
 
       {checkBoxChatNull ? <BoxChatNull /> : <BoxChatNotNull />}

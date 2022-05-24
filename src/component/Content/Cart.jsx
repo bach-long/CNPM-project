@@ -105,6 +105,8 @@ const Cart = () => {
     return (
       <div className={clsx(styles.cart_cardProduct)}>
         {state.map((product) => {
+          const img = product.images;
+          const img0 = img[0]?img[0].link:null;
           return (
             <div className={clsx(styles.boxCart)}>
               <div
@@ -115,22 +117,21 @@ const Cart = () => {
                 )}
               >
                 <div className={clsx(styles.cart_product_checkbox)}>
-                  <input type="checkbox" name={product.id}
-                  />
+                <input type="checkbox" name={product.goodId}/>
                 </div>
                 <div
                   className={clsx(styles.cart_product_boxImg)}
-                  onClick={() => navigate(`/products/${product.id}`)}
+                  onClick={() => navigate(`/products/${product.goodId}`)}
                 >
                   <img
-                    src={product.image}
+                    src={`http://localhost:5000/${img0}`}
                     className={clsx(styles.cart_product_img)}
                     alt=""
                   />
                 </div>
                 <div className={clsx(styles.cart_product_description)}>
                   <div>
-                    <p>{product.title}</p>
+                  <p>{product.name}</p>
                     <p>Miễn phí trả hàng trong 7 ngày</p>
                   </div>
                 </div>

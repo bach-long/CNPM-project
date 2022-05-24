@@ -11,6 +11,7 @@ import Blog from "./component/Content/Blog";
 import Cart from "./component/Content/Cart"
 import PageUser from "./component/Content/PageUser"
 import Chat from "./component/Content/Chat";
+import PageSearch from "./component/Content/PageSearch";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="/cart" element={<Cart/>} />
           <Route path="/userInfor" element={<PageUser/>} />
           <Route path="/chat" element={<Chat/>}/>
+          <Route path="/search" element={<PageSearch/>}/>
         </Routes>
         <Contact />
       </div>

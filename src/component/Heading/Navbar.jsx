@@ -117,7 +117,7 @@ function Navbar() {
                 </Link>
               </li>
               <li className="nav-item me-3">
-                <Link className="nav-link" to={statusLogin?"/userInfor":"/sigin"}>
+                <Link className="nav-link" to={statusLogin?"/userInfor":"/sigin"} state={{ userId: inforUser.userId }}>
                   <i className="fa fa-server me-2"></i>Quản lý tin
                 </Link>
               </li>
