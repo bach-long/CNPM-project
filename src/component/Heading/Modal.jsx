@@ -51,12 +51,10 @@ const Modal = () => {
       })
         
       .then(function(res) {
-        console.log(status)
-        console.log(res.user)
-        console.log(res.errors)
         if (status === 201) {
           dispatch(user(res))
-          navigate('/userInfor', {state:{username:res.username}})
+          localStorage.setItem("token", res.token)
+          navigate('/userInfor', {state:{userId:res.userId}})
         } else {
           if (res.errors.email) {
             setmessageError(res.errors.email);

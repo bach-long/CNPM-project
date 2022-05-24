@@ -6,8 +6,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { user } from "../../redux/action";
 import Skeleton from "react-loading-skeleton";
 
-
 const PageUser = () => {
+  const token = localStorage.getItem('token');
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -33,26 +33,60 @@ const PageUser = () => {
       });
   }, []);
 
+  
+
   const [blogGoods, setBlogGoods] = useState([]);
   const [inforUser, setInforUser] = useState({});
-  const username = useLocation().state.username;
+  const [follow, setFollow] = useState(false);
+  const userId = useLocation().state.userId;
   const [loading, setLoading] = useState(true);
-  var checkBlogUp = true;
+  const [stateDelete, setStateDelete] = useState(true);
+  var [checkBlogUp,setCheckBlogUp] = useState(true);
+  const delete_Product = (goodId) => {
+    console.log('delete')
+    var status;
+    var requestOptions = {
+      method: "DELETE",
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      redirect: "follow",
+    };
+    fetch(`http://127.0.0.1:5000/api/goods/${goodId}`, requestOptions)
+      .then(function(response){
+        status = response.status;
+        return response.text();
+      })
+      .then(function(result) {
+        if (status=== 204) {
+          setStateDelete(!stateDelete);
+        }
+      })
+      .catch((error) => console.log("error", error));
+  };
+
+  useEffect(() => {
+    console.log(1);
+  }, [follow]);
 
   useEffect(() => {
     const getUserGoods = async () => {
       const response = await fetch(
-        `http://127.0.0.1:5000/api/users/${username}/goods`
+        `http://127.0.0.1:5000/api/users/${userId}/goods`
       );
       const response2 = await fetch(
-        `http://127.0.0.1:5000/api/users/${username}/`
+        `http://127.0.0.1:5000/api/users/${userId}`
       );
-      setBlogGoods(await response.clone().json());
+      const goods = await response.clone().json()
+      setBlogGoods(goods);
       setInforUser(await response2.clone().json());
-      setLoading(false)
+      setCheckBlogUp(goods.length > 0?true:false)
+      setLoading(false);
     };
     getUserGoods();
-  }, []);
+  }, [stateDelete]);
+
 
   const BoxProfileGoodsLoading = () => {
     return (
@@ -88,8 +122,8 @@ const PageUser = () => {
       <div className="row m-3">
         {blogGoods.map((good) => {
           const img = good.images;
-          const img0 = img[0]?img[0].link:null;
-          console.log(img0)
+          const img0 = img[0] ? img[0].link : null;
+          console.log(img0);
           return (
             <>
               <div
@@ -106,10 +140,36 @@ const PageUser = () => {
                   <div className="card-body">
                     <h5 className="card-title">{good.name.substring(0, 12)}</h5>
                     <p className="card-text">${good.price}</p>
-                    <Link to={`/`} className="btn btn-primary">
+                    <Link
+                      to={`/products/${good.goodId}`}
+                      className="btn btn-primary"
+                    >
                       BUY TICKETS
                     </Link>
                   </div>
+                </div>
+                <div
+                  className={clsx(styles.cardProduct_delete)}
+                  style={{ top: "5px", right: "10px" }}
+                >
+                  <div
+                    className="nav-link "
+                    to="#"
+                    id="navbarDropdownMenuLink"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                  </div>
+                  <ul
+                    className="dropdown-menu"
+                    aria-labelledby="navbarDropdownMenuLink"
+                  >
+                    <li>
+                      <button className="dropdown-item" onClick={()=>delete_Product(good.goodId)}>Xóa sản phẩm</button>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </>
@@ -167,8 +227,10 @@ const PageUser = () => {
                 styles.flowUser
               )}
             >
-              <i className="fa fa-plus mt-1 me-2"></i>
-              <div>Theo dõi</div>
+              <div className="d-flex" onClick={() => setFollow(!follow)}>
+                <i className="fa fa-plus mt-1 me-2"></i>
+                <div>Theo dõi</div>
+              </div>
             </button>
           </div>
         </div>
@@ -294,7 +356,13 @@ const PageUser = () => {
           </div>
           <hr />
           <div className={clsx(styles.profile_boxBlogUp)}>
-            {loading?<BoxProfileGoodsLoading/>:checkBlogUp ? <BoxProfileNotNull /> : <BoxProfileNull />}
+            {loading ? (
+              <BoxProfileGoodsLoading />
+            ) : checkBlogUp ? (
+              <BoxProfileNotNull />
+            ) : (
+              <BoxProfileNull />
+            )}
           </div>
         </div>
       </div>

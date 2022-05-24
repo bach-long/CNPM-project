@@ -99,7 +99,9 @@ const Products = () => {
       if (componentMounted) {
         const object = await response.clone().json();
         setData(object.goods);
+
         setPageCout(object.totalPageCount);
+
         setFilter(object.goods);
         setLoading(false);
       }
@@ -223,7 +225,10 @@ const Products = () => {
             </div>
           );
         })}
+
         <Pagination getData={getCurPage} page={page} pageCounts={pageCount}/>
+
+
       </>
     );
   };
