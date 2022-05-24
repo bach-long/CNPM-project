@@ -15,7 +15,7 @@ const Chat = () => {
   const array = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
   const [checkBoxChatNull, setCheckBoxChat] = useState(false);
   function handleMessage(e) {
-    socket.emit('sendMessage', {username1: 'user1', username2: 'user2', context: 'user2 la thang nao'});
+    socket.emit('sendMessage', {username1: 'user1', username2: 'user3', context: 'user3 la thang nao'});
   }
   socket.on('getMessage', (data)=>{
     console.log(data);
