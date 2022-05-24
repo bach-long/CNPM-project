@@ -175,8 +175,9 @@ module.exports = {
             ]
         );
 
-        await queryInterface.bulkInsert(
-            'goods',
+        // Dùng Good.bulkCreate mới trigger hook
+        // Và phải thêm { individualHooks: true } ở cuối
+        await Good.bulkCreate(
             [
                 {
                     goodId: 1,
@@ -1218,7 +1219,9 @@ module.exports = {
                     updatedAt: new Date('2022-03-21T12:43:03.839Z'),
                     tagId: 11,
                 },
-            ],
+            ], {
+            individualHooks: true
+        }
         );
 
         await queryInterface.bulkInsert(
@@ -1564,8 +1567,7 @@ module.exports = {
                 goodImgId: 70,
             },
 
-        ]
-        )
+        ])
 
         await queryInterface.bulkInsert('comments', [
             {

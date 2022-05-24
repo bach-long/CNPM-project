@@ -5,6 +5,7 @@ const authCheck = require('../middlewares/authCheck');
 const { Op } = require('sequelize');
 
 const { Good, Comment, Image } = require('../sequelize').models;
+const removeVietnameseTones = require('./../utils/removeVietnameseTones')
 
 const createGood = async (req, res, next) => {
     try {
@@ -61,18 +62,19 @@ const getGoods = async (req, res, next) => {
         let countPerPage = +req.query.count || 20;
         countPerPage = countPerPage > 0 ? countPerPage : 20;
 
-        const query = req.query.query || '';
+        let query = req.query.query || '';
+        query = removeVietnameseTones(query).replace(/ /g, '').toLowerCase();
 
         const goodsCount = await Good.count({
             where: {
-                name: {
+                nameNormalized: {
                     [Op.like]: `%${query}%`,
                 },
             },
         });
         const goods = await Good.findAll({
             where: {
-                name: {
+                nameNormalized: {
                     [Op.like]: `%${query}%`,
                 },
             },

@@ -1,4 +1,5 @@
 const { DataTypes } = require('sequelize');
+const removeVietnameseTones = require('./../../utils/removeVietnameseTones')
 
 module.exports = (sequelize) => {
     const Good = sequelize.define(
@@ -12,6 +13,10 @@ module.exports = (sequelize) => {
             name: {
                 type: DataTypes.STRING,
                 allowNull: false,
+            },
+            nameNormalized: {
+                type: DataTypes.STRING,
+                allowNull: true,
             },
             description: {
                 type: DataTypes.TEXT,
@@ -81,6 +86,13 @@ module.exports = (sequelize) => {
                 (bookmarker) => bookmarker.userId === user.userId
             ) !== undefined;
     };
+
+    const normalizeName = (good, options) => {
+        good.nameNormalized = removeVietnameseTones(good.name).replace(/ /g, '').toLowerCase();
+    }
+
+    Good.beforeCreate(normalizeName);
+    Good.beforeUpdate(normalizeName);
 
     return Good;
 };
