@@ -12,21 +12,18 @@ import socket from "./socket";
 
 //socket.emit('online', inforUser);
 const Chat = () => {
+  const msg = useRef(''); 
   const inforUser = useSelector((state)=> state.Login);
   const [checkBoxChatNull, setCheckBoxChat] = useState(true);
   const [listChats, setListChats] = useState([]);
   const [messages, setMessages] = useState([]);
   const [conversation, setConversation] = useState({});
   const token = localStorage.getItem("token");
-  function handleMessage(e) {
-    socket.emit("sendMessage", {
-      username1: "user1",
-      username2: "user2",
-      context: "user2 la thang nao",
-    });
-  }
   socket.on("getMessage", (data) => {
     console.log(data);
+  });
+  window.addEventListener("beforeunload", function (e) {
+    socket.emit('offline', inforUser);
   });
   const dispatch = useDispatch();
   const reloadLogin = () => {
@@ -87,7 +84,7 @@ const Chat = () => {
         },
       };
       fetch(
-        `http://127.0.0.1:5000/api/chat/messages?conversationId=${conversation.conversationId}`,
+        `http://127.0.0.1:5000/api/chat/messages/${conversation.conversationId}`,
         ojData
       )
         .then((res) => res.json())
@@ -196,10 +193,18 @@ const Chat = () => {
             <input
               type="text"
               className="w-90 px-2 mx-2"
+              ref={msg}
               style={{ width: "94%", borderStyle: "none" }}
             />
             <div className="" style={{ width: "5%" }}>
-              <button onClick={(e) => handleMessage(e)}>
+              <button onClick={(e) => {
+                socket.emit("sendMessage", {
+                  username1: inforUser.username,
+                  username2:inforUser.username == conversation.username1 ? conversation.username2 : conversation.username1,
+                  context: msg.current.value
+                });
+               console.log(msg.current.value);
+              }}>
                 <i class="fa fa-paper-plane" aria-hidden="true"></i>
               </button>
             </div>
