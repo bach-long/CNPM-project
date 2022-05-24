@@ -84,8 +84,7 @@ const CreateMessage = async (req, res, next) => {
 
 const GetContext = async (req, res, next) => {
     try {
-        const { conversationId } = req.query;
-        const username = res.locals.user.username;
+        const { conversationId } = req.params;
 
         // TODO: Validate và ném lỗi đọc được
 
@@ -112,6 +111,6 @@ const router = new Router();
 router.post('/conversation', userCheck, authCheck, CreateConversation);
 router.post('/message', userCheck, authCheck, CreateMessage);
 router.get('/chatList', userCheck, authCheck, ConversationList);
-router.get('/messages', userCheck, authCheck, GetContext);
+router.get('/messages/:conversationId', userCheck, authCheck, GetContext);
 
 module.exports = router;

@@ -66,6 +66,8 @@ io.on("connection", function(socket) {
           })
         }
       }); 
-      io.to(sockets[data.username2]).emit('getMessage', data.context);
+      if(sockets[data.username2]){
+        io.to(sockets[data.username2]).emit('getMessage', data.context);
+      }
     });
   });
