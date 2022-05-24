@@ -20,7 +20,7 @@ const Pagination = (props) => {
     truncate: true,
     curPage: 1,
     numLinksTwoSide: 1,
-    totalPages: 10,
+    totalPages: props.pageCounts,
   };
 
   function pagination() {

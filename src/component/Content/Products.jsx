@@ -6,18 +6,17 @@ import { Link, useNavigate } from "react-router-dom";
 import styles from "./Content.module.css";
 import Pagination from "./Pagination";
 
-
 const Products = () => {
   const [data, setData] = useState([]);
   const [filter, setFilter] = useState(data);
   const [loading, setLoading] = useState(false);
-  const [page,setPage] = useState(1);
+  const [page, setPage] = useState(1);
+  const [pageCount, setPageCout] = useState(1);
   let componentMounted = true;
   const navigate = useNavigate();
   const pathshort = "/assets/iconKhamPha/";
   const doc = useRef(null);
 
-  
   const listProductLine = [
     {
       name: "Cho tặng miễn phí",
@@ -29,9 +28,7 @@ const Products = () => {
       src: `${pathshort}dichvudulich.png`,
       category: 13,
     },
-    { name: "Đồ ăn", 
-      src: `${pathshort}doan.png`, 
-      category: 6 },
+    { name: "Đồ ăn", src: `${pathshort}doan.png`, category: 6 },
     {
       name: "Đồ điện tử",
       src: `${pathshort}dodientu.png`,
@@ -91,18 +88,18 @@ const Products = () => {
 
   function getCurPage(page) {
     setPage(page);
-    console.log(page)
+    console.log(page);
   }
 
   useEffect(() => {
     const getProducts = async () => {
       setLoading(true);
-      const response = await fetch("http://127.0.0.1:5000/api/goods");
+      const response = await fetch(`http://127.0.0.1:5000/api/goods?page=${page}`);
 
       if (componentMounted) {
         const object = await response.clone().json();
         setData(object.goods);
-        console.log(object.goods)
+        setPageCout(object.totalPageCount);
         setFilter(object.goods);
         setLoading(false);
       }
@@ -110,11 +107,10 @@ const Products = () => {
       return () => {
         componentMounted = false;
       };
-      
     };
 
     getProducts();
-  }, []);
+  }, [page]);
 
   const Loading = () => {
     return (
@@ -140,79 +136,97 @@ const Products = () => {
     setFilter(updatedList);
   };
 
-
   const ShowProducts = () => {
     return (
       <>
         <div className="buttons mb-4 pb-4">
-        <button
+          <button
             className="btn btn-outline-dark me-2 mb-2"
             onClick={() => setFilter(data)}
-        >
+          >
             All
-        </button>
-        <div className="grid">
-          {listProductLine.map((productLine,index) => {
-            return (
-              <button
-                key={index}
-                className="btn btn-outline-dark me-2 mb-1"
-                onClick={() => filterProduct(productLine.category)}
-                style={{height:'135px', width:'120px'}}
-              >
-                <div>
-                  <img
-                    src={productLine.src}
-                    alt=""
-                    style={{ height: "84px", weight: "84px" }}
-                  />
-                  <div style={{fontSize:'14px'}}>{productLine.name}</div>
-                </div>
-              </button>
-            );
-          })}
+          </button>
+          <div className="grid">
+            {listProductLine.map((productLine, index) => {
+              return (
+                <button
+                  key={index}
+                  className="btn btn-outline-dark me-2 mb-1"
+                  onClick={() => filterProduct(productLine.category)}
+                  style={{ height: "135px", width: "120px" }}
+                >
+                  <div>
+                    <img
+                      src={productLine.src}
+                      alt=""
+                      style={{ height: "84px", weight: "84px" }}
+                    />
+                    <div style={{ fontSize: "14px" }}>{productLine.name}</div>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
         <h1>San pham</h1>
         <hr />
 
-        {filter.map((product,index) => {
+        {filter.map((product, index) => {
           const img = product.images;
-          const img0 = img[0]?img[0].link:null;
+          const img0 = img[0] ? img[0].link : null;
           return (
+            <div key={index} className={`col-md-3 mb-4 ${styles.cardProduct}`}>
               <div
-              key={index}
-                className={`col-md-3 mb-4 ${styles.cardProduct}`}
+                className="card h-100 text-center"
+                key={product.goodId}
                 onClick={() => navigate(`/products/${product.goodId}`)}
               >
-                <div className="card h-100 text-center" key={product.goodId}>
-                  <img
-                    src={`http://localhost:5000/${img0}`}
-                    className="card-img-top"
-                    alt={product.name}
-                    height="250px"
-                  />
-                  <div className="card-body">
-                    <h5 className="card-title">
-                      {product.description.substring(0, 12)}
-                    </h5>
-                    <p className="card-text">${product.price}</p>
-                    <Link
-                      to={`/products/${product.goodId}`}
-                      className="btn btn-primary"
-                    >
-                      BUY TICKETS
-                    </Link>
-                  </div>
+                <img
+                  src={`http://localhost:5000/${img0}`}
+                  className="card-img-top"
+                  alt={product.name}
+                  height="250px"
+                />
+                <div className="card-body">
+                  <h5 className="card-title">
+                    {product.name.substring(0, 12)}
+                  </h5>
+                  <p className="card-text">${product.price}</p>
+                  <Link
+                    to={`/products/${product.goodId}`}
+                    className="btn btn-primary"
+                  >
+                    BUY TICKETS
+                  </Link>
                 </div>
               </div>
+              <div className={clsx(styles.cardProduct_delete)}>
+                <div className="nav-link "
+                  to="#"
+                  id="navbarDropdownMenuLink"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                </div>
+                <ul
+                  className="dropdown-menu"
+                  aria-labelledby="navbarDropdownMenuLink"
+                >
+                  <li>
+                    <Link className="dropdown-item" to={'/'}>
+                      Thông tin tài khoản
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </div>
           );
         })}
-        <Pagination getData={getCurPage} page={page}/>
+        <Pagination getData={getCurPage} page={page} pageCounts={pageCount}/>
       </>
     );
   };
-
 
   return (
     <div>
