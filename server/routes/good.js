@@ -271,11 +271,11 @@ const goodBuy = async (req, res, next) => {
         const { goodBuys } = req.body;
         const username = res.locals.user.username;
         array = [];
-        for (i in goodBuys) {
+        for (let i of goodBuys) {
             const a = await BuyGoods.create({
                 username: username,
-                goodId: i.goodId,
-                amount: i.sl,
+                goodId: +i.goodId,
+                amount: +i.amount,
             })
             array.push(a);
         }
@@ -294,7 +294,7 @@ const goodBuy = async (req, res, next) => {
 const getGoodBuy = async (req, res, next) => {
     try {
         const username = res.locals.user.username;
-        results = await BuyGoods.findAll({
+        const results = await BuyGoods.findAll({
             where: {
                 username: username
             }
