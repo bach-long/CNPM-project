@@ -7,6 +7,9 @@
     color: red;
     
 }
+.colorText_White {
+    color: white!important;
+}
 
 .imageContent {
     margin: 12px;
@@ -712,4 +715,6 @@
 .rate > label:hover ~ input:checked ~ label {
     color: #c59b08;
 }
+
+
 /**End Rating*/

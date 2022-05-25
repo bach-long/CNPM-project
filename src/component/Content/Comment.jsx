@@ -14,7 +14,11 @@ const Comment = (props) => {
   const [loading, setLoading] = useState(true);
   const [rate, setRate] = useState(5);
   const inputComment = useRef(null);
+  const [stateComent, setStateComment] = useState(true);
   const token = localStorage.getItem('token')
+  const inforUser = useSelector((state)=> state.Login);
+  const [commented, setCommented] = useState(false); 
+  
   const getUserComment = (userId) => {
     return fetch(`http://127.0.0.1:5000/api/users/${userId}/`)
       .then((response) => response.json())
@@ -31,24 +35,40 @@ const Comment = (props) => {
   const boxRate = useRef(null);
 
   const postComment = () => {
+    const contextComment = inputComment.current.value;
+    if (contextComment.length > 0 && !commented) {
     var raw = JSON.stringify({
-      "userId": 1,
-      "content": "zo zo zo zo zo"
+      "userId": inforUser.userId,
+      "content": contextComment
     });
 
     var requestOptions = {
       method: 'POST',
       headers: {
+        
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
       body: raw,
       redirect: 'follow'
     };
     
-    fetch("http://127.0.0.1:5000/api/goods/1/comments", requestOptions)
+    fetch(`http://127.0.0.1:5000/api/goods/${props.id}/comments`, requestOptions)
       .then(response => response.text())
-      .then(result => console.log(result))
+      .then(function(result) {
+        setStateComment(!stateComent)
+        inputComment.current.value = '';
+      })
       .catch(error => console.log('error', error));
+    }
+  }
+
+  
+  const checkCommented = (userIdCmt) => {
+    
+    if (userIdCmt === inforUser.userId) {
+      setCommented(true);
+    }
   }
 
   useEffect(() => {
@@ -58,12 +78,15 @@ const Comment = (props) => {
         `http://127.0.0.1:5000/api/goods/${props.id}/comments`
       );
       var commentsSv = await response3.clone().json();
-      
+      commentsSv.map(function(comment) {
+        checkCommented(comment.userId)
+      })
       setComments(commentsSv);
       setLoading(false);
     };
     getProduct();
-  }, [props.id]);
+  }, [props.id, stateComent]);
+
 
   function rateStar() {
     return (
@@ -80,6 +103,37 @@ const Comment = (props) => {
     }
     return rStar;
   };
+
+  const BoxInputComment = () => {
+    return (
+      <>
+      <div className="mx-4 pt-2 d-flex flex-column">
+        <h4>Đánh giá của bạn</h4>
+        <div>
+        <div className={clsx(styles.rate, "mx-3")} useRef={boxRate}>
+          <input type="radio" className="d-none" id="star5" name="rate"  />
+          <label for="star5" title="text" onClick={e=>getRate(e)} value="5"></label>
+          <input type="radio" className="d-none" id="star4" name="rate"  />
+          <label for="star4" title="text" onClick={e=>getRate(e)} value="4"></label>
+          <input type="radio" className="d-none" id="star3" name="rate"  />
+          <label for="star3" title="text" onClick={e=>getRate(e)} value="3"></label>
+          <input type="radio" className="d-none" id="star2" name="rate" />
+          <label for="star2" title="text" onClick={e=>getRate(e)}  value="2"></label>
+          <input type="radio" className="d-none " id="star1" name="rate" />
+          <label for="star1" title="text"  onClick={e=>getRate(e)} value="1" ></label>
+          
+        </div>
+        </div>   
+        <div className="bg-light d-flex" style={{ borderRadius: "8px" }}>
+          <input type="text" className="mx-4 px-2" style={{ width: "80%",height:'40px' }} ref={inputComment}/>
+          <button onClick={()=>postComment()}>submit</button>
+      </div>
+      </div>
+      <hr className="mb-0" />
+      </>
+    )
+  }
+
 
   const FeedBackSell = () => {
     return (
@@ -112,31 +166,12 @@ const Comment = (props) => {
         </p>
       </div>
       <hr className="mb-0" />
-      <div className="mx-4 pt-2 d-flex flex-column">
-        <h4>Đánh giá của bạn</h4>
-        <div>
-        <div className={clsx(styles.rate, "mx-3")} useRef={boxRate}>
-          <input type="radio" className="d-none" id="star5" name="rate"  />
-          <label for="star5" title="text" onClick={e=>getRate(e)} value="5"></label>
-          <input type="radio" className="d-none" id="star4" name="rate"  />
-          <label for="star4" title="text" onClick={e=>getRate(e)} value="4"></label>
-          <input type="radio" className="d-none" id="star3" name="rate"  />
-          <label for="star3" title="text" onClick={e=>getRate(e)} value="3"></label>
-          <input type="radio" className="d-none" id="star2" name="rate" />
-          <label for="star2" title="text" onClick={e=>getRate(e)}  value="2"></label>
-          <input type="radio" className="d-none " id="star1" name="rate" />
-          <label for="star1" title="text"  onClick={e=>getRate(e)} value="1" ></label>
-          
-        </div>
-        </div>   
-        <div className="bg-light d-flex" style={{ borderRadius: "8px" }}>
-          <input type="text" className="mx-4 px-2" style={{ width: "80%",height:'40px' }} />
-          <button>submit</button>
-        </div>
-      </div>
-      <hr className="mb-0" />
+      
+      {commented?<div></div>:<BoxInputComment/>}
+      
       <div className={clsx(styles.boxComments, "mt-4")}>
         {comments.map((comment) => {
+          
           return (
             <div className={clsx(styles.wrapComment, "pt-2")}>
               <div className={clsx(styles.boxUsers)}>

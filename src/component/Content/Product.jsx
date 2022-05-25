@@ -375,7 +375,7 @@ const Product = () => {
             </div>
           </div>
           <button className="btn btn-outline-dark mx-1 mt-2">
-            Số điện thoại liên hệ
+            {user.sdt?user.sdt:'Nguoi dung chua cap nhat sdt'}
           </button>
           <button className="btn btn-outline-dark mx-1 mt-2" onClick={()=>chat(user.username)}>
             Chat voi nguoi ban

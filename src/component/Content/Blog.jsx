@@ -51,7 +51,6 @@ const Blog = () => {
       color: color.current.value,
       tagId: tag.current.selectedOptions[0].getAttribute("value"),
     };
-    console.log(data);
     // name.current.value = '';
     // description.current.value = '';
     // address.current.value = '';
@@ -123,17 +122,14 @@ const Blog = () => {
             })
             .catch((error) => console.log(error));
         } else {
-          console.log(res);
+
           setmessageError(res.error);
         }
       });
   };
 
   useEffect(() => {
-    console.log(files);
-    files.map((file) => {
-      console.log(file.val);
-    });
+    
   }, [files]);
 
   const ImageUpload = () => {

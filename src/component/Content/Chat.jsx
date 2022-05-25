@@ -21,14 +21,8 @@ const Chat = () => {
   const [user2, setUser2] = useState("");
   const boxMess = useRef(null);
   const username2Default = useLocation().state.username2;
-
   const msg = useRef("");
-  socket.on("getMessage", function (data) {
-    setNewMessage(!newMessage);
-  });
-  window.addEventListener("beforeunload", function (e) {
-    socket.emit("offline", inforUser);
-  });
+  
 
   const dispatch = useDispatch();
 
@@ -49,11 +43,22 @@ const Chat = () => {
       })
       .then(function (res) {
         if (status === 200) {
+          socket.emit('online', res);
           dispatch(user(res));
         }
       });
   };
   useEffect(reloadLogin, []);
+
+  
+  socket.on("getMessage", function (data) {
+    setNewMessage(!newMessage);
+    console.log(data)
+  });
+  
+  window.addEventListener("beforeunload", function (e) {
+    socket.emit("offline", inforUser);
+  });
 
   useEffect(() => {
     var ojData = {
@@ -261,14 +266,15 @@ const Chat = () => {
     <div className={clsx(styles.home, styles.chat, "bg-light", "d-flex")}>
       <div className={clsx(styles.userChat, "col-md-4", "m-0", "p-0")}>
         <div>
-          <p className="m-0 pt-2 fw-bold text-black-50 mx-2 fs-5">Tat Ca</p>
+          <p className="m-0 pt-2 fw-bold mx-2 fs-5 ">Tat Ca</p>
         </div>
         <hr className="m-0 p-0" />
         <div className={clsx(styles.chat_wrapListUser)}>
           {listChats.map((chat) => {
             return (
               <div
-                className={`${styles.boxCardChat} "pt-2" ${chat.conversationId===conversation.conversationId?"bg-black-50":''}`}
+                className={`${styles.boxCardChat} "pt-2" ${chat.conversationId===conversation.conversationId?`bg-black ${styles.colorText_White}`:''}`}
+               
                 onClick={(e) => clickCardChat(chat)}
               >
                 <div
@@ -288,7 +294,7 @@ const Chat = () => {
                     </div>
                     <div>
                       <div className="d-flex">
-                        <p className="m-0 p-0 mx-1 text-black-50 fw-bold">
+                        <p className="m-0 p-0 mx-1 fw-bold">
                           {chat.username2 !== inforUser.username
                             ? chat.username2
                             : chat.username1}
@@ -297,7 +303,7 @@ const Chat = () => {
                       </div>
                       <div className="d-flex justify-content-end">
                         <p
-                          className="text-dark fst-italic"
+                          className="fst-italic"
                           style={{ right: "0px" }}
                         >
                           Ten san pham

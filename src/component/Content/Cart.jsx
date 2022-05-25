@@ -15,6 +15,8 @@ const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const pageCart = useRef(null);
+  const token = localStorage.getItem('token')
+
   var listCheckBox;
 
   const addProduct = (product) => {
@@ -32,11 +34,9 @@ const Cart = () => {
 
   useEffect(() => {
     listCheckBox = pageCart.current.querySelectorAll("input");
-
   }, [state]);
 
   useEffect(()=>{
-    const token = localStorage.getItem('token')
     var status;
     var ojData = {
       method: "GET",
@@ -83,6 +83,36 @@ const Cart = () => {
     return c;
   }
 
+  const buyGood = () => {
+    const checkBoxs = [...listCheckBox];
+    var listGoodsBuys = []
+    checkBoxs.map(function(checkBox) {
+      if (checkBox.checked && checkBox.getAttribute('name')!== 'selectAll') {
+        listGoodsBuys = [...listGoodsBuys, {goodId:  parseInt(checkBox.getAttribute('name')), sl:  parseInt(checkBox.getAttribute('value'))}]
+      }
+    })
+    
+    var requestOptions = {
+      method: 'POST',
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+      body : JSON.stringify({goodBuys: listGoodsBuys}),
+      redirect: 'follow'
+    };
+    
+    fetch("http://127.0.0.1:5000/api/goods/goodBuys", requestOptions)
+      .then(response => response.text())
+      .then(function(res) {
+        listGoodsBuys.map(good=> {
+          delZero(state.filter(goodS=>goodS.id === good.id))
+        })
+      })
+      .catch(error => console.log('error', error));
+  }
+
 
   
 
@@ -117,7 +147,7 @@ const Cart = () => {
                 )}
               >
                 <div className={clsx(styles.cart_product_checkbox)}>
-                <input type="checkbox" name={product.goodId}/>
+                <input type="checkbox" name={product.goodId} value={product.qty}/>
                 </div>
                 <div
                   className={clsx(styles.cart_product_boxImg)}
@@ -199,7 +229,7 @@ const Cart = () => {
         <hr className="m-0" />
         <div className="mb-2 d-flex">
           <div className={clsx(styles.cart_boxButtonBuy, )}>
-            <button className={clsx(styles.cart_buttonBuy)}>Mua</button>
+            <button className={clsx(styles.cart_buttonBuy)} onClick={()=>buyGood()}>Mua</button>
           </div>
         </div>
       </div>
