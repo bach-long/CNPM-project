@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import styles from "./Content.module.css";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { user } from "../../redux/action";
 import Skeleton from "react-loading-skeleton";
 
 const PageUser = () => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   const dispatch = useDispatch();
+  
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -33,42 +35,37 @@ const PageUser = () => {
       });
   }, []);
 
-  
-
   const [blogGoods, setBlogGoods] = useState([]);
   const [inforUser, setInforUser] = useState({});
-  const [follow, setFollow] = useState(false);
   const userId = useLocation().state.userId;
   const [loading, setLoading] = useState(true);
   const [stateDelete, setStateDelete] = useState(true);
-  var [checkBlogUp,setCheckBlogUp] = useState(true);
+  const [textFollow, setTextFollow] = useState("Theo doi");
+  var [checkBlogUp, setCheckBlogUp] = useState(true);
   const delete_Product = (goodId) => {
-    console.log('delete')
     var status;
     var requestOptions = {
       method: "DELETE",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
       redirect: "follow",
     };
     fetch(`http://127.0.0.1:5000/api/goods/${goodId}`, requestOptions)
-      .then(function(response){
+      .then(function (response) {
         status = response.status;
         return response.text();
       })
-      .then(function(result) {
-        if (status=== 204) {
+      .then(function (result) {
+        if (status === 204) {
           setStateDelete(!stateDelete);
         }
       })
       .catch((error) => console.log("error", error));
   };
 
-  useEffect(() => {
-    console.log(1);
-  }, [follow]);
+  useEffect(() => {}, [textFollow]);
 
   useEffect(() => {
     const getUserGoods = async () => {
@@ -78,15 +75,34 @@ const PageUser = () => {
       const response2 = await fetch(
         `http://127.0.0.1:5000/api/users/${userId}`
       );
-      const goods = await response.clone().json()
+      const goods = await response.clone().json();
+      const user = await response2.clone().json();
+      !user.isFollowedByCurrentUser?setTextFollow('Huy theo doi'):setTextFollow('Theo doi')
       setBlogGoods(goods);
-      setInforUser(await response2.clone().json());
-      setCheckBlogUp(goods.length > 0?true:false)
+      setInforUser(user);
+      setCheckBlogUp(goods.length > 0 ? true : false);
       setLoading(false);
     };
     getUserGoods();
   }, [stateDelete]);
 
+  const followUser = () => {
+    var requestOptions = {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+      redirect: "follow",
+    };
+
+    fetch(`http://127.0.0.1:5000/api/users/${userId}/follow`, requestOptions)
+      .then((response) => response.json())
+      .then(function (result) {
+        result.message === "Follow thành công!"? setTextFollow("Huy theo doi") : setTextFollow("Theo doi");
+        console.log(result.message);
+      })
+      .catch((error) => console.log("error", error));
+  };
 
   const BoxProfileGoodsLoading = () => {
     return (
@@ -123,12 +139,11 @@ const PageUser = () => {
         {blogGoods.map((good) => {
           const img = good.images;
           const img0 = img[0] ? img[0].link : null;
-          console.log(img0);
           return (
             <>
               <div
                 className={`col-md-3 mb-4 ${styles.cardProduct}`}
-                // onClick={() => navigate(`/products/${product.id}`)}
+                onClick={() => navigate(`/products/${good.goodId}`)}
               >
                 <div className="card h-100 text-center" key={good.id}>
                   <img
@@ -167,7 +182,12 @@ const PageUser = () => {
                     aria-labelledby="navbarDropdownMenuLink"
                   >
                     <li>
-                      <button className="dropdown-item" onClick={()=>delete_Product(good.goodId)}>Xóa sản phẩm</button>
+                      <button
+                        className="dropdown-item"
+                        onClick={() => delete_Product(good.goodId)}
+                      >
+                        Xóa sản phẩm
+                      </button>
                     </li>
                   </ul>
                 </div>
@@ -227,9 +247,9 @@ const PageUser = () => {
                 styles.flowUser
               )}
             >
-              <div className="d-flex" onClick={() => setFollow(!follow)}>
+              <div className="d-flex" onClick={followUser}>
                 <i className="fa fa-plus mt-1 me-2"></i>
-                <div>Theo dõi</div>
+                <div>{textFollow}</div>
               </div>
             </button>
           </div>

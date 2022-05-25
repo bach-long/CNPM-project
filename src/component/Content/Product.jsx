@@ -18,6 +18,8 @@ const Product = () => {
   const dispatch = useDispatch();
   const [statusLogin, setStatusLogin] = useState(false);
   const inforUser = useSelector((state)=> state.Login);  
+  const token = localStorage.getItem('token');
+  
   const addProduct = (product) => {
     dispatch(addCart(product));
   };
@@ -45,6 +47,8 @@ const Product = () => {
     };
     getProduct();
   }, [id]);
+
+  
 
   useEffect(()=>{
 
@@ -86,6 +90,58 @@ const Product = () => {
   const scrollRight = () => {
     boxScroll.current.scrollLeft += 400;
   };
+
+  const chat = (username2) => {
+    if (username2 !== inforUser.username) {
+      console.log(username2)
+      var ojData = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+      };
+      fetch("http://127.0.0.1:5000/api/chat/chatList", ojData)
+        .then((res) => res.json())
+        .then(function (res) {
+           const check = true;
+            res.forEach(function (cvs) {
+              if (
+                cvs.username1 === username2 ||
+                cvs.username2 === username2
+              ) {
+                navigate('/chat', {state:{username2: username2}})
+                check = false;
+              }
+            });
+  
+            if (check) {
+              var data = { username1: inforUser.username, username2:username2};
+              //  var data = { username2: username2};
+              console.log(data)
+              var ojData = {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                credentials: "follow",
+                body: JSON.stringify(data)
+              };
+              fetch(
+                `http://127.0.0.1:5000/api/chat/newChat`,
+                ojData
+              )
+                .then((res) => res.json())
+                .then(function (res) {
+                  navigate('/chat',{state:{username2:username2}})
+                })
+                .catch((error) => console.log(error));
+          }
+        })
+        .catch((error) => console.log(error));
+    }
+  }
 
   /**Loaing */
   const Loading = () => {
@@ -319,7 +375,7 @@ const Product = () => {
           <button className="btn btn-outline-dark mx-1 mt-2">
             Số điện thoại liên hệ
           </button>
-          <button className="btn btn-outline-dark mx-1 mt-2">
+          <button className="btn btn-outline-dark mx-1 mt-2" onClick={()=>chat(user.username)}>
             Chat voi nguoi ban
           </button>
           <div className="buttons d-flex flex-column">

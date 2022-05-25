@@ -2,33 +2,37 @@ import React, { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate ,useLocation} from "react-router-dom";
 import styles from "./Content.module.css";
 import { useSelector, useDispatch } from "react-redux";
 import { user } from "../../redux/action";
 import { Selector } from "react-redux";
 import socket from "./socket";
 
-
 //socket.emit('online', inforUser);
 const Chat = () => {
-  const inforUser = useSelector((state)=> state.Login);
+  const inforUser = useSelector((state) => state.Login);
   const [checkBoxChatNull, setCheckBoxChat] = useState(true);
   const [listChats, setListChats] = useState([]);
   const [messages, setMessages] = useState([]);
   const [conversation, setConversation] = useState({});
+  const [cvsDefault, setCvsDefalut] = useState({});
   const token = localStorage.getItem("token");
-  function handleMessage(e) {
-    socket.emit("sendMessage", {
-      username1: "user1",
-      username2: "user2",
-      context: "user2 la thang nao",
-    });
-  }
-  socket.on("getMessage", (data) => {
-    console.log(data);
+  const [newMessage, setNewMessage] = useState(true);
+  const [user2, setUser2] = useState("");
+  const boxMess = useRef(null);
+  const username2Default = useLocation().state.username2;
+
+  const msg = useRef("");
+  socket.on("getMessage", function (data) {
+    setNewMessage(!newMessage);
   });
+  window.addEventListener("beforeunload", function (e) {
+    socket.emit("offline", inforUser);
+  });
+
   const dispatch = useDispatch();
+
   const reloadLogin = () => {
     var status;
     var ojData = {
@@ -65,6 +69,49 @@ const Chat = () => {
       .then((res) => res.json())
       .then(function (res) {
         setListChats(res);
+        const check = true;
+          res.forEach(function (cvs) {
+            if (
+              cvs.username1 === username2Default ||
+              cvs.username2 === username2Default
+            ) {
+              setUser2(username2Default);
+              setConversation(cvs);
+              console.log("set username default");
+              check = false;
+            }
+          });
+
+          // if (check) {
+          //   var data = { username1: inforUser.username, username2:username2Default};
+          //   var ojData = {
+          //     method: "POST",
+          //     headers: {
+          //       Authorization: `Bearer ${token}`,
+          //     },
+          //     body: JSON.stringify(data)
+          //   };
+          //   fetch(
+          //     `http://127.0.0.1:5000/api/chat/newChat`,
+          //     ojData
+          //   )
+          //     .then((res) => res.json())
+          //     .then(function (res) {
+          //       setUser2(username2Default);
+          //       setConversation(res);
+          //     })
+          //     .catch((error) => console.log(error));
+          // }
+          if (check && res[0]) {
+            const cvs = res[0];
+            console.log("set magn");
+            setConversation(res[0]);
+            setUser2(
+              cvs.username2 !== inforUser.username
+                ? cvs.username2
+                : cvs.username1
+            );
+          }
       })
       .catch((error) => console.log(error));
   }, []);
@@ -75,10 +122,9 @@ const Chat = () => {
     }
   }, [messages]);
 
-  useEffect(() => {
+  const getMessageFetch = () => {
     function fetchMess() {
       var data = { conversationId: conversation.conversationId };
-      console.log(data);
       var ojData = {
         method: "GET",
         headers: {
@@ -87,24 +133,42 @@ const Chat = () => {
         },
       };
       fetch(
-        `http://127.0.0.1:5000/api/chat/messages?conversationId=${conversation.conversationId}`,
+        `http://127.0.0.1:5000/api/chat/messages/${conversation.conversationId}`,
         ojData
       )
         .then((res) => res.json())
         .then(function (res) {
-          console.log(res);
           setMessages(res);
+          boxMess.current.scrollTop = boxMess.current.scrollHeight;
         })
         .catch((error) => console.log(error));
     }
     if (conversation !== undefined) {
       fetchMess();
     }
-  }, [conversation]);
+  };
+
+  useEffect(getMessageFetch, [conversation]);
+  useEffect(getMessageFetch, [newMessage]);
 
   function clickCardChat(chat) {
+    var user2 =
+      chat.username2 !== inforUser.username ? chat.username2 : chat.username1;
+    setUser2(user2);
     setConversation(chat);
   }
+
+  const clickSendMessage = (e) => {
+    socket.emit("sendMessage", {
+      username1: inforUser.username,
+      username2:
+        inforUser.username == conversation.username1
+          ? conversation.username2
+          : conversation.username1,
+      context: msg.current.value,
+    });
+    setNewMessage(!newMessage);
+  };
 
   const BoxChatNull = () => {
     return (
@@ -171,20 +235,25 @@ const Chat = () => {
           <div
             className={clsx("bg-light", styles.boxChatMessage)}
             style={{ height: "435px" }}
+            ref={boxMess}
           >
             <div className="text-center fst-italic">
               <p>Bạn và người bán đã được kết nối hãy chat với nhau nào</p>
             </div>
             {messages.map((message) => {
-              var css = String(message.username).localeCompare(String(inforUser.username))==1?true:false;
-
+              var css = message.username === user2;
               return (
-                <div className={css?styles.messageBlue:styles.messageOrange}>
+                <div
+                  className={css ? styles.messageBlue : styles.messageOrange}
+                >
                   <p className={clsx(styles.messageContent)}>
                     {message.context}
                   </p>
                   <div
-                    className={clsx(css?styles.messageTimestampLeft:'', "text-right")}
+                    className={clsx(
+                      css ? styles.messageTimestampLeft : "",
+                      "text-right"
+                    )}
                   >
                     <p className="m-0">{message.createdAt}</p>
                   </div>
@@ -195,11 +264,12 @@ const Chat = () => {
           <div className="d-flex mt-1">
             <input
               type="text"
+              ref={msg}
               className="w-90 px-2 mx-2"
               style={{ width: "94%", borderStyle: "none" }}
             />
             <div className="" style={{ width: "5%" }}>
-              <button onClick={(e) => handleMessage(e)}>
+              <button onClick={(e) => clickSendMessage(e)}>
                 <i class="fa fa-paper-plane" aria-hidden="true"></i>
               </button>
             </div>
@@ -241,7 +311,9 @@ const Chat = () => {
                     <div>
                       <div className="d-flex">
                         <p className="m-0 p-0 mx-1 text-black-50 fw-bold">
-                          {chat.username2}
+                          {chat.username2 !== inforUser.username
+                            ? chat.username2
+                            : chat.username1}
                         </p>
                         <p className="m-0 p-0 mb-1">THoi gian chat</p>
                       </div>
