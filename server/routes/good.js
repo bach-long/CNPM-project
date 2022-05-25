@@ -314,13 +314,17 @@ const router = new Router();
 
 router.post('/', userCheck, authCheck, createGood);
 router.get('/', userCheck, getGoods);
+
+// 2 route này ở đây để không bị trùng với route getGood
+router.post('/goodBuys', userCheck, authCheck, goodBuy);
+router.get('/getGoodBuys', userCheck, authCheck, getGoodBuy);
+
+
 router.get('/:goodId', userCheck, getGood);
 router.delete('/:goodId', userCheck, authCheck, deleteGood);
 router.post('/:goodId/comments', userCheck, authCheck, commentOnGood);
 router.get('/:goodId/comments', userCheck, getGoodComments);
 router.post('/:goodId/bookmark', userCheck, authCheck, bookmarkGood);
 router.get('/:tagId/getGoodsByTag', userCheck, authCheck, getGoodsByTag);
-router.post('/goodBuys', userCheck, authCheck, goodBuy);
-router.get('/getGoodBuys', userCheck, authCheck, getGoodBuy);
 
 module.exports = router;
