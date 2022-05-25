@@ -4,7 +4,7 @@ const userCheck = require('../middlewares/userCheck');
 const authCheck = require('../middlewares/authCheck');
 const { Op } = require('sequelize');
 
-const { Good, Comment, Image } = require('../sequelize').models;
+const { Good, Comment, Image, BuyGoods } = require('../sequelize').models;
 const removeVietnameseTones = require('./../utils/removeVietnameseTones')
 
 const createGood = async (req, res, next) => {
@@ -266,13 +266,13 @@ const getGoodsByTag = async (req, res, next) => {
     }
 };
 
-const goodBuy= async (req,res,next)=>{
+const goodBuy = async (req, res, next) => {
     try {
-        const{ goodBuys } = req.body;
+        const { goodBuys } = req.body;
         const username = res.locals.user.username;
         array = [];
-        for(i in goodBuys) {
-            a = await BuyGoods.create({
+        for (i in goodBuys) {
+            const a = await BuyGoods.create({
                 username: username,
                 goodId: i.goodId,
                 amount: i.sl,
@@ -291,12 +291,14 @@ const goodBuy= async (req,res,next)=>{
     }
 };
 
-const getGoodBuy= async (req,res,next)=>{
+const getGoodBuy = async (req, res, next) => {
     try {
         const username = res.locals.user.username;
-        results = await BuyGoods.findAll({where: {
-            username: username
-        }});
+        results = await BuyGoods.findAll({
+            where: {
+                username: username
+            }
+        });
         res.status(200).json({
             results
         });
