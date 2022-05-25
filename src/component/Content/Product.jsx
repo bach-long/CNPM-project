@@ -110,13 +110,14 @@ const Product = () => {
                 cvs.username1 === username2 ||
                 cvs.username2 === username2
               ) {
+                console.log('mở chat đã có')
                 navigate('/chat', {state:{username2: username2}})
                 check = false;
               }
             });
   
             if (check) {
-              var data = { username1: inforUser.username, username2:username2};
+              var data = { user1: inforUser.username, user2:username2};
               //  var data = { username2: username2};
               console.log(data)
               var ojData = {
@@ -125,7 +126,7 @@ const Product = () => {
                   "Content-Type": "application/json",
                   Authorization: `Bearer ${token}`,
                 },
-                credentials: "follow",
+                redirect: 'follow',
                 body: JSON.stringify(data)
               };
               fetch(
@@ -134,6 +135,7 @@ const Product = () => {
               )
                 .then((res) => res.json())
                 .then(function (res) {
+                console.log('tạo mới')
                   navigate('/chat',{state:{username2:username2}})
                 })
                 .catch((error) => console.log(error));

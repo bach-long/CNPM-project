@@ -16,7 +16,6 @@ const Chat = () => {
   const [listChats, setListChats] = useState([]);
   const [messages, setMessages] = useState([]);
   const [conversation, setConversation] = useState({});
-  const [cvsDefault, setCvsDefalut] = useState({});
   const token = localStorage.getItem("token");
   const [newMessage, setNewMessage] = useState(true);
   const [user2, setUser2] = useState("");
@@ -60,16 +59,15 @@ const Chat = () => {
     var ojData = {
       method: "GET",
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
         Authorization: "Bearer " + token,
       },
+      redirect: 'follow'
     };
     fetch("http://127.0.0.1:5000/api/chat/chatList", ojData)
       .then((res) => res.json())
       .then(function (res) {
         setListChats(res);
-        const check = true;
+        var check = true;
           res.forEach(function (cvs) {
             if (
               cvs.username1 === username2Default ||
@@ -77,31 +75,11 @@ const Chat = () => {
             ) {
               setUser2(username2Default);
               setConversation(cvs);
+              console.log(cvs)
               console.log("set username default");
               check = false;
             }
           });
-
-          // if (check) {
-          //   var data = { username1: inforUser.username, username2:username2Default};
-          //   var ojData = {
-          //     method: "POST",
-          //     headers: {
-          //       Authorization: `Bearer ${token}`,
-          //     },
-          //     body: JSON.stringify(data)
-          //   };
-          //   fetch(
-          //     `http://127.0.0.1:5000/api/chat/newChat`,
-          //     ojData
-          //   )
-          //     .then((res) => res.json())
-          //     .then(function (res) {
-          //       setUser2(username2Default);
-          //       setConversation(res);
-          //     })
-          //     .catch((error) => console.log(error));
-          // }
           if (check && res[0]) {
             const cvs = res[0];
             console.log("set magn");
@@ -117,14 +95,14 @@ const Chat = () => {
   }, []);
 
   useEffect(() => {
-    if (messages.length > 0) {
+    if (listChats.length > 0) {
       setCheckBoxChat(false);
     }
-  }, [messages]);
+  }, [listChats]);
 
   const getMessageFetch = () => {
+    console.log('setMessags')
     function fetchMess() {
-      var data = { conversationId: conversation.conversationId };
       var ojData = {
         method: "GET",
         headers: {
@@ -290,14 +268,14 @@ const Chat = () => {
           {listChats.map((chat) => {
             return (
               <div
-                className={clsx(styles.boxCardChat, "pt-2")}
+                className={`${styles.boxCardChat} "pt-2" ${chat.conversationId===conversation.conversationId?"bg-black-50":''}`}
                 onClick={(e) => clickCardChat(chat)}
               >
                 <div
                   className={clsx(
                     styles.cardUser,
                     "d-flex",
-                    "justify-content-between"
+                    "justify-content-between "
                   )}
                 >
                   <div className="d-flex mx-2">
