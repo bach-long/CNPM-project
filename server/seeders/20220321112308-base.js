@@ -1677,6 +1677,7 @@ module.exports = {
         await queryInterface.bulkDelete('images');
         await queryInterface.bulkDelete('conversations');
         await queryInterface.bulkDelete('chatcontexts');
+        await queryInterface.bulkDelete('buygoods');
         await queryInterface.bulkDelete('sqlite_sequence'); // auto increment table
     },
 };
