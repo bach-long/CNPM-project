@@ -4,20 +4,19 @@ const userCheck = require('../middlewares/userCheck');
 const authCheck = require('../middlewares/authCheck');
 const { Op } = require('sequelize');
 
-const { User, Conversation, ChatContext } = require('../sequelize').models;
+const { Conversation, ChatContext } = require('../sequelize').models;
 
 const CreateConversation = async (req, res, next) => {
     try {
-        const { goodId, username2 } = req.body;
-        const username1 = res.locals.user.username;
+        console.log(req);
+        const {user1, user2 } = req.body;
 
         // TODO: Validate và ném lỗi đọc được
 
         // create good
         const conversation = await Conversation.create({
-            goodId,
-            username1,
-            username2,
+            username1:user1,
+            username2:user2,
         });
 
         // console.log(await good.getUser()); // works
@@ -84,9 +83,8 @@ const CreateMessage = async (req, res, next) => {
 
 const GetContext = async (req, res, next) => {
     try {
-        const { conversationId } = req.query;
-        const username = res.locals.user.username;
 
+        const { conversationId } = req.params;
         // TODO: Validate và ném lỗi đọc được
 
         // create good
@@ -112,6 +110,7 @@ const router = new Router();
 router.post('/conversation', userCheck, authCheck, CreateConversation);
 router.post('/message', userCheck, authCheck, CreateMessage);
 router.get('/chatList', userCheck, authCheck, ConversationList);
-router.get('/messages', userCheck, authCheck, GetContext);
+router.get('/messages/:conversationId', userCheck, authCheck, GetContext);
+router.post('/newChat', userCheck, authCheck, CreateConversation);
 
 module.exports = router;

@@ -182,11 +182,12 @@ const commentOnGood = async (req, res, next) => {
     try {
         const { goodId } = req.params;
         const { content } = req.body;
-
+        const { vote } = req.body;
         const good = await Good.findOne({ where: { goodId } });
 
         const comment = await Comment.create({
             content,
+            vote,
             userId: res.locals.user.userId,
             goodId: good.goodId,
         });
@@ -248,7 +249,65 @@ const bookmarkGood = async (req, res, next) => {
         });
     }
 };
+const getGoodsByTag = async (req, res, next) => {
+    try {
+        const { tagId } = req.params;
+        const goods = await Good.findAll({ where: { tagId: tagId } });
 
+        // TODO: Set user specific things like liked comment using res.locals.user
+
+        res.json(goods);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Lỗi từ Get Good By Tag!',
+            errors: error,
+        });
+    }
+};
+
+const goodBuy= async (req,res,next)=>{
+    try {
+        const{ goodBuys } = req.body;
+        const username = res.locals.user.username;
+        array = [];
+        for(i in goodBuys) {
+            a = await BuyGoods.create({
+                username: username,
+                goodId: i.goodId,
+                amount: i.sl,
+            })
+            array.push(a);
+        }
+        res.status(200).json({
+            array
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Lỗi từ good buy!',
+            errors: error,
+        });
+    }
+};
+
+const getGoodBuy= async (req,res,next)=>{
+    try {
+        const username = res.locals.user.username;
+        results = await BuyGoods.findAll({where: {
+            username: username
+        }});
+        res.status(200).json({
+            results
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Lỗi từ get good buy!',
+            errors: error,
+        });
+    }
+};
 const router = new Router();
 
 router.post('/', userCheck, authCheck, createGood);
@@ -258,5 +317,8 @@ router.delete('/:goodId', userCheck, authCheck, deleteGood);
 router.post('/:goodId/comments', userCheck, authCheck, commentOnGood);
 router.get('/:goodId/comments', userCheck, getGoodComments);
 router.post('/:goodId/bookmark', userCheck, authCheck, bookmarkGood);
+router.get('/:tagId/getGoodsByTag', userCheck, authCheck, getGoodsByTag);
+router.post('/goodBuys', userCheck, authCheck, goodBuy);
+router.get('/getGoodBuys', userCheck, authCheck, getGoodBuy);
 
 module.exports = router;
