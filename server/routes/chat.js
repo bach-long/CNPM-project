@@ -9,14 +9,14 @@ const { Conversation, ChatContext } = require('../sequelize').models;
 const CreateConversation = async (req, res, next) => {
     try {
         console.log(req);
-        const {user1, user2 } = req.body;
+        const { user1, user2 } = req.body;
 
         // TODO: Validate và ném lỗi đọc được
 
         // create good
         const conversation = await Conversation.create({
-            username1:user1,
-            username2:user2,
+            username1: user1,
+            username2: user2,
         });
 
         // console.log(await good.getUser()); // works
@@ -65,7 +65,7 @@ const CreateMessage = async (req, res, next) => {
         const context = await ChatContext.create({
             conversationId,
             username,
-            message,
+            context: message,
         });
 
         // console.log(await good.getUser()); // works

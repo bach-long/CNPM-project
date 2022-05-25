@@ -31,10 +31,10 @@ describe('Các Route với User', () => {
         });
     });
 
-    describe('GET /api/chat/messages', () => {
+    describe('GET /api/chat/messages/:conversationId', () => {
         it('Trả về chat giữa 2 người (conversationId=1)', async () => {
             const response = await request(app)
-                .get(`/api/chat/messages?conversationId=1`)
+                .get(`/api/chat/messages/1`)
                 .set('Cookie', `jwt=${token}`)
                 .expect('Content-Type', /json/)
                 .expect(200);
