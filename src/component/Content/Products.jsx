@@ -4,6 +4,9 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./Content.module.css";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchGetAllProducts } from "../../redux/action/productAction";
+
 import Pagination from "./Pagination";
 
 const Products = () => {
@@ -11,11 +14,12 @@ const Products = () => {
   const [filter, setFilter] = useState(data);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const [pageCount, setPageCout] = useState(1);
-  let componentMounted = true;
+  const [pageCount, setPageCount] = useState(1);
   const navigate = useNavigate();
   const pathshort = "/assets/iconKhamPha/";
   const doc = useRef(null);
+  const productRedux = useSelector((state) => state.Product);
+  const dispatch = useDispatch();
 
   const listProductLine = [
     {
@@ -88,31 +92,18 @@ const Products = () => {
 
   function getCurPage(page) {
     setPage(page);
-    console.log(page);
   }
 
   useEffect(() => {
-    const getProducts = async () => {
-      setLoading(true);
-      const response = await fetch(`http://127.0.0.1:5000/api/goods?page=${page}`);
-
-      if (componentMounted) {
-        const object = await response.clone().json();
-        setData(object.goods);
-
-        setPageCout(object.totalPageCount);
-
-        setFilter(object.goods);
-        setLoading(false);
-      }
-
-      return () => {
-        componentMounted = false;
-      };
-    };
-
-    getProducts();
+    dispatch(fetchGetAllProducts(page));
   }, [page]);
+
+  useEffect(() => {
+    setData(productRedux.products);
+    setPageCount(productRedux.pageCount);
+    setFilter(productRedux.products);
+    setLoading(productRedux.loading);
+  }, [productRedux]);
 
   const Loading = () => {
     return (
@@ -203,21 +194,23 @@ const Products = () => {
                 </div>
               </div>
               <div className={clsx(styles.cardProduct_delete)}>
-                <div className="nav-link "
+                <div
+                  className="nav-link "
                   to="#"
                   id="navbarDropdownMenuLink"
                   role="button"
                   data-bs-toggle="dropdown"
-                  aria-expanded="false">
-                <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                  aria-expanded="false"
+                >
+                  <i className="fa fa-ellipsis-v" aria-hidden="true"></i>
                 </div>
                 <ul
                   className="dropdown-menu"
                   aria-labelledby="navbarDropdownMenuLink"
                 >
                   <li>
-                    <Link className="dropdown-item" to={'/'}>
-                      Thông tin tài khoản
+                    <Link className="dropdown-item" to={"/"}>
+                      Delete
                     </Link>
                   </li>
                 </ul>
@@ -226,9 +219,7 @@ const Products = () => {
           );
         })}
 
-        <Pagination getData={getCurPage} page={page} pageCounts={pageCount}/>
-
-
+        <Pagination getData={getCurPage} page={page} pageCounts={pageCount} />
       </>
     );
   };

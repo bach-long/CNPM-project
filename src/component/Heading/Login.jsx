@@ -1,73 +1,75 @@
-import React, { useRef,useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import clsx from "clsx";
-import { Link, useNavigate  } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./Heading.module.css";
-import { useDispatch } from "react-redux";
-import { user } from "../../redux/action";
-import { useCookies } from "react-cookie";
-import socket from "../Content/socket";
-
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../../redux/action/Auth";
 
 const Login = () => {
+  const infoUser = useSelector((state) => state.Login);
   const navigate = useNavigate();
-  const [messageError, setmessageError] = useState('');
-  var status = 0;
-  const token = localStorage.getItem('token');
+  const dispatch = useDispatch();
+  const [messageError, setmessageError] = useState("");
+
   const username = useRef(null);
   const password = useRef(null);
-  const dispatch = useDispatch();
 
-  const postData = (data) => {
-    var ojData = {
-      method: 'POST',
-      credentials: "include",
-      headers:{
-        Accept: 'application/json',
-                 'Content-Type': 'application/json',
-               },
-               'Authorization': `Bearer ${token}`,
-      body: JSON.stringify(data)
-    }
-    fetch("http://127.0.0.1:5000/api/auth/login", ojData)
-      .then(function(response) {
-        status = response.status;
-          return response.json();
-      })
-         // tu tu pro caai re day xem ph r
-      .then(function(res) {
-        if (status === 200) {
-          localStorage.setItem("token", res.token)
-          socket.emit('online', res.user);
-          dispatch(user(res.user))
-          navigate('/')
-          setmessageError('Dang nhap thanh cong')
+  // const postData = (data) => {
+  //   var ojData = {
+  //     method: "POST",
+  //     credentials: "include",
+  //     headers: {
+  //       Accept: "application/json",
+  //       "Content-Type": "application/json",
+  //     },
+  //     Authorization: `Bearer ${token}`,
+  //     body: JSON.stringify(data),
+  //   };
+  //   fetch("http://127.0.0.1:5000/api/auth/login", ojData)
+  //     .then(function (response) {
+  //       status = response.status;
+  //       return response.json();
+  //     })
+  //     // tu tu pro caai re day xem ph r
+  //     .then(function (res) {
+  //       if (status === 200) {
+  //         localStorage.setItem("token", res.token);
+  //         socket.emit("online", res.user);
+  //         dispatch(user(res.user));
+  //         navigate("/");
+  //         alert("Dang nhap thanh cong");
+  //         setmessageError("Dang nhap thanh cong");
+  //       } else if (status === 400) {
+  //         setmessageError("Email va mat khau k duoc de trong");
+  //       } else if (status === 404) {
+  //         setmessageError(res.errors.username);
+  //       } else if (status === 401) {
+  //         setmessageError(res.errors.password);
+  //       } else {
+  //         setmessageError("dang nhap k thanh cong");
+  //       }
+  //     });
+  // };
 
-        } else if (status === 400) {
-          setmessageError('Email va mat khau k duoc de trong');
-        } else if (status === 404 ) {
-          setmessageError(res.errors.username)
-        } else if (status === 401) {
-          setmessageError(res.errors.password)
-        } else {
-          setmessageError('dang nhap k thanh cong')
-        }
-      })
-  }
-
-  const sendData = ()=> {
+  const sendData = async () => {
     var data = {
       username: username.current.value,
-      password: password.current.value
-    }
-    username.current.value = '';
-    password.current.value = '';
-    setmessageError('')
-   postData(data);
-  }
+      password: password.current.value,
+    };
+    username.current.value = "";
+    password.current.value = "";
+    setmessageError("");
+    // postData(data);
+    dispatch(login(data));
+  };
 
-   useEffect(()=> {
-     console.log(1)
-   })
+  useEffect(() => {
+    if (infoUser.message) {
+      setmessageError(infoUser.message);
+    } else if (infoUser.username) {
+      navigate("/");
+    }
+  }, [infoUser]);
 
   return (
     <>
@@ -106,39 +108,39 @@ const Login = () => {
                 </div>
 
                 <div className={clsx(styles.authForm_form, "mt-3")}>
-                    <div className={styles.authForm_Group}>
-                      <input
-                        type="text"
-                        name="username"
-                        className={clsx(styles.authForm_input)}
-                        placeholder="Nhập tên đăng nhập của bạn"
-                        required
-                        ref={username}
-                      />
-                    </div>
-                    <div className={clsx(styles.authForm_Group)}>
-                      <input
-                        type="password"
-                        className={clsx(styles.authForm_input)}
-                        placeholder="Nhập mật khẩu của bạn"
-                        required
-                        ref={password}
-                      />
-                    </div>
-                    <div className={clsx(styles.error)}>{messageError}</div>
-                    <div className={styles.authForm_Group}>
-                      <button
-                        className={clsx(
-                          "btn",
-                          "btn-secondary",
-                          styles.btnRe,
-                          styles.authForm_input
-                        )}
-                        onClick={sendData}
-                      >
-                        Đăng Nhập
-                      </button>
-                    </div>
+                  <div className={styles.authForm_Group}>
+                    <input
+                      type="text"
+                      name="username"
+                      className={clsx(styles.authForm_input)}
+                      placeholder="Nhập tên đăng nhập của bạn"
+                      required
+                      ref={username}
+                    />
+                  </div>
+                  <div className={clsx(styles.authForm_Group)}>
+                    <input
+                      type="password"
+                      className={clsx(styles.authForm_input)}
+                      placeholder="Nhập mật khẩu của bạn"
+                      required
+                      ref={password}
+                    />
+                  </div>
+                  <div className={clsx(styles.error)}>{messageError}</div>
+                  <div className={styles.authForm_Group}>
+                    <button
+                      className={clsx(
+                        "btn",
+                        "btn-secondary",
+                        styles.btnRe,
+                        styles.authForm_input
+                      )}
+                      onClick={sendData}
+                    >
+                      Đăng Nhập
+                    </button>
+                  </div>
                 </div>
                 <div className={clsx(styles.authForm_aside)}>
                   <p className={styles.authForm_policyText}>

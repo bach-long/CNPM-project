@@ -1,46 +1,64 @@
-const cart = [];
+import actionTypes from "../action/actionType.js";
 
+const initialState = {
+  cart: [],
+  done: false,
+};
 
-const handleCart = (state = cart, action) => {
+const handleCart = (state = initialState, action) => {
   const product = action.payload;
+  let copyState = { ...state };
   switch (action.type) {
     case "ADDITEM":
-        //Check product
-      const exist = state.find((x) => x.goodId === product.goodId);
+      const exist = copyState.cart.find((x) => x.goodId === product.goodId);
       if (exist) {
-        //increase the quantity
-        return state.map((x) => 
-          x.goodId === product.goodId ? {...x, qty: (x.qty + 1)} : x
+        copyState.cart = copyState.cart.map((x) =>
+          x.goodId === product.goodId ? { ...x, qty: x.qty + 1 } : x
         );
+        return copyState;
       } else {
         const product = action.payload;
-        return [ 
-          ...state,
+        copyState.cart = [
+          ...copyState.cart,
           {
             ...product,
             qty: 1,
-          }
+          },
         ];
+        return copyState;
       }
 
     case "DELITEM":
-      const exist1 = state.find((x) => x.goodId === product.goodId);
+      const exist1 = copyState.cart.find((x) => x.goodId === product.goodId);
       if (exist1.qty === 1) {
-        return state.filter((x) => x.goodId !== exist1.goodId);
+        copyState.cart = copyState.cart.filter(
+          (x) => x.goodId !== exist1.goodId
+        );
+        return copyState;
       } else {
-        return state.map((x) =>
+        copyState.cart = copyState.cart.map((x) =>
           x.goodId === product.goodId ? { ...x, qty: x.qty - 1 } : x
         );
+        return copyState;
       }
 
     case "DELZERO":
-      const exist2 = state.find((x) => x.goodId === product.goodId);
-      return state.filter(x=> x.goodId != exist2.goodId);
+      const exist2 = copyState.cart.find((x) => x.goodId === product.goodId);
+      copyState.cart = copyState.cart.filter((x) => x.goodId != exist2.goodId);
 
-      
+      return copyState;
+
+    case actionTypes.BUY_PRODUCTS_SUCCESS:
+      copyState.done = true;
+      return copyState;
+
+    case actionTypes.BUY_PRODUCTS_FAILED:
+      copyState.done = false;
+      return copyState;
+
     default:
       return state;
   }
-}
+};
 
 export default handleCart;

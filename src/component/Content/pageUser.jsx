@@ -3,37 +3,17 @@ import clsx from "clsx";
 import styles from "./Content.module.css";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { user } from "../../redux/action";
 import Skeleton from "react-loading-skeleton";
+import { loginByJwt } from "../../redux/action/Auth";
 
 const PageUser = () => {
   const token = localStorage.getItem("token");
   const dispatch = useDispatch();
-  
-  const navigate = useNavigate();
-
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    var status;
-    var ojData = {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      },
-    };
-    return fetch("http://127.0.0.1:5000/api/auth/me", ojData)
-      .then(function (response) {
-        status = response.status;
-        return response.json();
-      })
-      .then(function (res) {
-        if (status === 200) {
-          dispatch(user(res));
-        }
-      });
+    dispatch(loginByJwt());
   }, []);
+
+  const navigate = useNavigate();
 
   const [blogGoods, setBlogGoods] = useState([]);
   const [inforUser, setInforUser] = useState({});
@@ -77,7 +57,9 @@ const PageUser = () => {
       );
       const goods = await response.clone().json();
       const user = await response2.clone().json();
-      !user.isFollowedByCurrentUser?setTextFollow('Huy theo doi'):setTextFollow('Theo doi')
+      !user.isFollowedByCurrentUser
+        ? setTextFollow("Huy theo doi")
+        : setTextFollow("Theo doi");
       setBlogGoods(goods);
       setInforUser(user);
       setCheckBlogUp(goods.length > 0 ? true : false);
@@ -98,7 +80,9 @@ const PageUser = () => {
     fetch(`http://127.0.0.1:5000/api/users/${userId}/follow`, requestOptions)
       .then((response) => response.json())
       .then(function (result) {
-        result.message === "Follow thành công!"? setTextFollow("Huy theo doi") : setTextFollow("Theo doi");
+        result.message === "Follow thành công!"
+          ? setTextFollow("Huy theo doi")
+          : setTextFollow("Theo doi");
         console.log(result.message);
       })
       .catch((error) => console.log("error", error));
@@ -175,7 +159,7 @@ const PageUser = () => {
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
                   >
-                    <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                    <i className="fa fa-ellipsis-v" aria-hidden="true"></i>
                   </div>
                   <ul
                     className="dropdown-menu"

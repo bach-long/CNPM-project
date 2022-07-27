@@ -7,7 +7,7 @@ import clsx from "clsx";
 import { Link, useNavigate } from "react-router-dom";
 
 function Search() {
-  const state = useSelector((state) => state.handleCart);
+  const state = useSelector((state) => state.handleCart.cart);
   const [statusLogin, setStatusLogin] = useState(false);
   const navigate = useNavigate();
   const inforUser = useSelector((state) => state.Login);
@@ -65,13 +65,12 @@ function Search() {
                   placeholder="Tìm kiếm sản phẩm trên SUPERMARKET"
                   aria-label="Search"
                   ref={inputSearch}
-                  onKeyDown={e=>pressEnter(e)}
+                  onKeyDown={(e) => pressEnter(e)}
                 />
               </div>
               <button
                 className="btn btn-outline-success"
                 onClick={clickBtnSearch}
-                
               >
                 <i className="fa fa-search"></i>
               </button>

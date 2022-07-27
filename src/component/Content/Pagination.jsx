@@ -2,9 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import clsx from "clsx";
 import styles from "./Content.module.css";
 import { Link } from "react-router-dom";
-import { actionSetCurPage } from "../../redux/action";
-import { useDispatch} from "react-redux";
-
+import { useDispatch } from "react-redux";
 
 const Pagination = (props) => {
   const [numberPage, setNumberPage] = useState(props.page);
@@ -31,8 +29,11 @@ const Pagination = (props) => {
     let renderTwoSide = [];
     let dot = (
       <li className="page-item">
-        <a className="page-link"  action="javascript: false"
-              href="javascript: false">
+        <a
+          className="page-link"
+          action="javascript: false"
+          href="javascript: false"
+        >
           ...
         </a>
       </li>
@@ -84,12 +85,15 @@ const Pagination = (props) => {
     }
   }
 
-
   function renderPage(index, active = "") {
     return (
       <li className={`page-item ${active}`} key={index}>
-        <a className="page-link" action="javascript: false"
-              href="javascript: false"  value={index}>
+        <a
+          className="page-link"
+          action="javascript: false"
+          href="javascript: false"
+          value={index}
+        >
           {index}
         </a>
       </li>
@@ -100,32 +104,32 @@ const Pagination = (props) => {
     const ele = e.target;
     if (ele.getAttribute("value")) {
       setNumberPage(parseInt(ele.getAttribute("value")));
-      props.getData(parseInt(ele.getAttribute("value")))
+      props.getData(parseInt(ele.getAttribute("value")));
     }
   };
 
   const nextPage = () => {
     if (numberPage < valuePage.totalPages) {
       setNumberPage(numberPage + 1);
-      props.getData(numberPage + 1)
+      props.getData(numberPage + 1);
     }
   };
 
   const prevPage = () => {
     if (numberPage > 1) {
       setNumberPage(numberPage - 1);
-      props.getData(numberPage - 1)
+      props.getData(numberPage - 1);
     }
   };
 
   const firstPage = () => {
     setNumberPage(1);
-    props.getData(1)
+    props.getData(1);
   };
 
   const lastPage = () => {
     setNumberPage(valuePage.totalPages);
-    props.getData(valuePage.totalPages)
+    props.getData(valuePage.totalPages);
   };
   pagination();
 
@@ -155,13 +159,13 @@ const Pagination = (props) => {
               aria-label="Previous"
               onClick={prevPage}
             >
-              <i class="fa fa-angle-left" aria-hidden="true"></i>
+              <i className="fa fa-angle-left" aria-hidden="true"></i>
             </a>
           </li>
           <div
             className={clsx(styles.pagination_listButton)}
-            ref={paginationBox} 
-            onClick={e=>selectNumberContainer(e)}
+            ref={paginationBox}
+            onClick={(e) => selectNumberContainer(e)}
           >
             {r}
           </div>
@@ -172,7 +176,7 @@ const Pagination = (props) => {
               href="javascript: false"
               aria-label="Next"
             >
-              <i class="fa fa-angle-right" aria-hidden="true"></i>
+              <i className="fa fa-angle-right" aria-hidden="true"></i>
             </a>
           </li>
           <li className="page-item" ref={btnLastPg} onClick={lastPage}>

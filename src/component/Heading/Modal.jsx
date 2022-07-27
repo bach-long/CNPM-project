@@ -3,11 +3,10 @@ import clsx from "clsx";
 import styles from "./Heading.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { user } from "../../redux/action";
-
+import { user } from "../../redux/action/Auth";
 
 const Modal = () => {
-  const [message,setmessageError] = useState('');
+  const [message, setmessageError] = useState("");
   var status = 0;
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -18,61 +17,62 @@ const Modal = () => {
   const password2 = useRef(null);
   const username = useRef(null);
 
-  const sendData = ()=> {
+  const sendData = () => {
     var data = {
       email: email.current.value,
       username: username.current.value,
       password: password1.current.value,
       passwordConfirm: password2.current.value,
       sdt: phone.current.value,
-    }
-    username.current.value = '';
-    password1.current.value = '';
-    password2.current.value = '';
-    phone.current.value = '';
-    email.current.value = '';
-    setmessageError('')
+    };
+    username.current.value = "";
+    password1.current.value = "";
+    password2.current.value = "";
+    phone.current.value = "";
+    email.current.value = "";
+    setmessageError("");
     postData(data);
-  }
+  };
 
   const postData = (data) => {
     var ojData = {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
         // 'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: JSON.stringify(data)
-    }
+      body: JSON.stringify(data),
+    };
     fetch("http://127.0.0.1:5000/api/auth/register", ojData)
-      .then(function(response) {
+      .then(function (response) {
         status = response.status;
-          return response.json();
+        return response.json();
       })
-        
-      .then(function(res) {
+
+      .then(function (res) {
         if (status === 201) {
-          dispatch(user(res))
-          localStorage.setItem("token", res.token)
-          navigate('/userInfor', {state:{userId:res.userId}})
+          dispatch(user(res));
+          localStorage.setItem("token", res.token);
+          navigate("/userInfor", { state: { userId: res.userId } });
+          alert("dang ki thanh cong");
         } else {
           if (res.errors.email) {
             setmessageError(res.errors.email);
           } else if (res.errors.sdt) {
-            console.log('sdt')
+            console.log("sdt");
             setmessageError(res.errors.sdt);
           } else if (res.errors.username) {
-            console.log('username')
+            console.log("username");
             setmessageError(res.errors.username);
           } else if (res.errors.password) {
-            console.log('password')
+            console.log("password");
             setmessageError(res.errors.password);
           } else {
-            setmessageError("Đăng ký không thành công")
+            setmessageError("Đăng ký không thành công");
           }
         }
-      })
-  }
+      });
+  };
 
   return (
     <>

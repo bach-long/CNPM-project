@@ -1,21 +1,25 @@
-import React, {useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import styles from "./Content.module.css";
 import clsx from "clsx";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { addCart } from "../../redux/action";
-import { delCart } from "../../redux/action";
-import { setCountZero } from "../../redux/action";
-import { user } from "../../redux/action";
-
+import {
+  delCart,
+  addCart,
+  setCountZero,
+  fetchBuyProductCart,
+  setStatusDone,
+} from "../../redux/action/cart";
+import { loginByJwt } from "../../redux/action/Auth";
 
 const Cart = () => {
-  const state = useSelector((state) => state.handleCart);
+  const items = useSelector((state) => state.handleCart.cart);
+
+  const statusBuy = useSelector((state) => state.handleCart.done);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const pageCart = useRef(null);
-  const token = localStorage.getItem('token')
 
   var listCheckBox;
 
@@ -30,52 +34,37 @@ const Cart = () => {
   const delZero = (product) => {
     dispatch(setCountZero(product));
   };
-
-
   useEffect(() => {
     listCheckBox = pageCart.current.querySelectorAll("input");
-  }, [state]);
+  }, [items]);
 
-  useEffect(()=>{
-    var status;
-    var ojData = {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      },
-    };
-    return fetch("http://127.0.0.1:5000/api/auth/me", ojData)
-      .then(function (response) {
-        status = response.status;
-        return response.json();
-      })
-      .then(function (res) {
-        if (status === 200) {
-          dispatch(user(res));
-      }
-      });
-  },[])
+  useEffect(() => {
+    if (statusBuy) {
+      dispatch(setStatusDone());
+      navigate("/goodBuys");
+    }
+  }, [statusBuy]);
 
+  useEffect(() => {
+    dispatch(loginByJwt());
+  }, []);
 
-
-  const  checkAll = (e) => {
+  const checkAll = (e) => {
     const check = e.target.checked;
     if (check) {
-      listCheckBox.forEach(function(checkbox) {
+      listCheckBox.forEach(function (checkbox) {
         checkbox.checked = true;
-      })
+      });
     } else {
-      listCheckBox.forEach(function(checkbox) {
+      listCheckBox.forEach(function (checkbox) {
         checkbox.checked = false;
-      })
+      });
     }
-  }
+  };
 
   function countCart() {
     var c = 0;
-    state.forEach((p) => {
+    items.forEach((p) => {
       if (p.qty > 0) {
         c += p.qty;
       }
@@ -85,36 +74,23 @@ const Cart = () => {
 
   const buyGood = () => {
     const checkBoxs = [...listCheckBox];
-    var listGoodsBuys = []
-    checkBoxs.map(function(checkBox) {
-      if (checkBox.checked && checkBox.getAttribute('name')!== 'selectAll') {
-        listGoodsBuys = [...listGoodsBuys, {goodId:  parseInt(checkBox.getAttribute('name')), sl:  parseInt(checkBox.getAttribute('value'))}]
+    var listGoodsBuys = [];
+    checkBoxs.map(function (checkBox) {
+      if (checkBox.checked && checkBox.getAttribute("name") !== "selectAll") {
+        listGoodsBuys = [
+          ...listGoodsBuys,
+          {
+            goodId: parseInt(checkBox.getAttribute("name")),
+            amount: parseInt(checkBox.getAttribute("value")),
+          },
+        ];
       }
-    })
-    
-    var requestOptions = {
-      method: 'POST',
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      },
-      body : JSON.stringify({goodBuys: listGoodsBuys}),
-      redirect: 'follow'
-    };
-    
-    fetch("http://127.0.0.1:5000/api/goods/goodBuys", requestOptions)
-      .then(response => response.text())
-      .then(function(res) {
-        listGoodsBuys.map(good=> {
-          delZero(state.filter(goodS=>goodS.id === good.id))
-        })
-      })
-      .catch(error => console.log('error', error));
-  }
+    });
 
-
-  
+    if (listGoodsBuys.length > 0) {
+      dispatch(fetchBuyProductCart(listGoodsBuys, items));
+    }
+  };
 
   const CardProductNull = () => {
     return (
@@ -134,11 +110,11 @@ const Cart = () => {
   const ShowCardProduct = () => {
     return (
       <div className={clsx(styles.cart_cardProduct)}>
-        {state.map((product) => {
+        {items.map((product, index) => {
           const img = product.images;
-          const img0 = img[0]?img[0].link:null;
+          const img0 = img[0] ? img[0].link : null;
           return (
-            <div className={clsx(styles.boxCart)}>
+            <div className={clsx(styles.boxCart)} key={index}>
               <div
                 className={clsx(
                   "d-flex",
@@ -147,7 +123,11 @@ const Cart = () => {
                 )}
               >
                 <div className={clsx(styles.cart_product_checkbox)}>
-                <input type="checkbox" name={product.goodId} value={product.qty}/>
+                  <input
+                    type="checkbox"
+                    name={product.goodId}
+                    value={product.qty}
+                  />
                 </div>
                 <div
                   className={clsx(styles.cart_product_boxImg)}
@@ -161,7 +141,7 @@ const Cart = () => {
                 </div>
                 <div className={clsx(styles.cart_product_description)}>
                   <div>
-                  <p>{product.name}</p>
+                    <p>{product.name}</p>
                     <p>Miễn phí trả hàng trong 7 ngày</p>
                   </div>
                 </div>
@@ -218,9 +198,7 @@ const Cart = () => {
         <hr />
         <div className="d-flex">
           <div className="mt-2 mx-3">
-            <input type="checkbox" name="selectAll"
-            onClick={checkAll}
-            />
+            <input type="checkbox" name="selectAll" onClick={checkAll} />
           </div>
           <div className="font-monospace mx-2 mb-1 fs-5">Chon tat ca</div>
         </div>
@@ -228,8 +206,13 @@ const Cart = () => {
         {countCart() === 0 ? <CardProductNull /> : <ShowCardProduct />}
         <hr className="m-0" />
         <div className="mb-2 d-flex">
-          <div className={clsx(styles.cart_boxButtonBuy, )}>
-            <button className={clsx(styles.cart_buttonBuy)} onClick={()=>buyGood()}>Mua</button>
+          <div className={clsx(styles.cart_boxButtonBuy)}>
+            <button
+              className={clsx(styles.cart_buttonBuy)}
+              onClick={() => buyGood()}
+            >
+              Mua
+            </button>
           </div>
         </div>
       </div>

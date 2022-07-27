@@ -718,3 +718,12 @@
 
 
 /**End Rating*/
+
+
+/*Start goodBuys**/
+
+.boxGoods {
+    overflow: auto;
+    height: 500px;
+}
+/***End good buy**/

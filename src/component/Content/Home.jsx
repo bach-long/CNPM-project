@@ -1,41 +1,16 @@
-import React, {useEffect}from "react";
+import React, { useEffect } from "react";
 import Products from "./Products";
 import Banner from "./Banner";
 import clsx from "clsx";
 import styles from "./Content.module.css";
 import { useDispatch } from "react-redux";
-import { user } from "../../redux/action";
+import { loginByJwt } from "../../redux/action/Auth";
 const Home = () => {
   const dispatch = useDispatch();
-  const reloadLogin = ()=> {
-    const token = localStorage.getItem('token')
-    var status;
-    var ojData = {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      },
-    };
-    return fetch("http://127.0.0.1:5000/api/auth/me", ojData)
-      .then(function (response) {
-        status = response.status;
-        return response.json();
-      })
-      .then(function (res) {
-        if (status === 200) {
-          dispatch(user(res));
-      }
-      });
-  }
-  useEffect(
-    
-    reloadLogin,[])
+  useEffect(() => {
+    dispatch(loginByJwt());
+  }, []);
 
-  
-  
-  
   return (
     <div className={clsx(styles.home, "justify-content-center")}>
       <Banner></Banner>
@@ -43,26 +18,27 @@ const Home = () => {
       <div className="descriptionWrapper bg-light">
         <div className="descriptionMarket py-2">
           <h3 className="m-3">
-            Chợ Tốt - Chợ Mua Bán, Rao Vặt Trực Tuyến Hàng Đầu Của Người Việt
+            GreenMarket - Chợ Mua Bán, Rao Vặt Trực Tuyến Hàng Đầu Của Người
+            Việt
           </h3>
           <div className={clsx(styles.textContent, "mx-4")}>
             <p>
-              Chợ Tốt chính thức gia nhập thị trường Việt Nam vào đầu năm 2012,
-              với mục đích tạo ra cho bạn một kênh rao vặt trung gian, kết nối
-              người mua với người bán lại với nhau bằng những giao dịch cực kỳ
-              đơn giản, tiện lợi, nhanh chóng, an toàn, mang đến hiệu quả bất
+              GreenMarket chính thức gia nhập thị trường Việt Nam vào đầu năm
+              2012, với mục đích tạo ra cho bạn một kênh rao vặt trung gian, kết
+              nối người mua với người bán lại với nhau bằng những giao dịch cực
+              kỳ đơn giản, tiện lợi, nhanh chóng, an toàn, mang đến hiệu quả bất
               ngờ.
             </p>
             <p>
-              Đến nay, Chợ Tốt tự hào là Website rao vặt được ưa chuộng hàng đầu
-              Việt Nam. Hàng ngàn món hời từ Bất động sản, Nhà cửa, Xe cộ, Đồ
-              điện tử, Thú cưng, Vật dụng cá nhân... đến tìm việc làm, thông tin
-              tuyển dụng, các dịch vụ - du lịch được đăng tin, rao bán trên Chợ
-              Tốt.
+              Đến nay, GreenMarket tự hào là Website rao vặt được ưa chuộng hàng
+              đầu Việt Nam. Hàng ngàn món hời từ Bất động sản, Nhà cửa, Xe cộ,
+              Đồ điện tử, Thú cưng, Vật dụng cá nhân... đến tìm việc làm, thông
+              tin tuyển dụng, các dịch vụ - du lịch được đăng tin, rao bán trên
+              Chợ Tốt.
             </p>
             <p>
-              Với Chợ Tốt, bạn có thể dễ dàng mua bán, trao đổi bất cứ một loại
-              mặt hàng nào, dù đó là đồ cũ hay đồ mới với nhiều lĩnh vực:
+              Với GreenMarket, bạn có thể dễ dàng mua bán, trao đổi bất cứ một
+              loại mặt hàng nào, dù đó là đồ cũ hay đồ mới với nhiều lĩnh vực:
             </p>
             <p>
               Bất động sản: Cho thuê, Mua bán nhà đất, căn hộ chung cư, văn
@@ -89,7 +65,7 @@ const Home = () => {
             <p>
               Tuyển dụng, việc làm với hàng triệu công việc hấp dẫn, phù hợp tại
               Việc Làm Tốt - Kênh tuyển dụng hiệu quả, uy tín được phát triển
-              bởi Chợ Tốt.
+              bởi GreenMarket.
             </p>
             <p>
               Dịch vụ, du lịch: khách sạn, vé máy bay, vé tàu, vé xe, tour du
@@ -111,4 +87,3 @@ const Home = () => {
 };
 
 export default Home;
-

@@ -4,6 +4,8 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import clsx from "clsx";
 import styles from "./Content.module.css";
 import Pagination from "./Pagination";
+import { fetchSearchProduct } from "../../redux/action/productAction";
+import { useDispatch, useSelector } from "react-redux";
 
 const PageSearch = () => {
   const navigate = useNavigate();
@@ -11,41 +13,26 @@ const PageSearch = () => {
   const [pageCount, setPageCout] = useState(1);
   const [page, setPage] = useState(1);
   const query = useLocation().state.query;
+  const dispatch = useDispatch();
+  const stateRedux = useSelector((state) => state.Product);
 
   function getCurPage(page) {
     setPage(page);
   }
 
   useEffect(() => {
-    console.log(encodeURIComponent(query));
-    var objData = {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      redirect: "follow",
-    };
-
-    fetch(
-      `http://127.0.0.1:5000/api/goods?query=${encodeURIComponent(query)}`,
-      objData
-    )
-      .then((response) => response.json())
-      .then(function (res) {
-        setFilter(res.goods);
-        setPageCout(res.totalPageCount);
-      })
-      .catch((error) => console.log("error", error));
+    dispatch(fetchSearchProduct(encodeURIComponent(query)));
   }, [query]);
 
-
-  
+  useEffect(() => {
+    setFilter(stateRedux.productsSearch);
+    setPageCout(stateRedux.pageCountSearch);
+  }, [stateRedux]);
 
   return (
     <div className={clsx(styles.home, "justify-content-center")}>
       <div className="row grid">
-        <h1 >San pham ban tim kiem</h1>
+        <h1>San pham ban tim kiem</h1>
         <hr />
         {filter.map((product, index) => {
           const img = product.images;
@@ -85,7 +72,7 @@ const PageSearch = () => {
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                  <i className="fa fa-ellipsis-v" aria-hidden="true"></i>
                 </div>
                 <ul
                   className="dropdown-menu"

@@ -2,11 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { Link, useNavigate ,useLocation} from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import styles from "./Content.module.css";
 import { useSelector, useDispatch } from "react-redux";
-import { user } from "../../redux/action";
-import { Selector } from "react-redux";
+import { loginByJwt } from "../../redux/action/Auth";
 import socket from "./socket";
 
 //socket.emit('online', inforUser);
@@ -22,40 +21,18 @@ const Chat = () => {
   const boxMess = useRef(null);
   const username2Default = useLocation().state.username2;
   const msg = useRef("");
-  
 
   const dispatch = useDispatch();
 
-  const reloadLogin = () => {
-    var status;
-    var ojData = {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      },
-    };
-    return fetch("http://127.0.0.1:5000/api/auth/me", ojData)
-      .then(function (response) {
-        status = response.status;
-        return response.json();
-      })
-      .then(function (res) {
-        if (status === 200) {
-          socket.emit('online', res);
-          dispatch(user(res));
-        }
-      });
-  };
-  useEffect(reloadLogin, []);
+  useEffect(() => {
+    dispatch(loginByJwt());
+  }, []);
 
-  
   socket.on("getMessage", function (data) {
     setNewMessage(!newMessage);
-    console.log(data)
+    console.log(data);
   });
-  
+
   window.addEventListener("beforeunload", function (e) {
     socket.emit("offline", inforUser);
   });
@@ -66,35 +43,30 @@ const Chat = () => {
       headers: {
         Authorization: "Bearer " + token,
       },
-      redirect: 'follow'
+      redirect: "follow",
     };
     fetch("http://127.0.0.1:5000/api/chat/chatList", ojData)
       .then((res) => res.json())
       .then(function (res) {
         setListChats(res);
         var check = true;
-          res.forEach(function (cvs) {
-            if (
-              cvs.username1 === username2Default ||
-              cvs.username2 === username2Default
-            ) {
-              setUser2(username2Default);
-              setConversation(cvs);
-              console.log(cvs)
-              console.log("set username default");
-              check = false;
-            }
-          });
-          if (check && res[0]) {
-            const cvs = res[0];
-            console.log("set magn");
-            setConversation(res[0]);
-            setUser2(
-              cvs.username2 !== inforUser.username
-                ? cvs.username2
-                : cvs.username1
-            );
+        res.forEach(function (cvs) {
+          if (
+            cvs.username1 === username2Default ||
+            cvs.username2 === username2Default
+          ) {
+            setUser2(username2Default);
+            setConversation(cvs);
+            check = false;
           }
+        });
+        if (check && res[0]) {
+          const cvs = res[0];
+          setConversation(res[0]);
+          setUser2(
+            cvs.username2 !== inforUser.username ? cvs.username2 : cvs.username1
+          );
+        }
       })
       .catch((error) => console.log(error));
   }, []);
@@ -106,7 +78,7 @@ const Chat = () => {
   }, [listChats]);
 
   const getMessageFetch = () => {
-    console.log('setMessags')
+    console.log("setMessags");
     function fetchMess() {
       var ojData = {
         method: "GET",
@@ -190,7 +162,7 @@ const Chat = () => {
             </div>
             <div>
               <div className="d-flex">
-                <p className="m-0 p-0 mx-1 text-black-50 fw-bold">Ten User</p>
+                <p className="m-0 p-0 mx-1 text-black-50 fw-bold">{user2}</p>
               </div>
             </div>
           </div>
@@ -206,11 +178,12 @@ const Chat = () => {
             <div>
               <div className="d-flex flex-column">
                 <p className="m-0 p-0 mx-1 text-black-50 fw-bold">
-                  Ten San Pham
+                  {inforUser.username}
                 </p>
-                <p className="m-0 p-0 mx-1 fw-bold" style={{ color: "red" }}>
-                  Gia
-                </p>
+                <p
+                  className="m-0 p-0 mx-1 fw-bold"
+                  style={{ color: "red" }}
+                ></p>
               </div>
             </div>
           </div>
@@ -253,7 +226,7 @@ const Chat = () => {
             />
             <div className="" style={{ width: "5%" }}>
               <button onClick={(e) => clickSendMessage(e)}>
-                <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                <i className="fa fa-paper-plane" aria-hidden="true"></i>
               </button>
             </div>
           </div>
@@ -273,8 +246,11 @@ const Chat = () => {
           {listChats.map((chat) => {
             return (
               <div
-                className={`${styles.boxCardChat} "pt-2" ${chat.conversationId===conversation.conversationId?`bg-black ${styles.colorText_White}`:''}`}
-               
+                className={`${styles.boxCardChat} "px-2" ${
+                  chat.conversationId === conversation.conversationId
+                    ? `bg-black ${styles.colorText_White}`
+                    : ""
+                }`}
                 onClick={(e) => clickCardChat(chat)}
               >
                 <div
@@ -299,15 +275,10 @@ const Chat = () => {
                             ? chat.username2
                             : chat.username1}
                         </p>
-                        <p className="m-0 p-0 mb-1">THoi gian chat</p>
+                        <p className="m-0 p-0 mb-1"></p>
                       </div>
                       <div className="d-flex justify-content-end">
-                        <p
-                          className="fst-italic"
-                          style={{ right: "0px" }}
-                        >
-                          Ten san pham
-                        </p>
+                        <p className="fst-italic" style={{ right: "0px" }}></p>
                       </div>
                     </div>
                   </div>
